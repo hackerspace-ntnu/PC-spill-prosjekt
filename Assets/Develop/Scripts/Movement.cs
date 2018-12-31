@@ -31,14 +31,18 @@ public enum State
 public class Movement : MonoBehaviour
 {
     public float speed = 5f;
-    public float jumpSpeed = 420;
-    public float dashSpeed = 1200;
-    public float dashGravityTime = 0.4f;
+    public float jumpSpeed = 20;
+    public float dashSpeed = 30;
+    public float dashGravityTime = 0.2f;
+    public float ourGrav = 5f;
+    public float changeGrav = 1.5f;
 
     private Rigidbody2D rigidBody;
     public bool isGrounded = false;
     public bool hasJumped = false;
     public bool hasDashed = false;
+    private bool jumping = false;
+    private bool dashing = false;
 
     public float lastJumpTime;
     public float dashTime;
@@ -90,6 +94,7 @@ public class Movement : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         animController = GetComponent<Animator>();
         originalScale = (rigidBody.transform.localScale).x;
+        rigidBody.gravityScale = ourGrav;
 
         // Initialize the stage
         state = State.PRE_STAGE;
@@ -110,10 +115,14 @@ public class Movement : MonoBehaviour
         bool shiftKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
         bool sKeyDown = Input.GetKeyDown(KeyCode.S);
 
-        moveHorizontal = Input.GetAxis("Horizontal");
-        //moveHorizontal = 1;
-        velocity = new Vector2(moveHorizontal * speed, rigidBody.velocity.y);
+        if (!dashing)
+        {
+            moveHorizontal = Input.GetAxis("Horizontal");
+            //moveHorizontal = 1;
+            velocity = new Vector2(moveHorizontal * speed, rigidBody.velocity.y);
+        }
 
+       /*
         if (velocity.y > 0.1f)
         {
             animController.SetTrigger("jump");
@@ -127,6 +136,7 @@ public class Movement : MonoBehaviour
             else
                 animController.SetTrigger("idle");
         }
+        */
 
         if (isGrounded)
         {
@@ -157,7 +167,7 @@ public class Movement : MonoBehaviour
             if (isGrounded)
             {
                 // In air: double-, triple jump or air dash
-                jump();
+                jump(1.0f);
             }
 
             else if (Time.time - lastJumpTime >= 0.2f * (currentScale / originalScale))
@@ -177,21 +187,37 @@ public class Movement : MonoBehaviour
 
         if (!hasDashed && shiftKeyDown && abilities.CanDash)
         {
+            hasDashed = true;
+            dashTime = Time.time;
+            //rigidBody.gravityScale = 0;
+            dashing = true;
             dash();
         }
-        else if (Time.time - dashTime >= dashGravityTime)
+        else if (dashing && Time.time - dashTime <= dashGravityTime)
+        {
+            dash();
+        }      
+        else
         {
             //Fant og fjernet en disable gravity bug, feature?
-            rigidBody.gravityScale = 1;
+            dashing = false;
+            //rigidBody.gravityScale = ourGrav;
         }
     }
 
     void FixedUpdate()
     {
         rigidBody.velocity = velocity;
-        rigidBody.AddForce(-Vector2.up * 10f * (currentScale / originalScale));
+        //rigidBody.AddForce(-Vector2.up * 10f * (currentScale / originalScale));
         rigidBody.AddForce(force);
         force = new Vector2(0f, 0f);
+        jumping = false;
+
+
+        if (hasJumped && rigidBody.velocity.y <= 0.2f)
+        {
+            rigidBody.gravityScale = ourGrav * changeGrav;
+        }
     }
 
     public void OnGround(GameObject groundObject)
@@ -199,6 +225,7 @@ public class Movement : MonoBehaviour
         print("onGround");
         isGrounded = true;
         resetJumps();
+        rigidBody.gravityScale = ourGrav;
     }
 
     public void hitWall(GameObject wallHit)
@@ -232,32 +259,31 @@ public class Movement : MonoBehaviour
         }
     }
 
-    private void jump()
-    {
-        jump(1.0f);
-    }
-
     //Mer jumpForce når i luften (for double/triple jump)
     //Hopp buggen som aldri forsvinner
     private void jump(float scale)
     {
         //rigidBody.AddForce(new Vector2(0, 1) * jumpForce);
-        force = new Vector2(0, jumpSpeed) * (currentScale / originalScale) * scale;
-        velocity = new Vector2(rigidBody.velocity.x, 0);
+        velocity = new Vector2(0, jumpSpeed) * (currentScale / originalScale) * scale;
         isGrounded = false;
         hasJumped = true;
         lastJumpTime = Time.time;
         jumpsSinceGround++;
-
+        jumping = true;
+        rigidBody.gravityScale = ourGrav;
     }
 
     private void dash()
     {
-        velocity = new Vector2(0, 0);
-        force = new Vector2(moveHorizontal * dashSpeed, 0);
+        if (jumping)
+        {
+            velocity += new Vector2(moveHorizontal * dashSpeed * 2, 0);
+            dashing = false;
+        }
 
-        hasDashed = true;
-        dashTime = Time.time;
-        rigidBody.gravityScale = 0;
+        else
+        {
+            velocity = new Vector2(moveHorizontal * dashSpeed, 0);
+        }
     }
 }
