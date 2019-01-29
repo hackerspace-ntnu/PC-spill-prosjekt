@@ -4,25 +4,24 @@ using UnityEngine;
 
 /* TO DO
  * 
- * Fikse det jævla Collision Detector scriptet
- *     Dermed fikse walkoff-buggen
- *     groundObject = null
- *         :ANGERY:
- * 
  * Få dash til å fungere ordentlig mot bevegelsesretningen
  *     Skal kanskje være teleport, og er i så fall unødvendig
+ *     Hvis teleport: Ledge cancel mechanic?
  * 
  * Flere abilities
  *     Egne scripts?
  * 
+ * Walljump koden kan gjøres mer elegant
+ * 
 */
 
-public class MovementV2 : MonoBehaviour {
+public class MovementV2 : MonoBehaviour
+{
+    private Rigidbody2D rb;
 
-    private Rigidbody2D rigidBody;
-
-    private bool CanWallclimb = true;
-    private bool CanDash = true;
+    // Skal ikke være readonly i spillet, ettersom spilleren får tak i abilities underveis
+    private readonly bool CanWalljump = true;
+    private readonly bool CanDash = true;
 
     public int airJumps = 2;
 
@@ -30,17 +29,21 @@ public class MovementV2 : MonoBehaviour {
     public float jumpSpeed = 20f;
     public float dashSpeed = 30f;
     public float dashDuration = 0.2f;
+    public float wallJumpDuration = 0.2f;
     public float ourGravity = 5f;
     public float gravityChange = 1.3f;
 
     public bool isGrounded = false;
+    public bool wallHit = false;
     public bool hasJumped = false;
     public bool hasDashed = false;
     private bool jumping = false;
     private bool dashing = false;
+    private bool wallJumping = false;
 
     public float lastJumpTime;
     public float dashTime;
+    public float wallJumpTime = -1;
     public int jumpsSinceGround;
 
     public float scale;
@@ -48,33 +51,81 @@ public class MovementV2 : MonoBehaviour {
     private Vector2 velocity;
     private float moveHorizontal;
 
+    public string wallCollider = null;
+
     // Use this for initialization
-    void Start () {
-        rigidBody = GetComponent<Rigidbody2D>();
-        rigidBody.gravityScale = ourGravity;
-        scale = (rigidBody.transform.localScale).x;
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = ourGravity;
+        scale = (rb.transform.localScale).x;
+        Application.targetFrameRate = 60;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         bool jumpKeyDown = Input.GetKeyDown(KeyCode.Space);
         bool shiftKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
 
-        if (!dashing && !jumping)
+        if (!dashing && !wallJumping)
         {
             moveHorizontal = Input.GetAxis("Horizontal");
             //moveHorizontal = 1;
-            velocity = new Vector2(moveHorizontal * moveSpeed, rigidBody.velocity.y);
+            velocity = new Vector2(moveHorizontal * moveSpeed, rb.velocity.y);
         }
 
-        if (CanWallclimb)
+        // Walljump resetter Dash og du kan alltid bruke minst ett airjump etter dash (så lenge det er unlocket)
+        if (wallHit)
         {
-            // NOT IMPLEMENTED
+            if (CanWalljump)
+            {
+                if (jumpKeyDown || wallJumping)
+                {
+                    if (wallCollider == "Wall Collider Left")
+                    {
+                        wallJump(1);
+                    }
+                    else
+                    {
+                        wallJump(-1);
+                    }
+                    wallJumpTime = Time.time;
+
+                    if (jumpsSinceGround == airJumps && airJumps != 0)
+                    {
+                        jumpsSinceGround--;
+                    }
+
+                    hasDashed = false;
+                }
+            }
+
+            // LEGG TIL WALLSLIDE
+
         }
 
-        //Gjøre at isGrounded kan returnere false for walkoff buggen
+        if (wallJumping)
+        {
+            if (Time.time - wallJumpTime <= wallJumpDuration)
+            {
+                if (wallCollider == "Wall Collider Left")
+                {
+                    wallJump(1);
+                }
+                else
+                {
+                    wallJump(-1);
+                }
+            }
+            else
+            {
+                wallJumping = false;
+            }
+        }
 
-        if (jumpKeyDown)
+
+        if (jumpKeyDown && !wallJumping || jumping)
         {
             if (isGrounded)
             {
@@ -82,9 +133,16 @@ public class MovementV2 : MonoBehaviour {
                 jumpsSinceGround = 0;
             }
 
-            else if (Time.time - lastJumpTime >= 0.2f && jumpsSinceGround < airJumps)
+            else if (Time.time - lastJumpTime >= 0.3f || rb.gravityScale == ourGravity * gravityChange)
             {
-                jump(1.2f);
+                if (jumpsSinceGround == airJumps - 1)
+                {
+                    jump(0.8f);
+                }
+                else if (jumpsSinceGround < airJumps)
+                {
+                    jump(1.0f);
+                }
             }
         }
 
@@ -108,21 +166,22 @@ public class MovementV2 : MonoBehaviour {
 
     void FixedUpdate()
     {
-        rigidBody.velocity = velocity;
+        rb.velocity = velocity;
         jumping = false;
 
-        if (!isGrounded && rigidBody.velocity.y <= 0.2f)
+        if (isGrounded && rb.velocity.y == 0)
         {
-            rigidBody.gravityScale = ourGravity * gravityChange;
+            grounded();
         }
-    }
+        else if (jumping || wallJumping)
+        {
+            rb.gravityScale = ourGravity;
+        }
 
-    public void OnGround(GameObject groundObject)
-    {
-        print("onGround");
-        isGrounded = true;
-        grounded();
-        rigidBody.gravityScale = ourGravity;
+        else if ((jumpsSinceGround <= airJumps - 1 && rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space)) || rb.velocity.y < 0.2f)
+        {
+            rb.gravityScale = ourGravity * gravityChange;
+        }
     }
 
     private void grounded()
@@ -131,17 +190,24 @@ public class MovementV2 : MonoBehaviour {
         jumpsSinceGround = 0;
         hasJumped = false;
         hasDashed = false;
+        rb.gravityScale = ourGravity;
     }
 
     private void jump(float scale)
     {
-        velocity = new Vector2(0, jumpSpeed);
-        isGrounded = false;
+        velocity = new Vector2(moveHorizontal * moveSpeed, jumpSpeed * scale);
         hasJumped = true;
         lastJumpTime = Time.time;
         jumpsSinceGround++;
         jumping = true;
-        rigidBody.gravityScale = ourGravity;
+        rb.gravityScale = ourGravity;
+    }
+
+    private void wallJump(int x)
+    {
+        velocity = new Vector2(x * moveSpeed / 2, jumpSpeed);
+        wallJumping = true;
+        lastJumpTime = Time.time;
     }
 
     private void dash()
