@@ -227,7 +227,11 @@ public class MovementV2 : MonoBehaviour
 
         jumping = false;
 
+<<<<<<< HEAD
+        //print(rb.velocity);
+=======
         //print(rb.velocity.y);
+>>>>>>> Added torch for familiar to attach to
     }
 
     private void grounded()

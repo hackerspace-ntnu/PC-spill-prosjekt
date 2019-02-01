@@ -15,6 +15,7 @@ public class FollowObject : MonoBehaviour {
     private Rigidbody2D rBodyOfObj;
     private Vector3 worldTargetPos;
     private Vector2 distanceToTarget;
+    private Vector2 defaultTarget;
 
 	// Use this for initialization
 	void Start () {
@@ -27,6 +28,7 @@ public class FollowObject : MonoBehaviour {
         thisRBody = GetComponent<Rigidbody2D>();
         worldTargetPos = new Vector3(objToFollow.transform.position.x + targetPos.x, objToFollow.transform.position.y + targetPos.y, 0.0f);
         transform.position = worldTargetPos;
+        defaultTarget = targetPos;
 	}
 	
 	// Update is called once per frame
@@ -61,5 +63,21 @@ public class FollowObject : MonoBehaviour {
         distanceToTarget = distanceToTarget.normalized * Mathf.Pow(distanceToTarget.magnitude, distanceFactor);
         
         thisRBody.velocity = -distanceToTarget;
+    }
+
+    public void AttachToObject(GameObject obj, Vector2 target) {
+        if(objToFollow != obj) {
+            objToFollow = obj;
+            rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
+
+            targetPos = target;
+        }
+    }
+
+    public void ResetAttachment() {
+        objToFollow = GameObject.FindGameObjectWithTag("Player");
+        rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
+
+        targetPos = defaultTarget;
     }
 }

@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Hazzard
+  - Torch
+  - Familiar
   layers:
   - Default
   - TransparentFX
