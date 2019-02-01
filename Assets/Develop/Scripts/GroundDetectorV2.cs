@@ -15,7 +15,6 @@ public class GroundDetectorV2 : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        print(gameObject.name);
         playerMovement.GetComponent<MovementV2>().isGrounded = true;
     }
 

@@ -13,8 +13,17 @@ public class WallDetector : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D col) {
         playerMovement.GetComponent<MovementV2>().wallHit = true;
-        playerMovement.GetComponent<MovementV2>().wallCollider = this.gameObject.name;
+        
         print(this.gameObject);
+
+        if (this.gameObject.name == "Wall Collider Left")
+        {
+            playerMovement.GetComponent<MovementV2>().wallCollider = 1;
+        }
+        else
+        {
+            playerMovement.GetComponent<MovementV2>().wallCollider = -1;
+        }
 
     }
 
