@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 /* TO DO
  * 
@@ -25,13 +26,15 @@ public class MovementV2 : MonoBehaviour
 
     public int airJumps = 2;
 
-    public float moveSpeed = 12f;
-    public float jumpSpeed = 20f;
-    public float dashSpeed = 30f;
+    public float moveSpeed = 8f;
+    public float jumpSpeed = 15f;
+    public float dashSpeed = 15f;
     public float dashDuration = 0.2f;
     public float wallJumpDuration = 0.2f;
-    public float ourGravity = 5f;
+    public float ourGravity = 4f;
     public float gravityChange = 1.3f;
+    public float maxVelocityY = 12f;
+    private float maxVelocityFix = 1f;
 
     public bool isGrounded = false;
     public bool wallHit = false;
@@ -40,6 +43,7 @@ public class MovementV2 : MonoBehaviour
     private bool jumping = false;
     private bool dashing = false;
     private bool wallJumping = false;
+    private bool wallStick = false;
 
     public float lastJumpTime;
     public float dashTime;
@@ -50,8 +54,9 @@ public class MovementV2 : MonoBehaviour
 
     private Vector2 velocity;
     private float moveHorizontal;
+    private float lastMove = 1;
 
-    public string wallCollider = null;
+    public int wallCollider;
 
     // Use this for initialization
     void Start()
@@ -68,29 +73,42 @@ public class MovementV2 : MonoBehaviour
         bool jumpKeyDown = Input.GetKeyDown(KeyCode.Space);
         bool shiftKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
 
-        if (!dashing && !wallJumping)
+        if (rb.velocity.y + maxVelocityY * Math.Sign(ourGravity) < 0)
+        {
+            maxVelocityFix = 0.9f;
+        }
+        else
+        {
+            maxVelocityFix = 1f;
+        }
+
+        if (!dashing)
         {
             moveHorizontal = Input.GetAxis("Horizontal");
             //moveHorizontal = 1;
             velocity = new Vector2(moveHorizontal * moveSpeed, rb.velocity.y);
+
+            if (moveHorizontal != 0)
+            {
+                lastMove = Math.Sign(moveHorizontal);
+
+                if (Math.Abs(moveHorizontal) > 0.3f)
+                {
+                    moveHorizontal = Math.Sign(moveHorizontal);
+                }
+            }
         }
 
         // Walljump resetter Dash og du kan alltid bruke minst ett airjump etter dash (så lenge det er unlocket)
         if (wallHit)
         {
-            if (CanWalljump)
+            if (!wallJumping)
             {
-                if (jumpKeyDown || wallJumping)
+                if (CanWalljump && jumpKeyDown)
                 {
-                    if (wallCollider == "Wall Collider Left")
-                    {
-                        wallJump(1);
-                    }
-                    else
-                    {
-                        wallJump(-1);
-                    }
+                    wallJump(wallCollider);
                     wallJumpTime = Time.time;
+                    lastJumpTime = Time.time;
 
                     if (jumpsSinceGround == airJumps && airJumps != 0)
                     {
@@ -98,30 +116,50 @@ public class MovementV2 : MonoBehaviour
                     }
 
                     hasDashed = false;
+
+                    return;
                 }
+
+                else if (rb.velocity.y <= 0 && wallCollider == -Math.Sign(moveHorizontal))
+                {
+                    rb.sharedMaterial.friction = 0.4f;
+                }
+
+                else
+                {
+                    rb.sharedMaterial.friction = 1f;
+                    maxVelocityFix = 0.2f;
+                }
+
             }
 
-            // LEGG TIL WALLSLIDE
+            
 
+        }
+
+        // DETTE ER STYGT
+        else if (maxVelocityFix < 0.8)
+        {
+            maxVelocityFix = 1f;
         }
 
         if (wallJumping)
         {
-            if (Time.time - wallJumpTime <= wallJumpDuration)
+            if (Time.time - wallJumpTime <= wallJumpDuration / 2)
             {
-                if (wallCollider == "Wall Collider Left")
-                {
-                    wallJump(1);
-                }
-                else
-                {
-                    wallJump(-1);
-                }
+                wallJump(wallCollider);
+            }
+
+            else if (Time.time - wallJumpTime <= wallJumpDuration)
+            {
+                wallJump(Math.Sign(moveHorizontal));
             }
             else
             {
                 wallJumping = false;
             }
+
+            return;
         }
 
 
@@ -133,7 +171,7 @@ public class MovementV2 : MonoBehaviour
                 jumpsSinceGround = 0;
             }
 
-            else if (Time.time - lastJumpTime >= 0.3f || rb.gravityScale == ourGravity * gravityChange)
+            else if (Time.time - lastJumpTime >= 0.2f || rb.gravityScale == ourGravity * gravityChange)
             {
                 if (jumpsSinceGround == airJumps - 1)
                 {
@@ -161,27 +199,32 @@ public class MovementV2 : MonoBehaviour
         else
         {
             dashing = false;
+            rb.gravityScale = ourGravity;
         }
     }
 
     void FixedUpdate()
     {
-        rb.velocity = velocity;
-        jumping = false;
-
+        rb.velocity = new Vector2 (velocity.x, velocity.y * maxVelocityFix);
+        
         if (isGrounded && rb.velocity.y == 0)
         {
             grounded();
         }
-        else if (jumping || wallJumping)
+        else if (wallJumping)
         {
             rb.gravityScale = ourGravity;
         }
 
-        else if ((jumpsSinceGround <= airJumps - 1 && rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space)) || rb.velocity.y < 0.2f)
+        //jumpsSinceGround <= airJumps - 1  && ...
+        else if ((jumpsSinceGround <= airJumps - 1 && rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space)) || rb.velocity.y < 0.1f)
         {
             rb.gravityScale = ourGravity * gravityChange;
         }
+
+        jumping = false;
+
+        print(rb.velocity.y);
     }
 
     private void grounded()
@@ -205,22 +248,31 @@ public class MovementV2 : MonoBehaviour
 
     private void wallJump(int x)
     {
-        velocity = new Vector2(x * moveSpeed / 2, jumpSpeed);
+        if (moveHorizontal != 0)
+        {
+            velocity = new Vector2(x * dashSpeed / 2, jumpSpeed * 0.64f);
+        }
+
+        else
+        {
+            velocity = new Vector2(x * moveSpeed / 2, jumpSpeed * 0.64f);
+        }
         wallJumping = true;
-        lastJumpTime = Time.time;
     }
 
     private void dash()
     {
+        rb.gravityScale = 0;
         if (jumping)
         {
-            velocity += new Vector2(moveHorizontal * dashSpeed, 0);
+            velocity += new Vector2(lastMove * dashSpeed, 0);
             dashing = false;
         }
 
         else
         {
-            velocity = new Vector2(moveHorizontal * dashSpeed, 0);
+            velocity = new Vector2(lastMove * dashSpeed, 0);
         }
     }
+    
 }
