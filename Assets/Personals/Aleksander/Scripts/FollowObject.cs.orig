@@ -14,7 +14,10 @@ public class FollowObject : MonoBehaviour {
     private Rigidbody2D thisRBody;
     private Rigidbody2D rBodyOfObj;
     private Vector3 worldTargetPos;
-    private Vector2 defaultTarget;
+<<<<<<< HEAD
+=======
+    private Vector2 distanceToTarget;
+>>>>>>> Added torch for familiar to attach to
     private Vector2 defaultTarget;
 
 	// Use this for initialization
@@ -75,11 +78,18 @@ public class FollowObject : MonoBehaviour {
     }
 
     public void ResetAttachment() {
+<<<<<<< HEAD
         if(objToFollow.tag != "Player") {
             objToFollow = GameObject.FindGameObjectWithTag("Player");
             rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
 
             targetPos = defaultTarget;
         }
+=======
+        objToFollow = GameObject.FindGameObjectWithTag("Player");
+        rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
+
+        targetPos = defaultTarget;
+>>>>>>> Added torch for familiar to attach to
     }
 }
