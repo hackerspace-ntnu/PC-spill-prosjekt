@@ -10,23 +10,21 @@ public class gravityChange : MonoBehaviour {
 
     void flipGravity()
     {
-
+        movement.ourGravity *= -1;
+        TF_camera.Rotate(new Vector3(0,0,180));
+        TF_character.Rotate(new Vector3(0,0,180));
     }
 
-	// Use this for initialization
 	void Start () {
 		
 	}
 	
-	// Update is called once per frame
 	void Update () {
-        if (movement.isGrounded)
+        if (movement.isGrounded) //Should
         {
             if (Input.GetKey(KeyCode.F))
             {
-                movement.ourGravity *= -1;
-                TF_camera.Rotate(new Vector3(0,0,180));
-                TF_character.Rotate(new Vector3(0,0,180));
+                flipGravity();
             }
         }
 	}
