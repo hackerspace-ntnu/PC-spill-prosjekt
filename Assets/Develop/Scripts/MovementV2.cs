@@ -224,7 +224,7 @@ public class MovementV2 : MonoBehaviour
 
         jumping = false;
 
-        print(rb.velocity.y);
+        //print(rb.velocity.y);
     }
 
     private void grounded()
