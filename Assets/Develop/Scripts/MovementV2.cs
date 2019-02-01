@@ -43,7 +43,6 @@ public class MovementV2 : MonoBehaviour
     private bool jumping = false;
     private bool dashing = false;
     private bool wallJumping = false;
-    private bool wallStick = false;
 
     public float lastJumpTime;
     public float dashTime;
@@ -85,7 +84,6 @@ public class MovementV2 : MonoBehaviour
         if (!dashing)
         {
             moveHorizontal = Input.GetAxis("Horizontal");
-            //moveHorizontal = 1;
             velocity = new Vector2(moveHorizontal * moveSpeed, rb.velocity.y);
 
             if (moveHorizontal != 0)
@@ -122,18 +120,18 @@ public class MovementV2 : MonoBehaviour
 
                 else if (rb.velocity.y <= 0 && wallCollider == -Math.Sign(moveHorizontal))
                 {
-                    rb.sharedMaterial.friction = 0.4f;
+                    rb.sharedMaterial.friction = 10.4f;
                 }
 
                 else
                 {
                     rb.sharedMaterial.friction = 1f;
-                    maxVelocityFix = 0.2f;
                 }
 
+                maxVelocityFix = 0.2f;
             }
 
-            
+
 
         }
 
@@ -205,7 +203,7 @@ public class MovementV2 : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector2 (velocity.x, velocity.y * maxVelocityFix);
+        rb.velocity = new Vector2 (velocity.x, velocity.y * maxVelocityFix) * Math.Sign(ourGravity);
         
         if (isGrounded && rb.velocity.y == 0)
         {
