@@ -40,6 +40,7 @@ public class MovementV2 : MonoBehaviour
     public bool wallHit = false;
     public bool hasJumped = false;
     public bool hasDashed = false;
+    public bool isCrouching = true;
     private bool jumping = false;
     private bool dashing = false;
     private bool wallJumping = false;
@@ -72,10 +73,16 @@ public class MovementV2 : MonoBehaviour
         bool jumpKeyDown = Input.GetKeyDown(KeyCode.Space);
         bool shiftKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
 
-        if (rb.velocity.y + maxVelocityY * Math.Sign(ourGravity) < 0)
+        if (Math.Sign(ourGravity) == 1 && rb.velocity.y <= -maxVelocityY)
         {
             maxVelocityFix = 0.9f;
         }
+
+        else if (Math.Sign(ourGravity) == -1 && rb.velocity.y >= maxVelocityY)
+        {
+            maxVelocityFix = 0.9f;
+        }
+
         else
         {
             maxVelocityFix = 1f;
@@ -84,7 +91,6 @@ public class MovementV2 : MonoBehaviour
         if (!dashing)
         {
             moveHorizontal = Input.GetAxis("Horizontal");
-            velocity = new Vector2(moveHorizontal * moveSpeed, rb.velocity.y);
 
             if (moveHorizontal != 0)
             {
@@ -95,6 +101,8 @@ public class MovementV2 : MonoBehaviour
                     moveHorizontal = Math.Sign(moveHorizontal);
                 }
             }
+
+            velocity = new Vector2(moveHorizontal * moveSpeed, rb.velocity.y);
         }
 
         // Walljump resetter Dash og du kan alltid bruke minst ett airjump etter dash (så lenge det er unlocket)
@@ -118,7 +126,7 @@ public class MovementV2 : MonoBehaviour
                     return;
                 }
 
-                else if (rb.velocity.y <= 0 && wallCollider == -Math.Sign(moveHorizontal))
+                else if (rb.velocity.y * Math.Sign(ourGravity) <= 0 && wallCollider == -Math.Sign(moveHorizontal))
                 {
                     rb.sharedMaterial.friction = 10.4f;
                 }
@@ -203,26 +211,26 @@ public class MovementV2 : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector2 (velocity.x, velocity.y * maxVelocityFix) * Math.Sign(ourGravity);
+        rb.velocity = new Vector2 (velocity.x * Math.Sign(ourGravity), velocity.y * maxVelocityFix);
         
         if (isGrounded && rb.velocity.y == 0)
         {
             grounded();
         }
-        else if (wallJumping)
+        else if (wallJumping || jumping)
         {
             rb.gravityScale = ourGravity;
         }
 
         //jumpsSinceGround <= airJumps - 1  && ...
-        else if ((jumpsSinceGround <= airJumps - 1 && rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space)) || rb.velocity.y < 0.1f)
+        else if ((jumpsSinceGround <= airJumps - 1 && rb.velocity.y * Math.Sign(ourGravity) > 0 && !Input.GetKey(KeyCode.Space)) || rb.velocity.y * Math.Sign(ourGravity) < 0.1f)
         {
             rb.gravityScale = ourGravity * gravityChange;
         }
 
         jumping = false;
 
-        print(rb.velocity.y);
+        print(rb.velocity);
     }
 
     private void grounded()
@@ -236,24 +244,23 @@ public class MovementV2 : MonoBehaviour
 
     private void jump(float scale)
     {
-        velocity = new Vector2(moveHorizontal * moveSpeed, jumpSpeed * scale);
+        velocity = new Vector2(moveHorizontal * moveSpeed, jumpSpeed * scale * Math.Sign(ourGravity));
         hasJumped = true;
         lastJumpTime = Time.time;
         jumpsSinceGround++;
         jumping = true;
-        rb.gravityScale = ourGravity;
     }
 
     private void wallJump(int x)
     {
         if (moveHorizontal != 0)
         {
-            velocity = new Vector2(x * dashSpeed / 2, jumpSpeed * 0.64f);
+            velocity = new Vector2(x * dashSpeed / 2, jumpSpeed * 0.64f * Math.Sign(ourGravity));
         }
 
         else
         {
-            velocity = new Vector2(x * moveSpeed / 2, jumpSpeed * 0.64f);
+            velocity = new Vector2(x * moveSpeed / 2, jumpSpeed * 0.64f * Math.Sign(ourGravity));
         }
         wallJumping = true;
     }
