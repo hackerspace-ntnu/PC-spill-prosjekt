@@ -5,11 +5,12 @@ using UnityEngine;
 public class Crouching : MonoBehaviour {
    
     // Crouch variables
-    private BoxCollider2D hitbox;
+    private BoxCollider2D boxCollider;
     private MovementV2 Mv2;
     public bool isCrouching;
-    public float boxcolliderHeigth;
+    public float boxcolliderHeight;
     public float boxcolliderWidth;
+    private Vector2 boxcolliderOffset;
 
     // Slide variables
     private bool isSliding;
@@ -23,9 +24,9 @@ public class Crouching : MonoBehaviour {
     // Use this for initialization
     void Start () {
         isSliding = false;
-        hitbox = GetComponent<BoxCollider2D>();
-        boxcolliderHeigth = hitbox.size.y;
-        boxcolliderWidth = hitbox.size.x;
+        boxCollider = GetComponent<BoxCollider2D>();
+        boxcolliderHeight = boxCollider.size.y;
+        boxcolliderWidth = boxCollider.size.x;
         Mv2 = GetComponent<MovementV2>();
     }
 
@@ -34,12 +35,14 @@ public class Crouching : MonoBehaviour {
         // Crouch
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            hitbox.size = new Vector2(boxcolliderWidth, boxcolliderHeigth * 0.5f);
+            boxCollider.offset = new Vector2(0, boxcolliderHeight * 0.125f);
+            boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight * 0.75f);
             isCrouching = true;
         }
         else
         {
-            hitbox.size = new Vector2(boxcolliderWidth, boxcolliderHeigth);
+            boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight);
+            boxCollider.offset = new Vector2(0, 0);
             isCrouching = false;
         }
         
