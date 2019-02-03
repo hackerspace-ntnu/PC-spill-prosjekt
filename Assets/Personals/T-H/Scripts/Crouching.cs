@@ -11,6 +11,7 @@ public class Crouching : MonoBehaviour {
     public float boxcolliderHeight;
     public float boxcolliderWidth;
     private Vector2 boxcolliderOffset;
+    private BoxCollider2D[] boxcolliderChildren;
 
     // Slide variables
     private bool isSliding;
@@ -25,6 +26,7 @@ public class Crouching : MonoBehaviour {
     void Start () {
         isSliding = false;
         boxCollider = GetComponent<BoxCollider2D>();
+        boxcolliderChildren = boxCollider.GetComponentsInChildren<BoxCollider2D>();
         boxcolliderHeight = boxCollider.size.y;
         boxcolliderWidth = boxCollider.size.x;
         Mv2 = GetComponent<MovementV2>();
@@ -38,12 +40,24 @@ public class Crouching : MonoBehaviour {
             boxCollider.offset = new Vector2(0, boxcolliderHeight * 0.125f);
             boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight * 0.75f);
             isCrouching = true;
+
+            for (int i = 1; i < 4; i++)
+            {
+                boxcolliderChildren[i].offset = new Vector2(0, boxcolliderHeight);
+                // Trenger å endre størrelse somehow
+            }
         }
         else
         {
             boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight);
             boxCollider.offset = new Vector2(0, 0);
             isCrouching = false;
+
+            for (int i = 0; i < 4; i++)
+            {
+                boxcolliderChildren[i].offset = new Vector2(0, 0);
+                // Trenger å endre størrelse somehow
+            }
         }
         
         
