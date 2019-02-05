@@ -12,6 +12,11 @@ public class gravityChange : MonoBehaviour
 
     public float duration = 1f;
 
+    //Rotation variables
+    private bool rotate = false;
+    public float elapsed = 0.0f;
+
+
     void flipGravity()
     {
         movement.ourGravity *= -1;
@@ -19,7 +24,16 @@ public class gravityChange : MonoBehaviour
 
         if (this.tag == "Player")
         {
-            StartCoroutine(RotateCamera(duration));
+            elapsed = 0.0f;
+            rotate = true;
+        //This can be optimized later
+            /*if (rotate)
+                elapsed = 1 - elapsed;
+            else
+            {
+                elapsed = 0.0f;
+                rotate = true;
+            }*/
         }
     }
 
@@ -37,17 +51,21 @@ public class gravityChange : MonoBehaviour
                 flipGravity();
             }
         }
-    }
 
-    private IEnumerator RotateCamera(float duration)
-    {
-        float elapsed = 0.0f;
-        while (elapsed < duration)
+        //Rotation for player
+        if (rotate)
         {
-            TF_camera.transform.rotation = Quaternion.Slerp(TF_camera.transform.rotation, transform.rotation, elapsed / duration);
-            elapsed += Time.deltaTime;
-            yield return null;
+            if (elapsed < duration)
+            {
+                TF_camera.transform.rotation = Quaternion.Slerp(TF_camera.transform.rotation, transform.rotation, elapsed / duration);
+                elapsed += Time.deltaTime;
+            }
+            else
+            {
+                TF_camera.transform.rotation = transform.rotation;
+                elapsed = 0.0f;
+                rotate = false;
+            }
         }
-        TF_camera.transform.rotation = transform.rotation;
     }
 }
