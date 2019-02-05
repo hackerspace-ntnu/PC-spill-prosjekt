@@ -37,10 +37,11 @@ public class MovementV2 : MonoBehaviour
     private float maxVelocityFix = 1f;
 
     public bool isGrounded = false;
+    public bool wallCollision = false;
     public bool wallHit = false;
     public bool hasJumped = false;
     public bool hasDashed = false;
-    public bool isCrouching = true;
+    public bool isCrouching = false;
     private bool jumping = false;
     private bool dashing = false;
     private bool wallJumping = false;
@@ -56,13 +57,14 @@ public class MovementV2 : MonoBehaviour
     private float moveHorizontal;
     private float lastMove = 1;
 
-    public int wallCollider;
+    public int wallTrigger;
 
     // Use this for initialization
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = ourGravity;
+        rb.sharedMaterial.friction = 1f;
         scale = (rb.transform.localScale).x;
         Application.targetFrameRate = 60;
     }
@@ -72,6 +74,26 @@ public class MovementV2 : MonoBehaviour
     {
         bool jumpKeyDown = Input.GetKeyDown(KeyCode.Space);
         bool shiftKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
+
+        // DASH ELLER TELEPORT? 
+        if (!hasDashed && shiftKeyDown && CanDash)
+        {
+            hasDashed = true;
+            dashTime = Time.time;
+            dashing = true;
+            dash();
+            return;
+        }
+        else if (dashing && Time.time - dashTime <= dashDuration)
+        {
+            dash();
+            return;
+        }
+        else
+        {
+            dashing = false;
+            rb.gravityScale = ourGravity;
+        }
 
         if (Math.Sign(ourGravity) == 1 && rb.velocity.y <= -maxVelocityY)
         {
@@ -86,6 +108,7 @@ public class MovementV2 : MonoBehaviour
         else
         {
             maxVelocityFix = 1f;
+            rb.sharedMaterial.friction = 1f;
         }
 
         if (!dashing)
@@ -105,55 +128,11 @@ public class MovementV2 : MonoBehaviour
             velocity = new Vector2(moveHorizontal * moveSpeed, rb.velocity.y);
         }
 
-        // Walljump resetter Dash og du kan alltid bruke minst ett airjump etter dash (så lenge det er unlocket)
-        if (wallHit)
-        {
-            if (!wallJumping)
-            {
-                if (CanWalljump && jumpKeyDown)
-                {
-                    wallJump(wallCollider);
-                    wallJumpTime = Time.time;
-                    lastJumpTime = Time.time;
-
-                    if (jumpsSinceGround == airJumps && airJumps != 0)
-                    {
-                        jumpsSinceGround--;
-                    }
-
-                    hasDashed = false;
-
-                    return;
-                }
-
-                else if (rb.velocity.y * Math.Sign(ourGravity) <= 0 && wallCollider == -Math.Sign(moveHorizontal))
-                {
-                    rb.sharedMaterial.friction = 10.4f;
-                }
-
-                else
-                {
-                    rb.sharedMaterial.friction = 1f;
-                }
-
-                maxVelocityFix = 0.2f;
-            }
-
-
-
-        }
-
-        // DETTE ER STYGT
-        else if (maxVelocityFix < 0.8)
-        {
-            maxVelocityFix = 1f;
-        }
-
         if (wallJumping)
         {
             if (Time.time - wallJumpTime <= wallJumpDuration / 2)
             {
-                wallJump(wallCollider);
+                wallJump(wallTrigger);
             }
 
             else if (Time.time - wallJumpTime <= wallJumpDuration)
@@ -164,12 +143,59 @@ public class MovementV2 : MonoBehaviour
             {
                 wallJumping = false;
             }
-
             return;
         }
 
+        // Walljump resetter Dash og airjump (så lenge det er unlocket)
+        if (wallHit)
+        {
+            if (CanWalljump && jumpKeyDown)
+            {
+                wallJump(wallTrigger);
+                wallJumpTime = Time.time;
+                lastJumpTime = Time.time;
 
-        if (jumpKeyDown && !wallJumping || jumping)
+                if (jumpsSinceGround == airJumps && airJumps != 0)
+                {
+                    jumpsSinceGround--;
+                }
+
+                hasDashed = false;
+
+                return;
+            }
+
+
+            else if (rb.velocity.y * Math.Sign(ourGravity) <= 0 && wallTrigger == -Math.Sign(moveHorizontal))
+            {
+                rb.sharedMaterial.friction = 0.4f;
+            }
+
+            else
+            {
+                rb.sharedMaterial.friction = 0f;
+            }
+
+            maxVelocityFix = 0.2f;
+        }
+
+        
+        else if (wallCollision && !isGrounded)
+        {
+            velocity = new Vector2(0, rb.velocity.y);
+            return;
+        }
+
+        // DETTE ER STYGT
+        /*
+        else if (maxVelocityFix < 0.8)
+        {
+            maxVelocityFix = 1f;
+            rb.sharedMaterial.friction = 1f;
+        }
+        */
+
+        if (jumpKeyDown || jumping)
         {
             if (isGrounded)
             {
@@ -177,7 +203,7 @@ public class MovementV2 : MonoBehaviour
                 jumpsSinceGround = 0;
             }
 
-            else if (Time.time - lastJumpTime >= 0.2f || rb.gravityScale == ourGravity * gravityChange)
+            else if (Time.time - lastJumpTime >= 0.1f || rb.gravityScale == ourGravity * gravityChange)
             {
                 if (jumpsSinceGround == airJumps - 1)
                 {
@@ -189,31 +215,18 @@ public class MovementV2 : MonoBehaviour
                 }
             }
         }
-
-        // DASH ELLER TELEPORT? 
-        if (!hasDashed && shiftKeyDown && CanDash)
-        {
-            hasDashed = true;
-            dashTime = Time.time;
-            dashing = true;
-            dash();
-        }
-        else if (dashing && Time.time - dashTime <= dashDuration)
-        {
-            dash();
-        }
-        else
-        {
-            dashing = false;
-            rb.gravityScale = ourGravity;
-        }
     }
 
     void FixedUpdate()
     {
         rb.velocity = new Vector2 (velocity.x * Math.Sign(ourGravity), velocity.y * maxVelocityFix);
         
-        if (isGrounded && rb.velocity.y == 0)
+        if (dashing)
+        {
+            rb.gravityScale = 0;
+        }
+
+        else if (isGrounded && rb.velocity.y == 0)
         {
             grounded();
         }
@@ -230,7 +243,7 @@ public class MovementV2 : MonoBehaviour
 
         jumping = false;
 
-        print(rb.velocity);
+        //print(rb.velocity);
     }
 
     private void grounded()
@@ -279,5 +292,4 @@ public class MovementV2 : MonoBehaviour
             velocity = new Vector2(lastMove * dashSpeed, 0);
         }
     }
-    
 }
