@@ -18,7 +18,7 @@ using System;
 
 public class MovementV2 : MonoBehaviour
 {
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
 
     // Skal ikke være readonly i spillet, ettersom spilleren får tak i abilities underveis
     private readonly bool CanWalljump = true;
@@ -26,6 +26,7 @@ public class MovementV2 : MonoBehaviour
 
     public int airJumps = 2;
 
+    public float moveHorizontal;
     public float moveSpeed = 8f;
     public float jumpSpeed = 15f;
     public float dashSpeed = 15f;
@@ -42,8 +43,8 @@ public class MovementV2 : MonoBehaviour
     public bool hasJumped = false;
     public bool hasDashed = false;
     public bool isCrouching = false;
+    public bool dashing = false;
     private bool jumping = false;
-    private bool dashing = false;
     private bool wallJumping = false;
 
     public float lastJumpTime;
@@ -54,7 +55,6 @@ public class MovementV2 : MonoBehaviour
     public float scale;
 
     private Vector2 velocity;
-    private float moveHorizontal;
     private float lastMove = 1;
 
     public int wallTrigger;
