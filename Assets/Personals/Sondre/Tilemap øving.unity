@@ -5360,7 +5360,7 @@ GameObject:
   - component: {fileID: 1837957793}
   m_Layer: 0
   m_Name: Sprite Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5462,9 +5462,9 @@ MonoBehaviour:
   rb: {fileID: 1837957791}
   airJumps: 1
   moveHorizontal: 0
-  moveSpeed: 8
+  moveSpeed: 7
   jumpSpeed: 13.5
-  dashSpeed: 15
+  dashSpeed: 13
   dashDuration: 0.2
   wallJumpDuration: 0.2
   ourGravity: 4
