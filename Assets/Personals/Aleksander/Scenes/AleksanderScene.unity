@@ -983,6 +983,11 @@ Prefab:
       propertyPath: objToFollow
       value: 
       objectReference: {fileID: 984881263}
+    - target: {fileID: 114672257441816222, guid: 9ceecbb186c8302468326fc643b6f0ec,
+        type: 2}
+      propertyPath: distanceFactor
+      value: 1.75
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ceecbb186c8302468326fc643b6f0ec, type: 2}
   m_IsPrefabAsset: 0
