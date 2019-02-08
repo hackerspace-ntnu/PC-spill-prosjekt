@@ -14,8 +14,7 @@ public class FollowObject : MonoBehaviour {
     private Rigidbody2D thisRBody;
     private Rigidbody2D rBodyOfObj;
     private Vector3 worldTargetPos;
-    private Vector2 distanceToTarget;
-    private Vector2 defaultTarget;
+    private Vector2 defaultTarget;  
 
 	// Use this for initialization
 	void Start () {
@@ -33,33 +32,32 @@ public class FollowObject : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        // Set the target for the familiar in world coordinates.
-        worldTargetPos = new Vector3(objToFollow.transform.position.x + targetPos.x, objToFollow.transform.position.y + targetPos.y, 0.0f);
-        
         // If player/object is moving to the left, place familiar on the right of player/object.
-        if(rBodyOfObj.velocity.x < 0.0f) {
-            if(targetPos.x < 0.0f) {
+        if (rBodyOfObj.velocity.x < -0.1f) {
+            if (targetPos.x < 0.0f) {
                 targetPos = new Vector2(targetPos.x * -1.0f, targetPos.y);
             }
         }
 
         // If player/object is moving to the right, place familiar on the left of player/object.
-        if (rBodyOfObj.velocity.x > 0.0f) {
+        if (rBodyOfObj.velocity.x > 0.1f) {
             if (targetPos.x > 0.0f) {
                 targetPos = new Vector2(targetPos.x * -1.0f, targetPos.y);
             }
         }
 
+        // Set the target for the familiar in world coordinates.
+        worldTargetPos = new Vector3(objToFollow.transform.position.x + targetPos.x, objToFollow.transform.position.y + targetPos.y, 0.0f);
+
         // Set random twitch movment when familiar is close to target position.
-        if(thisRBody.velocity.magnitude < twitchTolerance) {
+        if (thisRBody.velocity.magnitude < twitchTolerance) {
             worldTargetPos = new Vector3(worldTargetPos.x + Random.Range(-twitchFactor, twitchFactor), worldTargetPos.y + Random.Range(-twitchFactor, twitchFactor));
         }
-
     }
 
     private void FixedUpdate() {
         // Calculate distance to target position and set velocity towards target with speed increasing with distance.
-        distanceToTarget = transform.position - worldTargetPos;
+        Vector2 distanceToTarget = transform.position - worldTargetPos;
         distanceToTarget = distanceToTarget.normalized * Mathf.Pow(distanceToTarget.magnitude, distanceFactor);
         
         thisRBody.velocity = -distanceToTarget;
@@ -75,9 +73,11 @@ public class FollowObject : MonoBehaviour {
     }
 
     public void ResetAttachment() {
-        objToFollow = GameObject.FindGameObjectWithTag("Player");
-        rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
+        if(objToFollow.tag != "Player") {
+            objToFollow = GameObject.FindGameObjectWithTag("Player");
+            rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
 
-        targetPos = defaultTarget;
+            targetPos = defaultTarget;
+        }
     }
 }
