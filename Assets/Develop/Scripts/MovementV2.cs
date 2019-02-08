@@ -149,6 +149,8 @@ public class MovementV2 : MonoBehaviour
         // Walljump resetter Dash og airjump (så lenge det er unlocket)
         if (wallHit)
         {
+            print(Math.Sign(moveHorizontal));
+
             if (CanWalljump && jumpKeyDown)
             {
                 wallJump(wallTrigger);
@@ -226,7 +228,7 @@ public class MovementV2 : MonoBehaviour
             rb.gravityScale = 0;
         }
 
-        else if (isGrounded && rb.velocity.y == 0)
+        else if (isGrounded)
         {
             grounded();
         }
