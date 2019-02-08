@@ -15,10 +15,11 @@ public class FollowObject : MonoBehaviour {
     private Rigidbody2D rBodyOfObj;
     private Vector3 worldTargetPos;
 <<<<<<< HEAD
-=======
-    private Vector2 distanceToTarget;
->>>>>>> Added torch for familiar to attach to
     private Vector2 defaultTarget;
+    private Vector2 defaultTarget;
+=======
+    private Vector2 defaultTarget;  
+>>>>>>> Fixed stupid bug that shouldn't be a bug!!
 
 	// Use this for initialization
 	void Start () { 
@@ -78,18 +79,11 @@ public class FollowObject : MonoBehaviour {
     }
 
     public void ResetAttachment() {
-<<<<<<< HEAD
         if(objToFollow.tag != "Player") {
             objToFollow = GameObject.FindGameObjectWithTag("Player");
             rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
 
             targetPos = defaultTarget;
         }
-=======
-        objToFollow = GameObject.FindGameObjectWithTag("Player");
-        rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
-
-        targetPos = defaultTarget;
->>>>>>> Added torch for familiar to attach to
     }
 }
