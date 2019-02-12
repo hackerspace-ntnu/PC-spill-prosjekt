@@ -14,10 +14,10 @@ public class FollowObject : MonoBehaviour {
     private Rigidbody2D thisRBody;
     private Rigidbody2D rBodyOfObj;
     private Vector3 worldTargetPos;
-    private Vector2 defaultTarget;  
+    private Vector2 defaultTarget;
 
 	// Use this for initialization
-	void Start () {
+	void Start () { 
 
         // Initialize object to follow. Set to parent object if not set in editor.
         if(objToFollow == null) {
@@ -25,6 +25,7 @@ public class FollowObject : MonoBehaviour {
         }
         rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
         thisRBody = GetComponent<Rigidbody2D>();
+
         worldTargetPos = new Vector3(objToFollow.transform.position.x + targetPos.x, objToFollow.transform.position.y + targetPos.y, 0.0f);
         transform.position = worldTargetPos;
         defaultTarget = targetPos;
