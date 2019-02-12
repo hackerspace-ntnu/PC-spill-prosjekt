@@ -20,9 +20,8 @@ public class GreatCollider : MonoBehaviour {
         Collider2D collider = collision.collider;
         float RectWidth = GetComponent<BoxCollider2D>().bounds.size.x;
         float RectHeight = GetComponent<BoxCollider2D>().bounds.size.y;
-        //float circleRad = collider.bounds.size.x;
 
-        Vector3 contactPoint = collision.GetContact(1).point;
+        Vector3 contactPoint = collision.GetContact(0).point;
         Vector3 center = transform.parent.position;
 
         gravitySign = System.Math.Sign(playerMovement.GetComponent<MovementV2>().ourGravity);

@@ -147,6 +147,7 @@ public class MovementV2 : MonoBehaviour
         {
             if (CanWalljump && jumpKeyDown)
             {
+                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
                 wallJump(wallTrigger);
                 wallJumpTime = Time.time;
                 lastJumpTime = Time.time;
@@ -162,19 +163,16 @@ public class MovementV2 : MonoBehaviour
             }
 
 
-            else if (rb.velocity.y * Math.Sign(ourGravity) <= 0 && wallTrigger == -Math.Sign(moveHorizontal))
+            else if (rb.velocity.y * Math.Sign(ourGravity) <= 0 && wallTrigger == -moveHorizontal)
             {
-                rb.sharedMaterial.friction = 0.4f;
+                rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
             }
 
             else
             {
-                rb.sharedMaterial.friction = 0f;
+                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+                maxVelocityFix = 0.2f;
             }
-
-            print(-Math.Sign(moveHorizontal));
-
-            maxVelocityFix = 0.2f;
         }
 
         else if (wallCollision && !isGrounded)
@@ -182,15 +180,6 @@ public class MovementV2 : MonoBehaviour
             velocity = new Vector2(0, rb.velocity.y);
             return;
         }
-
-        // DETTE ER STYGT
-        /*
-        else if (maxVelocityFix < 0.8)
-        {
-            maxVelocityFix = 1f;
-            rb.sharedMaterial.friction = 1f;
-        }
-        */
 
         if (jumpKeyDown || jumping)
         {
