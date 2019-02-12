@@ -14,7 +14,7 @@ public class FollowObject : MonoBehaviour {
     private Rigidbody2D thisRBody;
     private Rigidbody2D rBodyOfObj;
     private Vector3 worldTargetPos;
-    private Vector2 defaultTarget;  
+    private Vector2 defaultTarget;
 
 	// Use this for initialization
 	void Start () { 

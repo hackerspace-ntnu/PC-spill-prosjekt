@@ -986,6 +986,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+<<<<<<< HEAD
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -1024,7 +1025,6 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-<<<<<<< HEAD
   m_Size: {x: 0.72, y: 0.72}
   m_EdgeRadius: 0
 --- !u!212 &1351914619
@@ -1087,55 +1087,7 @@ Transform:
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 =======
-  m_Modification:
-    m_TransformParent: {fileID: 984881266}
-    m_Modifications:
-    - target: {fileID: 4375583350863826, guid: 9ceecbb186c8302468326fc643b6f0ec, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4375583350863826, guid: 9ceecbb186c8302468326fc643b6f0ec, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4375583350863826, guid: 9ceecbb186c8302468326fc643b6f0ec, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4375583350863826, guid: 9ceecbb186c8302468326fc643b6f0ec, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4375583350863826, guid: 9ceecbb186c8302468326fc643b6f0ec, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4375583350863826, guid: 9ceecbb186c8302468326fc643b6f0ec, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4375583350863826, guid: 9ceecbb186c8302468326fc643b6f0ec, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4375583350863826, guid: 9ceecbb186c8302468326fc643b6f0ec, type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114672257441816222, guid: 9ceecbb186c8302468326fc643b6f0ec,
-        type: 2}
-      propertyPath: objToFollow
-      value: 
-      objectReference: {fileID: 984881263}
-    - target: {fileID: 114672257441816222, guid: 9ceecbb186c8302468326fc643b6f0ec,
-        type: 2}
-      propertyPath: distanceFactor
-      value: 1.75
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9ceecbb186c8302468326fc643b6f0ec, type: 2}
-  m_IsPrefabAsset: 0
->>>>>>> Fixed stupid bug that shouldn't be a bug!!
+>>>>>>> Nothing really. Garbage after testing.
 --- !u!1 &1609340944
 GameObject:
   m_ObjectHideFlags: 0
