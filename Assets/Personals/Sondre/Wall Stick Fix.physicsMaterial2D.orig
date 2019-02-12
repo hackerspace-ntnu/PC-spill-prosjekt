@@ -6,5 +6,9 @@ PhysicsMaterial2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Wall Stick Fix
-  friction: 0
+<<<<<<< HEAD
+  friction: 1
+=======
+  friction: 0.4
+>>>>>>> 162711a9990e937befc4ba3f8892ba700ef6825e
   bounciness: 0

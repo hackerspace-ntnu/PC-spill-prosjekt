@@ -6,7 +6,6 @@ public class GroundDetectorV2 : MonoBehaviour
 {
     private MovementV2 playerMovement;
     private GameObject groundObject;
-    //Sjekke om groundObject er faktisk bakke (og ikke f.eks vann)
 
     void Start()
     {
