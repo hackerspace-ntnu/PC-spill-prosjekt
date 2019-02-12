@@ -7,6 +7,7 @@ public class GreatCollider : MonoBehaviour {
     private MovementV2 playerMovement;
 
     public bool isColliding = false;
+    private int gravitySign;
 
     void Start () {
         playerMovement = transform.parent.GetComponent<MovementV2>();
@@ -24,13 +25,15 @@ public class GreatCollider : MonoBehaviour {
         Vector3 contactPoint = collision.GetContact(1).point;
         Vector3 center = transform.parent.position;
 
+        gravitySign = System.Math.Sign(playerMovement.GetComponent<MovementV2>().ourGravity);
+
         print(RectWidth);
         print(RectHeight);
         print(contactPoint);
         print(center);
         print("");
 
-        if (contactPoint.y < center.y - RectHeight / 2 && playerMovement.GetComponent<MovementV2>().rb.velocity.y <= 0 &&
+        if (contactPoint.y * gravitySign < center.y - RectHeight / 2 && playerMovement.GetComponent<MovementV2>().rb.velocity.y <= 0 &&
             (contactPoint.x < center.x + RectWidth / 2 || contactPoint.x > center.x - RectWidth / 2))
         {
             playerMovement.GetComponent<MovementV2>().isGrounded = true;

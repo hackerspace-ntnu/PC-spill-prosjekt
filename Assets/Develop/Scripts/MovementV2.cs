@@ -172,7 +172,7 @@ public class MovementV2 : MonoBehaviour
                 rb.sharedMaterial.friction = 0f;
             }
 
-            print(wallTrigger);
+            print(-Math.Sign(moveHorizontal));
 
             maxVelocityFix = 0.2f;
         }
@@ -217,8 +217,6 @@ public class MovementV2 : MonoBehaviour
     void FixedUpdate()
     {
         rb.velocity = new Vector2 (velocity.x * Math.Sign(ourGravity), velocity.y * maxVelocityFix);
-
-        print(rb.velocity);
 
         if (dashing)
         {
