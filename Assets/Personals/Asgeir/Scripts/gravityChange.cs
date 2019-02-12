@@ -46,7 +46,7 @@ public class gravityChange : MonoBehaviour
     {
         if (movement.isGrounded) //Should
         {
-            if (Input.GetKey(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.F))
             {
                 flipGravity();
             }
