@@ -21,8 +21,8 @@ GameObject:
   - component: {fileID: 4375583350863826}
   - component: {fileID: 212512017565547314}
   - component: {fileID: 95303665189448122}
-  - component: {fileID: 114672257441816222}
   - component: {fileID: 50150189772107696}
+  - component: {fileID: 114672257441816222}
   m_Layer: 0
   m_Name: Familiar
   m_TagString: Familiar
@@ -54,7 +54,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.18
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -97,6 +97,8 @@ MonoBehaviour:
   distanceFactor: 1.75
   twitchFactor: 1.5
   twitchTolerance: 0.5
+  maxHalo: 4
+  minHalo: 2
 --- !u!212 &212512017565547314
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -131,7 +133,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 9384b384e85dcae4ebea6a2c703b6940, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
