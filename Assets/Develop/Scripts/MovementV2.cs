@@ -4,11 +4,7 @@ using UnityEngine;
 using System;
 
 /* TO DO
- * 
- * Få dash til å fungere ordentlig mot bevegelsesretningen
- *     Skal kanskje være teleport, og er i så fall unødvendig
- *     Hvis teleport: Ledge cancel mechanic?
- * 
+ *
  * Flere abilities
  *     Egne scripts?
  * 
@@ -64,7 +60,7 @@ public class MovementV2 : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = ourGravity;
-        rb.sharedMaterial.friction = 1f;
+        rb.sharedMaterial.friction = 0f;
         scale = (rb.transform.localScale).x;
         Application.targetFrameRate = 60;
     }
@@ -108,7 +104,7 @@ public class MovementV2 : MonoBehaviour
         else
         {
             maxVelocityFix = 1f;
-            rb.sharedMaterial.friction = 1f;
+            rb.sharedMaterial.friction = 0f;
         }
 
         if (!dashing)
@@ -149,8 +145,6 @@ public class MovementV2 : MonoBehaviour
         // Walljump resetter Dash og airjump (så lenge det er unlocket)
         if (wallHit)
         {
-            print(Math.Sign(moveHorizontal));
-
             if (CanWalljump && jumpKeyDown)
             {
                 wallJump(wallTrigger);
@@ -178,10 +172,11 @@ public class MovementV2 : MonoBehaviour
                 rb.sharedMaterial.friction = 0f;
             }
 
+            print(wallTrigger);
+
             maxVelocityFix = 0.2f;
         }
 
-        
         else if (wallCollision && !isGrounded)
         {
             velocity = new Vector2(0, rb.velocity.y);
@@ -222,7 +217,9 @@ public class MovementV2 : MonoBehaviour
     void FixedUpdate()
     {
         rb.velocity = new Vector2 (velocity.x * Math.Sign(ourGravity), velocity.y * maxVelocityFix);
-        
+
+        print(rb.velocity);
+
         if (dashing)
         {
             rb.gravityScale = 0;
