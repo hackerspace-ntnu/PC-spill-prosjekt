@@ -6,7 +6,7 @@ public class Crouching : MonoBehaviour {
    
     // Crouch variables
     private BoxCollider2D boxCollider;
-    private MovementV2 Mv2;
+    private Movement Mv2;
     private float boxcolliderHeight;
     private float boxcolliderWidth;
     private Vector2 boxcolliderOffset;
@@ -23,6 +23,8 @@ public class Crouching : MonoBehaviour {
     private float moveSpeed;
     public float maxSlidingTime = 1f;
     public float timeSpentNotSliding = 2f;
+    private float timeSpentMoving = 0f;
+    public float timeSpentMovingMinimum = 0.4f;
     public float slideCooldown = 2f;
     
 
@@ -35,7 +37,7 @@ public class Crouching : MonoBehaviour {
         boxcolliderWidth = boxCollider.size.x;
 
         // Henter movementspeeds
-        Mv2 = GetComponent<MovementV2>();
+        Mv2 = GetComponent<Movement>();
         moveSpeed = Mv2.moveSpeed;
         slideSpeed = moveSpeed + slideSpeedModifier;
         timeSpentNotSliding = 2f;
@@ -64,6 +66,8 @@ public class Crouching : MonoBehaviour {
 
 
         // Slide
+        calculateTimeSpentMoving(); // Sjekker hvor lenge man har beveget seg før man prøver å slide
+
         if (CheckStartSlide() && timeSpentNotSliding >= slideCooldown)
         {
             isSliding = true;
@@ -97,6 +101,18 @@ public class Crouching : MonoBehaviour {
         }
     }
 
+    private void calculateTimeSpentMoving()
+    {
+        if (Mathf.Abs(Mv2.moveHorizontal) == 1)
+        {
+            timeSpentMoving += Time.deltaTime;
+        }
+        else
+        {
+            timeSpentMoving = 0;
+        }
+    }
+
     private void Crouch()
     {
         boxCollider.offset = new Vector2(0, boxcolliderHeight * 0.125f);
@@ -122,8 +138,7 @@ public class Crouching : MonoBehaviour {
     
     private bool CheckStartSlide()
     { 
-        if (isCrouching && Mathf.Abs(Mv2.moveHorizontal) == 1 && !isSliding && Mv2.isGrounded
-            || isCrouching && Input.GetKey(KeyCode.D) && !isSliding && Mv2.isGrounded)
+        if (isCrouching && timeSpentMoving > timeSpentMovingMinimum && !isSliding && Mv2.isGrounded)
         {
             return true;
         }
