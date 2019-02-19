@@ -10,7 +10,6 @@ public class Crouching : MonoBehaviour {
     private float boxcolliderHeight;
     private float boxcolliderWidth;
     private Vector2 boxcolliderOffset;
-    public EdgeCollider2D[] colliders = new EdgeCollider2D[4];
     public Transform groundCollider;
     public GameObject[] triggers = new GameObject[2];
     public bool isCrouching;
@@ -44,20 +43,28 @@ public class Crouching : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        Debug.Log(timeSpentNotSliding);
+
         // Crouch
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftControl) && Mv2.isGrounded && !isCrouching) // Må vel egentlig bruke GetKeyDown
         {
             Crouch();
         }
-        else
+        else if ((Input.GetKey(KeyCode.LeftControl))) 
+        {
+            //Kode her?
+            Debug.Log("Now crouching");
+        }
+        else // if (Input.GetKeyUp(KeyCode.LeftControl))
         {
             StopCrouch();
+            Debug.Log("Stopped crouching");
         }
 
 
 
         // Slide
-        if (CheckStartSlide() && timeSpentNotSliding == slideCooldown)
+        if (CheckStartSlide() && timeSpentNotSliding >= slideCooldown)
         {
             isSliding = true;
             slideTimer = 0;
@@ -67,11 +74,9 @@ public class Crouching : MonoBehaviour {
         if (isSliding && slideTimer < maxSlidingTime)
         {
             slideTimer += Time.deltaTime;
-            Debug.Log("Slidetimer: " + slideTimer);
-            Debug.Log("Slidespeed: " + slideSpeed + "Movement: " + moveSpeed);
         }
 
-        else if (isSliding && slideTimer == maxSlidingTime)
+        else if (isSliding && slideTimer >= maxSlidingTime)
         {
             isSliding = false;
             slideTimer = 0;
@@ -84,15 +89,11 @@ public class Crouching : MonoBehaviour {
         {
             slideTimer = 0;
             isSliding = false;
-            timeSpentNotSliding = 0f;
         }
 
-        if (!isSliding)
+        if (!isSliding && !isCrouching && timeSpentNotSliding < slideCooldown)
         {
-            if (timeSpentNotSliding < slideCooldown)
-            {
-                timeSpentNotSliding += Time.deltaTime;
-            }
+            timeSpentNotSliding += Time.deltaTime;
         }
     }
 
@@ -117,10 +118,12 @@ public class Crouching : MonoBehaviour {
         ActivateTriggers(triggers, true);
         Mv2.moveSpeed = moveSpeed;
     }
+
+    
     private bool CheckStartSlide()
-    {  // Fungerer ikke med Mv2.isGrounded. Må egentlig ha med i if statement
-        if (isCrouching && Input.GetKey(KeyCode.A) && !isSliding
-            || isCrouching && Input.GetKey(KeyCode.S) && !isSliding)
+    { 
+        if (isCrouching && Mathf.Abs(Mv2.moveHorizontal) == 1 && !isSliding && Mv2.isGrounded
+            || isCrouching && Input.GetKey(KeyCode.D) && !isSliding && Mv2.isGrounded)
         {
             return true;
         }
