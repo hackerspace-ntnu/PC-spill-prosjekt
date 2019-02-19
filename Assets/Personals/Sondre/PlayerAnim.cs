@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerAnim : MonoBehaviour {
 
     private Animator anim;
-    private MovementV2 playerMovement;
+    private Movement playerMovement;
     private SpriteRenderer spriteRenderer;
 
     private bool isGrounded;
@@ -16,15 +16,15 @@ public class PlayerAnim : MonoBehaviour {
     private void Start()
     {
         anim = GetComponent<Animator>();
-        playerMovement = GetComponent<MovementV2>();
+        playerMovement = GetComponent<Movement>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
     {
-        isGrounded = playerMovement.GetComponent<MovementV2>().isGrounded;
-        moveHorizontal = playerMovement.GetComponent<MovementV2>().moveHorizontal;
-        wallHit = playerMovement.GetComponent<MovementV2>().wallHit;
+        isGrounded = playerMovement.GetComponent<Movement>().isGrounded;
+        moveHorizontal = playerMovement.GetComponent<Movement>().moveHorizontal;
+        wallHit = playerMovement.GetComponent<Movement>().wallHit;
 
         anim.SetBool("isGrounded", isGrounded);
 
@@ -41,14 +41,16 @@ public class PlayerAnim : MonoBehaviour {
             anim.SetBool("isJumping", false);
             anim.SetBool("isGrounded", false);
 
-            if (playerMovement.GetComponent<MovementV2>().wallTrigger == -1)
+            if (playerMovement.GetComponent<Movement>().wallTrigger == -1)
             {
                 spriteRenderer.flipX = true;
+                playerMovement.GetComponent<Movement>().spriteDirection = -1;
             }
 
             else
             {
                 spriteRenderer.flipX = false;
+                playerMovement.GetComponent<Movement>().spriteDirection = 1;
             }
 
             return;
@@ -57,14 +59,16 @@ public class PlayerAnim : MonoBehaviour {
         if (System.Math.Sign(moveHorizontal) == -1)
         {
             spriteRenderer.flipX = true;
+            playerMovement.GetComponent<Movement>().spriteDirection = -1;
         }
 
         else if (System.Math.Sign(moveHorizontal) == 1)
         {
             spriteRenderer.flipX = false;
+            playerMovement.GetComponent<Movement>().spriteDirection = 1;
         }
 
-        if (playerMovement.GetComponent<MovementV2>().dashing)
+        if (playerMovement.GetComponent<Movement>().dashing)
         {
             anim.SetBool("isDashing", true);
             anim.SetBool("isRunning", false);
@@ -77,7 +81,7 @@ public class PlayerAnim : MonoBehaviour {
             anim.SetBool("isDashing", false);
         }
 
-        if (playerMovement.GetComponent<MovementV2>().rb.velocity.y * System.Math.Sign(playerMovement.GetComponent<MovementV2>().ourGravity) < -1)
+        if (playerMovement.GetComponent<Movement>().rb.velocity.y * System.Math.Sign(playerMovement.GetComponent<Movement>().ourGravity) < -1)
         {
             /*
             anim.SetBool("isFalling", true);
@@ -89,7 +93,7 @@ public class PlayerAnim : MonoBehaviour {
             anim.SetBool("isGrounded", false);
         }
 
-        if (playerMovement.GetComponent<MovementV2>().rb.velocity.y * System.Math.Sign(playerMovement.GetComponent<MovementV2>().ourGravity) > 0 && !isGrounded)
+        if (playerMovement.GetComponent<Movement>().rb.velocity.y * System.Math.Sign(playerMovement.GetComponent<Movement>().ourGravity) > 0 && !isGrounded)
         {
             anim.SetBool("isJumping", true);
             anim.SetBool("isGrounded", false);

@@ -22,7 +22,6 @@ public class WallDetector : MonoBehaviour {
         {
             playerMovement.GetComponent<MovementV2>().wallTrigger = -1;
         }
-
     }
 
     private void OnTriggerExit2D(Collider2D col) {

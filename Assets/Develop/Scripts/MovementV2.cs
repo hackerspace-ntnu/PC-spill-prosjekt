@@ -36,6 +36,7 @@ public class MovementV2 : MonoBehaviour
     public bool isGrounded = false;
     public bool wallCollision = false;
     public bool wallHit = false;
+    public bool roofHit = false;
     public bool hasJumped = false;
     public bool hasDashed = false;
     public bool isCrouching = false;
@@ -60,7 +61,6 @@ public class MovementV2 : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = ourGravity;
-        rb.sharedMaterial.friction = 0f;
         scale = (rb.transform.localScale).x;
         Application.targetFrameRate = 60;
     }
@@ -104,7 +104,6 @@ public class MovementV2 : MonoBehaviour
         else
         {
             maxVelocityFix = 1f;
-            rb.sharedMaterial.friction = 0f;
         }
 
         if (!dashing)
@@ -163,7 +162,7 @@ public class MovementV2 : MonoBehaviour
             }
 
 
-            else if (rb.velocity.y * Math.Sign(ourGravity) <= 0 && wallTrigger == -moveHorizontal)
+            else if (Math.Abs(rb.velocity.y) < 3 && wallTrigger == -moveHorizontal)  //rb.velocity.y * Math.Sign(ourGravity) <= 0
             {
                 rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
             }
@@ -173,12 +172,6 @@ public class MovementV2 : MonoBehaviour
                 rb.constraints = RigidbodyConstraints2D.FreezeRotation;
                 maxVelocityFix = 0.2f;
             }
-        }
-
-        else if (wallCollision && !isGrounded)
-        {
-            velocity = new Vector2(0, rb.velocity.y);
-            return;
         }
 
         if (jumpKeyDown || jumping)
@@ -200,6 +193,11 @@ public class MovementV2 : MonoBehaviour
                     jump(1.0f);
                 }
             }
+        }
+
+        if (roofHit)
+        {
+            velocity = new Vector2(velocity.x / 2, 0);
         }
     }
 
@@ -266,7 +264,6 @@ public class MovementV2 : MonoBehaviour
 
     private void dash()
     {
-        rb.gravityScale = 0;
         if (jumping)
         {
             velocity += new Vector2(lastMove * dashSpeed, 0);

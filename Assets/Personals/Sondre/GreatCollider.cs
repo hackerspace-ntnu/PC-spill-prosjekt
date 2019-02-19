@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class GreatCollider : MonoBehaviour {
 
-    private MovementV2 playerMovement;
+    private Movement playerMovement;
 
     public bool isColliding = false;
     private int gravitySign;
 
-    void Start () {
-        playerMovement = transform.parent.GetComponent<MovementV2>();
+    void Start()
+    {
+        //playerMovement = transform.parent.GetComponent<Movement>();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         isColliding = true;
+        playerMovement.dashing = false;
 
         Collider2D collider = collision.collider;
         float RectWidth = GetComponent<BoxCollider2D>().bounds.size.x;
@@ -24,46 +26,51 @@ public class GreatCollider : MonoBehaviour {
         Vector3 contactPoint = collision.GetContact(0).point;
         Vector3 center = transform.parent.position;
 
-        gravitySign = System.Math.Sign(playerMovement.GetComponent<MovementV2>().ourGravity);
+        gravitySign = System.Math.Sign(playerMovement.GetComponent<Movement>().ourGravity);
 
+        /*
         print(RectWidth);
         print(RectHeight);
         print(contactPoint);
         print(center);
         print("");
+        */
 
-        if (contactPoint.y * gravitySign < center.y - RectHeight / 2 && playerMovement.GetComponent<MovementV2>().rb.velocity.y <= 0 &&
+        if (contactPoint.y * gravitySign < center.y - RectHeight / 2 && playerMovement.GetComponent<Movement>().rb.velocity.y <= 0 &&
             (contactPoint.x < center.x + RectWidth / 2 || contactPoint.x > center.x - RectWidth / 2))
         {
-            playerMovement.GetComponent<MovementV2>().isGrounded = true;
+            playerMovement.GetComponent<Movement>().isGrounded = true;
         }
+        /*
         else if (contactPoint.x != center.x &&
             (contactPoint.y < center.y + RectHeight / 2 || contactPoint.y > center.y - RectHeight / 2))
         {
-            playerMovement.GetComponent<MovementV2>().wallCollision = true;
+            playerMovement.GetComponent<Movement>().wallCollision = true;
+        }*/
+
+        else if (contactPoint.y * gravitySign > center.y - RectHeight / 2 && playerMovement.GetComponent<Movement>().rb.velocity.y <= 0 &&
+            (contactPoint.x < center.x + RectWidth / 2 || contactPoint.x > center.x - RectWidth / 2))
+        {
+            playerMovement.GetComponent<Movement>().roofHit = true;
         }
 
         /*
         else if (contactPoint.x < center.x &&
             (contactPoint.y < center.y + RectHeight / 2 || contactPoint.y > center.y - RectHeight / 2))
         {
-            playerMovement.GetComponent<MovementV2>().wallCollision = true;
+            playerMovement.GetComponent<Movement>().wallCollision = true;
         }
 
-        /*
-        if (contactPoint.y > center.y && //checks that circle is on top of rectangle
-            (contactPoint.x < center.x + RectWidth / 2 && contactPoint.x > center.x - RectWidth / 2))
-        {
-            roofHit
-        }
+        
         */
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         isColliding = false;
-        playerMovement.GetComponent<MovementV2>().isGrounded = false;
-        playerMovement.GetComponent<MovementV2>().wallCollision = false;
-
+        playerMovement.GetComponent<Movement>().isGrounded = false;
+        //playerMovement.GetComponent<Movement>().wallCollision = false;
+        playerMovement.GetComponent<Movement>().roofHit = false;
+        GetComponentInParent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 }
