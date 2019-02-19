@@ -14,27 +14,32 @@ public class Crouching : MonoBehaviour {
     public Transform groundCollider;
     public GameObject[] triggers = new GameObject[2];
     public bool isCrouching;
+    public float crouchSpeed;
 
     // Slide variables
     private bool isSliding;
-    public float slideSpeedModifier = 2f;
+    public int slideSpeedModifier = 2;
     private float slideSpeed;
     private double slideTimer = 0f;
     private float moveSpeed;
-    public float maxSlidingTime = 3f;
-    
- 
+    public float maxSlidingTime = 1f;
+    public float timeSpentNotSliding = 2f;
+    public float slideCooldown = 2f;
     
 
     // Use this for initialization
     void Start () {
         isSliding = false;
+        // Henter verdier til boxcollider
         boxCollider = GetComponent<BoxCollider2D>();
         boxcolliderHeight = boxCollider.size.y;
         boxcolliderWidth = boxCollider.size.x;
+
+        // Henter movementspeeds
         Mv2 = GetComponent<MovementV2>();
         moveSpeed = Mv2.moveSpeed;
-        slideSpeed = moveSpeed * slideSpeedModifier;
+        slideSpeed = moveSpeed + slideSpeedModifier;
+        timeSpentNotSliding = 2f;
     }
 
     // Update is called once per frame
@@ -42,45 +47,80 @@ public class Crouching : MonoBehaviour {
         // Crouch
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            boxCollider.offset = new Vector2(0, boxcolliderHeight * 0.125f);
-            boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight * 0.75f);
-            isCrouching = true;
-            ActivateTriggers(triggers, false);
+            Crouch();
         }
         else
         {
-            boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight);
-            boxCollider.offset = new Vector2(0, 0);
-            isCrouching = false;
-            ActivateTriggers(triggers, true);
+            StopCrouch();
         }
 
 
+
         // Slide
-        if (CheckStartSlide())
+        if (CheckStartSlide() && timeSpentNotSliding == slideCooldown)
         {
             isSliding = true;
-            slideTimer = 0.0;
+            slideTimer = 0;
             Mv2.moveSpeed = slideSpeed;
         }
 
         if (isSliding && slideTimer < maxSlidingTime)
         {
             slideTimer += Time.deltaTime;
+            Debug.Log("Slidetimer: " + slideTimer);
+            Debug.Log("Slidespeed: " + slideSpeed + "Movement: " + moveSpeed);
+        }
+
+        else if (isSliding && slideTimer == maxSlidingTime)
+        {
+            isSliding = false;
+            slideTimer = 0;
+            StopCrouch();
+            Debug.Log("No longer sliding");
+            timeSpentNotSliding = 0f;
         }
 
         else
         {
+            slideTimer = 0;
             isSliding = false;
-            Mv2.moveSpeed = moveSpeed;
+            timeSpentNotSliding = 0f;
+        }
+
+        if (!isSliding)
+        {
+            if (timeSpentNotSliding < slideCooldown)
+            {
+                timeSpentNotSliding += Time.deltaTime;
+            }
         }
     }
 
-
-    private bool CheckStartSlide()
+    private void Crouch()
     {
-        if (isCrouching && Mv2.isGrounded && Input.GetKey(KeyCode.A) && !isSliding
-            || isCrouching && Mv2.isGrounded && Input.GetKey(KeyCode.S) && !isSliding)
+        boxCollider.offset = new Vector2(0, boxcolliderHeight * 0.125f);
+        boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight * 0.75f);
+        groundCollider.localPosition = new Vector2(0, -boxcolliderHeight / 2 + boxcolliderHeight * 0.25f);
+        isCrouching = true;
+        ActivateTriggers(triggers, false);
+        if (!isSliding)
+        {
+            Mv2.moveSpeed = crouchSpeed;
+        }
+    }
+    private void StopCrouch()
+    {
+        boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight);
+        boxCollider.offset = new Vector2(0, 0);
+        groundCollider.localPosition = new Vector2(0, -boxcolliderHeight / 2);
+        isCrouching = false;
+        ActivateTriggers(triggers, true);
+        Mv2.moveSpeed = moveSpeed;
+    }
+    private bool CheckStartSlide()
+    {  // Fungerer ikke med Mv2.isGrounded. Må egentlig ha med i if statement
+        if (isCrouching && Input.GetKey(KeyCode.A) && !isSliding
+            || isCrouching && Input.GetKey(KeyCode.S) && !isSliding)
         {
             return true;
         }
