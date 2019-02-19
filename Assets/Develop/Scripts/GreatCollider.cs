@@ -11,13 +11,13 @@ public class GreatCollider : MonoBehaviour {
 
     void Start()
     {
-        //playerMovement = transform.parent.GetComponent<Movement>();
+        playerMovement = transform.parent.GetComponent<Movement>();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         isColliding = true;
-        playerMovement.dashing = false;
+        playerMovement.GetComponent<Movement>().dashing = false;
 
         Collider2D collider = collision.collider;
         float RectWidth = GetComponent<BoxCollider2D>().bounds.size.x;
