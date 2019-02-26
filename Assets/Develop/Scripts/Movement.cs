@@ -29,13 +29,14 @@ public class Movement : MonoBehaviour {
     public bool isGrounded;
     public bool wallHit;
     public bool roofHit;
+    public bool isCrouching;
+    public bool takingDamage = false;
 
     //Public inntil bugtesting er over
     public bool hasJumped;
     public bool hasAirJumped;
     public bool hasDashed;
     public bool dashing;
-    public bool isCrouching;
 
     public int wallTrigger;
     public int ourGravity = 4;
@@ -46,11 +47,11 @@ public class Movement : MonoBehaviour {
     private bool jumping;
     private bool walljumping;
 
-    private int moveSpeed = 7;
+    public float moveSpeed = 7; //Skal verken være public eller float, kun intil TH fikser crouching
     private int dashSpeed = 13;
     private int maxVelocityY = 12;
 
-    private float jumpSpeed = 13.5f;
+    public float jumpSpeed = 13.5f; //Kun public mens jeg tester ting
     private float gravityChange = 1.3f;
     private float maxVelocityFix = 1f;
 
@@ -70,6 +71,12 @@ public class Movement : MonoBehaviour {
     }
 	
 	void Update () {
+        if (takingDamage)
+        {
+            Damaged(); //DO STUFF
+            return;
+        }
+
         bool jumpKeyDown = Input.GetKeyDown(KeyCode.Space);
         bool shiftKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
         moveHorizontal = Input.GetAxis("Horizontal"); //Fant en litt kul bug med dash. Beholde?
@@ -221,5 +228,9 @@ public class Movement : MonoBehaviour {
         }
 
         moveHorizontal = spriteDirection;
+    }
+
+    private void Damaged() {
+        velocity = rb.velocity;
     }
 }
