@@ -49,11 +49,13 @@ public class Spikes: MonoBehaviour {
 
     private void damageAnim()
     {
-        if (Time.time - colTime <= 1)
+        while (Time.time - colTime <= 1)
         {
+            print(Time.time - colTime);
             thisCollisionObject.GetComponent<Rigidbody2D>().velocity = new Vector2(-10 * System.Math.Sign(contactPoint.x - center.x), 10) * System.Math.Abs(1 - (Time.time - colTime) / 2);
         }
-        else if (thisCollisionObject = GameObject.FindWithTag("Player"))
+
+        if (thisCollisionObject = GameObject.FindWithTag("Player"))
         {
             print("Yeet");
             playerMovement.GetComponent<Movement>().takingDamage = false;
