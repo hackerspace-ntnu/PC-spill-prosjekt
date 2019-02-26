@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 public class gravityChange_Terraria : MonoBehaviour {
-    public MovementV2 movement;
+    public Movement movement;
     public Transform TF_camera;
 
     //Rotation variables

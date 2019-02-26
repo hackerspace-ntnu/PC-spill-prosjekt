@@ -10,7 +10,7 @@ public class gravityChange : MonoBehaviour
 {
     public CinemachineVirtualCamera CM_camera;
 
-    public MovementV2 movement;
+    public Movement movement;
     public Transform TF_camera;
 
     public float duration = 1f;
