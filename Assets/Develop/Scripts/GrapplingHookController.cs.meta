@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 424900bd88b059e46b37923a44c18d06
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - grapplingHook: {fileID: 1022005785054402, guid: 7ee82a784020bbb418ba9e56eebfe37d,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
