@@ -8,7 +8,7 @@ public class Spikes: MonoBehaviour {
     private GameObject thisCollisionObject;
 
     private Vector2 contactPoint;
-    private Vector2 center;
+    private Vector2 colliderCenter;
 
     private float colTime;
 
@@ -22,43 +22,48 @@ public class Spikes: MonoBehaviour {
     {
         GameObject collisionObject = GameObject.Find(collision.collider.name);
 
-        GameObject thisCollisionObject = collisionObject;
+        thisCollisionObject = collisionObject.transform.parent.gameObject;
 
 
         if (collisionObject = GameObject.FindWithTag("Player"))
         {
-            print("Yeet");
             playerMovement.GetComponent<Movement>().takingDamage = true;
-
         }
 
         Collider2D collider = collision.collider;
 
-        Vector2 contactPoint = collision.GetContact(0).point;
-        Vector2 center = transform.parent.position;
+        contactPoint = collision.GetContact(0).point;
+        colliderCenter = collider.transform.position;
 
-        collisionObject.GetComponent<Rigidbody2D>().velocity = new Vector2(-10 * System.Math.Sign(contactPoint.x - center.x), 10);
+        print("colliderCenter" + colliderCenter);
+        print("contactPoint" + contactPoint);
+
+        collisionObject.GetComponent<Rigidbody2D>().velocity = new Vector2(1 * System.Math.Sign(colliderCenter.x - contactPoint.x), 1) * 4;
 
         colTime = Time.time;
+
+        StartCoroutine(damageAnim());
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private IEnumerator damageAnim()
     {
-        damageAnim();
-    }
+        print(thisCollisionObject.GetComponent<Rigidbody2D>().velocity);
+        var curTime = 0f;
 
-    private void damageAnim()
-    {
-        while (Time.time - colTime <= 1)
+        while (0.15f > curTime)
         {
-            print(Time.time - colTime);
-            thisCollisionObject.GetComponent<Rigidbody2D>().velocity = new Vector2(-10 * System.Math.Sign(contactPoint.x - center.x), 10) * System.Math.Abs(1 - (Time.time - colTime) / 2);
+            
+            thisCollisionObject.GetComponent<Movement>().velocity = new Vector2(1 * System.Math.Sign(colliderCenter.x - contactPoint.x), 1) * 4 * System.Math.Abs(1 - curTime); //Sender ikke i X, fix this
+            print("Nei");
+            yield return null;
+            curTime += Time.deltaTime;
         }
 
         if (thisCollisionObject = GameObject.FindWithTag("Player"))
         {
-            print("Yeet");
             playerMovement.GetComponent<Movement>().takingDamage = false;
         }
+
+        
     }
 }

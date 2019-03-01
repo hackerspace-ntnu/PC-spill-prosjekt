@@ -10,6 +10,7 @@ public class PlayerAnim : MonoBehaviour {
 
     private bool isGrounded;
     private bool wallHit;
+    private bool takingDamage;
     private float moveHorizontal;
 
 
@@ -25,6 +26,7 @@ public class PlayerAnim : MonoBehaviour {
         isGrounded = playerMovement.GetComponent<Movement>().isGrounded;
         moveHorizontal = playerMovement.GetComponent<Movement>().moveHorizontal;
         wallHit = playerMovement.GetComponent<Movement>().wallHit;
+        takingDamage = playerMovement.GetComponent<Movement>().takingDamage;
 
         anim.SetBool("isGrounded", isGrounded);
 

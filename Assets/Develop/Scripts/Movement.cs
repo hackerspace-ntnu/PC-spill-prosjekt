@@ -62,7 +62,7 @@ public class Movement : MonoBehaviour {
     private float dashDuration = 0.2f;
     private float walljumpDuration = 0.2f;
 
-    private Vector2 velocity;
+    public Vector2 velocity;
 
     void Start () {
         rb = GetComponent<Rigidbody2D>();
@@ -231,6 +231,6 @@ public class Movement : MonoBehaviour {
     }
 
     private void Damaged() {
-        velocity = rb.velocity;
+        //velocity = rb.velocity;
     }
 }
