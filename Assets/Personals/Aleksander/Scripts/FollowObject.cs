@@ -10,6 +10,7 @@ public class FollowObject : MonoBehaviour {
     public float distanceFactor;
     public float twitchFactor;
     public float twitchTolerance;
+    public float minVel;
 
     private Rigidbody2D thisRBody;
     private Rigidbody2D rBodyOfObj;
@@ -50,8 +51,8 @@ public class FollowObject : MonoBehaviour {
         // Set the target for the familiar in world coordinates.
         worldTargetPos = new Vector3(objToFollow.transform.position.x + targetPos.x, objToFollow.transform.position.y + targetPos.y, 0.0f);
 
-        // Set random twitch movment when familiar is close to target position.
-        if (thisRBody.velocity.magnitude < twitchTolerance) {
+        // Set random twitch movment when familiar is close to player position.
+        if (objToFollow.tag == "Player" && thisRBody.velocity.magnitude < twitchTolerance) {
             worldTargetPos = new Vector3(worldTargetPos.x + Random.Range(-twitchFactor, twitchFactor), worldTargetPos.y + Random.Range(-twitchFactor, twitchFactor));
         }
     }
@@ -59,9 +60,18 @@ public class FollowObject : MonoBehaviour {
     private void FixedUpdate() {
         // Calculate distance to target position and set velocity towards target with speed increasing with distance.
         Vector2 distanceToTarget = transform.position - worldTargetPos;
-        distanceToTarget = distanceToTarget.normalized * Mathf.Pow(distanceToTarget.magnitude, distanceFactor);
-        
-        thisRBody.velocity = -distanceToTarget;
+        Vector2 newVelocity = distanceToTarget.normalized * Mathf.Pow(distanceToTarget.magnitude, distanceFactor);
+        thisRBody.velocity = -newVelocity;
+
+        // If the object to follow is not the player, set a min velocity to speed up approach.
+        if (objToFollow.tag != "Player" && thisRBody.velocity.magnitude < minVel) {
+            thisRBody.velocity = thisRBody.velocity.normalized * minVel;
+        }
+
+        if(distanceToTarget.magnitude <= 0.1) {
+            thisRBody.velocity = Vector2.zero;
+            transform.position = worldTargetPos;
+        }
     }
 
     public void AttachToObject(GameObject obj, Vector2 target) {

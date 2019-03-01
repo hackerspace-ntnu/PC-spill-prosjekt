@@ -97,8 +97,7 @@ MonoBehaviour:
   distanceFactor: 1.75
   twitchFactor: 1.5
   twitchTolerance: 0.5
-  maxHalo: 4
-  minHalo: 2
+  minVel: 10
 --- !u!212 &212512017565547314
 SpriteRenderer:
   m_ObjectHideFlags: 1
