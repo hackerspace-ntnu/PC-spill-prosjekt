@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4126605568409868}
   - component: {fileID: 61214395923768646}
   - component: {fileID: 114169965771948952}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,8 @@ GameObject:
   - component: {fileID: 114413115946602976}
   - component: {fileID: 114802871883586844}
   - component: {fileID: 114610166906619784}
-  m_Layer: 0
+  - component: {fileID: 114812857473276202}
+  m_Layer: 8
   m_Name: Sprite Player 1
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -59,7 +60,7 @@ GameObject:
   - component: {fileID: 4887400674884512}
   - component: {fileID: 61814055814516190}
   - component: {fileID: 114643139821550384}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall Trigger Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76,7 +77,7 @@ GameObject:
   - component: {fileID: 4777416656617278}
   - component: {fileID: 61502002803065926}
   - component: {fileID: 114440613385991214}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall Trigger Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -332,15 +333,32 @@ MonoBehaviour:
   isGrounded: 0
   wallHit: 0
   roofHit: 0
+  isCrouching: 0
+  takingDamage: 0
   hasJumped: 0
   hasAirJumped: 0
   hasDashed: 0
   dashing: 0
-  isCrouching: 0
   wallTrigger: 0
   ourGravity: 4
   spriteDirection: 1
   moveHorizontal: 0
+  moveSpeed: 7
+  jumpSpeed: 13.5
+--- !u!114 &114812857473276202
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1274003394055822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 424900bd88b059e46b37923a44c18d06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireKey: 101
+  grapplingHook: {fileID: 1022005785054402, guid: 7ee82a784020bbb418ba9e56eebfe37d,
+    type: 2}
 --- !u!212 &212693143678064338
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -1,10 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class pause : MonoBehaviour {
     [SerializeField] public GameObject pausePanel;
-	void Start ()
+
+    private bool paused;
+
+    void Start ()
     {
         pausePanel.SetActive(false);
 	}
@@ -26,10 +30,15 @@ public class pause : MonoBehaviour {
 
     private void pauseGame()
     {
+        if (GetComponent<crouchReplacer>().isCrouching)
+        {
+            GetComponent<wallClip>().clip = true;
+        }
         Time.timeScale = 0;
         pausePanel.SetActive(true);
-        GetComponent<MovementV2>().enabled = false;
-        GetComponent<gravityChange_Terraria>().enabled = false;
+        GetComponent<Movement>().enabled = false;
+        GetComponent<gravityChange>().enabled = false;
+
         //Disable all other scripts that work while timeskip is 0
     }
 
@@ -37,8 +46,8 @@ public class pause : MonoBehaviour {
     {
         Time.timeScale = 1;
         pausePanel.SetActive(false);
-        GetComponent<MovementV2>().enabled = true;
-        GetComponent<gravityChange_Terraria>().enabled = true;
+        GetComponent<Movement>().enabled = true;
+        GetComponent<gravityChange>().enabled = true;
         //Enable said scripts
     }
 }
