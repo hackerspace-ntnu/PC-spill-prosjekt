@@ -20,7 +20,6 @@ AnimationClip:
   - curve:
     - time: 0
       value: {fileID: 21300000, guid: 9384b384e85dcae4ebea6a2c703b6940, type: 3}
-<<<<<<< HEAD
     - time: 0.125
       value: {fileID: 21300000, guid: b49c5480d71fce1469d8b2d1accfcd4f, type: 3}
     - time: 0.25
@@ -50,47 +49,12 @@ AnimationClip:
     - time: 1.75
       value: {fileID: 21300000, guid: ded7c8d3936fd1e47907aa1989173639, type: 3}
     - time: 1.875
-=======
-    - time: 0.06666667
-      value: {fileID: 21300000, guid: b49c5480d71fce1469d8b2d1accfcd4f, type: 3}
-    - time: 0.13333334
-      value: {fileID: 21300000, guid: be615e0c6da85ce448d2cbbac349a1fe, type: 3}
-    - time: 0.2
-      value: {fileID: 21300000, guid: 8ed10dca9e5b5464fa1234c1fb35c714, type: 3}
-    - time: 0.26666668
-      value: {fileID: 21300000, guid: d4265bef1eae34747a9638211b41a95e, type: 3}
-    - time: 0.33333334
-      value: {fileID: 21300000, guid: 2c35bc9aebaa98746a00f5a63d53b305, type: 3}
-    - time: 0.4
-      value: {fileID: 21300000, guid: 59a9f25b0a8626540aa7d63f43ee5d5b, type: 3}
-    - time: 0.46666667
-      value: {fileID: 21300000, guid: 29d55d30a538fab4f8e683ae27133263, type: 3}
-    - time: 0.53333336
-      value: {fileID: 21300000, guid: a6edc192cdfa4e2428cb5a92ea56d43d, type: 3}
-    - time: 0.6
-      value: {fileID: 21300000, guid: 6f9f6d4011aa0894997d1f8c16979bba, type: 3}
-    - time: 0.6666667
-      value: {fileID: 21300000, guid: 7c025b527eb6b7d4ca095921f504a5ac, type: 3}
-    - time: 0.73333335
-      value: {fileID: 21300000, guid: 9e013413cdda8384fb463cedd4309549, type: 3}
-    - time: 0.8
-      value: {fileID: 21300000, guid: 0add3b12c2e3ee448a96b5b267d0bb15, type: 3}
-    - time: 0.8666667
-      value: {fileID: 21300000, guid: 9a90ca0337a0d61409669c1fbf66df06, type: 3}
-    - time: 0.93333334
-      value: {fileID: 21300000, guid: ded7c8d3936fd1e47907aa1989173639, type: 3}
-    - time: 1
->>>>>>> f6833535a6559c0cd2be92781b24e6a9b0ef54cb
       value: {fileID: 21300000, guid: 50c89f625b6eeea4088338726d7709a1, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
-<<<<<<< HEAD
   m_SampleRate: 8
-=======
-  m_SampleRate: 15
->>>>>>> f6833535a6559c0cd2be92781b24e6a9b0ef54cb
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -126,11 +90,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-<<<<<<< HEAD
     m_StopTime: 2
-=======
-    m_StopTime: 1.0666667
->>>>>>> f6833535a6559c0cd2be92781b24e6a9b0ef54cb
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
