@@ -26,7 +26,11 @@ public class GrapplingHook : MonoBehaviour
 
 		Vector3 firingDistance = transform.position - controller.transform.position;
 		if (firingDistance.magnitude >= maxFiringLength)
+		{
 			Stop();
+			Vector3 directionFromController = GetDirectionToVector(controller.transform.position, transform.position);
+			transform.position = ExtendVectorInDirection(controller.transform.position, directionFromController, maxFiringLength);
+		}
 	}
 
 	void OnTriggerEnter2D(Collider2D collider)
