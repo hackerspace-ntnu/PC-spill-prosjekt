@@ -91,4 +91,8 @@ public class FollowObject : MonoBehaviour {
             targetPos = defaultTarget;
         }
     }
+
+    public Vector3 GetTargetPos() {
+        return worldTargetPos;
+    }
 }
