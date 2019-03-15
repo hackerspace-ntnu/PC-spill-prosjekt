@@ -5,7 +5,7 @@ using System;
 
 /* TO DO
  * ---
- * Make GreatCollider do the Wall Triggers' job
+ * Disable moveHorizontal and dash when sliding down tilted surfaces !!!!!!!
  * ---
  * 
  * IDEAS
@@ -79,16 +79,26 @@ public class Movement : MonoBehaviour {
 
         bool jumpKeyDown = Input.GetKeyDown(KeyCode.Space);
         bool shiftKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
-        moveHorizontal = Input.GetAxis("Horizontal"); //Fant en litt kul bug med dash. Beholde?
 
-        if (Math.Abs(moveHorizontal) > 0.3f)
+        if (Math.Abs(moveHorizontal) <= Math.Abs(Input.GetAxis("Horizontal")))
         {
-            velocity = new Vector2(Math.Sign(moveHorizontal) * moveSpeed, rb.velocity.y);
+            moveHorizontal = Input.GetAxis("Horizontal"); //Fant en litt kul bug med dash. Beholde?
+            if (Math.Abs(moveHorizontal) > 0.3f)
+            {
+                velocity = new Vector2(Math.Sign(moveHorizontal) * moveSpeed, rb.velocity.y);
+            }
+            else
+            {
+                velocity = new Vector2(moveHorizontal * moveSpeed, rb.velocity.y);
+            }
         }
         else
         {
-            velocity = new Vector2(moveHorizontal * moveSpeed, rb.velocity.y);
+            velocity = new Vector2(0, rb.velocity.y);
+            moveHorizontal = Input.GetAxis("Horizontal");
         }
+
+
 
         if (Math.Sign(ourGravity) == 1 && rb.velocity.y <= -maxVelocityY || Math.Sign(ourGravity) == -1 && rb.velocity.y >= maxVelocityY) {
             maxVelocityFix = 0.9f;
@@ -126,7 +136,7 @@ public class Movement : MonoBehaviour {
                 return;
             }
 
-            else if (Math.Abs(rb.velocity.y) < 3 && wallTrigger == -moveHorizontal) {
+            else if (Math.Abs(rb.velocity.y) < 3 && wallTrigger == -Math.Sign(velocity.x)) {
                 rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
             }
 
@@ -231,6 +241,12 @@ public class Movement : MonoBehaviour {
     }
 
     private void Damaged() {
+        if (rb.velocity.y * Math.Sign(ourGravity) > 0)
+        {
+            isGrounded = false;
+        }
+        hasAirJumped = false;
+        hasDashed = false;
         //velocity = rb.velocity;
     }
 }
