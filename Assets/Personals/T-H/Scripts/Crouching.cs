@@ -15,9 +15,8 @@ public class Crouching : MonoBehaviour {
     public float crouchSpeed = 3f;
 
     // Slide variables
-    private Rigidbody2D rb;
     private bool isSliding;
-    public int slideSpeedModifier = 2;
+    public int slideSpeedModifier = 10;
     private float slideSpeed;
     private double slideTimer = 0f;
     private float moveSpeed;
@@ -26,11 +25,16 @@ public class Crouching : MonoBehaviour {
     private float timeSpentMoving = 0f;
     public float timeSpentMovingMinimum = 0.4f;
     public float slideCooldown = 2f;
-    
+
+    // Raycast
+    private RaycastHit2D raycast;
+    private float roofDistance;
 
     // Use this for initialization
     void Start () {
+
         isSliding = false;
+
         // Henter verdier til boxcollider
         boxcolliderHeight = boxCollider.size.y;
         boxcolliderWidth = boxCollider.size.x;
@@ -39,84 +43,62 @@ public class Crouching : MonoBehaviour {
         Mv = GetComponent<Movement>();
         moveSpeed = Mv.moveSpeed;
         slideSpeed = moveSpeed + slideSpeedModifier;
-        // Burde egentlig hente movespeed
-        rb = GetComponent<Rigidbody2D>();
         timeSpentNotSliding = 2f;
+
+        // Raycast
+        roofDistance = boxcolliderHeight - (boxcolliderHeight * 0.75f);
+        raycast = Physics2D.Raycast(new Vector2(0, boxcolliderHeight), Vector2.up, roofDistance);
     }
 
     // Update is called once per frame
     void Update() {
 
+        Debug.DrawRay(new Vector2(transform.position.x, transform.position.y + boxcolliderHeight), Vector2.up * roofDistance, Color.red);
+
         // Crouch
-        if (Input.GetKeyDown(KeyCode.C) && !isCrouching)
-        { 
+
+        if (Input.GetKeyDown(KeyCode.C) && !isCrouching) // Funker ikke med control i unity editor
             Crouch();
-        }
+
         else if (Input.GetKeyUp(KeyCode.C))
-        {
             StopCrouch();
-            Debug.Log("Stopped crouching");
-        }
+
 
         // Slide
 
+        CheckStartSlide(); // Sjekker om man skal starte å slide. Kommer før calculateTime pga !isCrouching.
         calculateTimeSpentMoving(); // Sjekker hvor lenge man har beveget seg før man prøver å slide
 
-        if (CheckStartSlide())
-        {
-            isSliding = true;
-            slideTimer = 0;
-        }
-
-        if (isSliding && slideTimer < maxSlidingTime)
-        {
+        if (isSliding && slideTimer < maxSlidingTime) // Sjekker om man er innenfor slidetimeren og kan fortsette å slide
             slideTimer += Time.deltaTime;
-        }
 
-        else if (isSliding && slideTimer >= maxSlidingTime)
+        else if (isSliding && slideTimer >= maxSlidingTime) // Hvis man er ferdig med å slide
         {
             isSliding = false;
             slideTimer = 0;
             StopCrouch();
-            Debug.Log("No longer sliding");
             timeSpentNotSliding = 0f;
         }
 
-        else
-        {
-            slideTimer = 0;
-            isSliding = false;
-        }
 
-        if (!isSliding && !isCrouching && timeSpentNotSliding < slideCooldown)
-        {
+        if (!isSliding && !isCrouching && timeSpentNotSliding <= slideCooldown) // Øker timespentnotsliding dersom man ikke slider eller croucher 
             timeSpentNotSliding += Time.deltaTime;
-        }
+
     }
 
-    private void calculateTimeSpentMoving()
-    {
-        if (Mathf.Abs(Mv.moveHorizontal) == 1)
-        {
-            timeSpentMoving += Time.deltaTime;
-        }
-        else
-        {
-            timeSpentMoving = 0;
-        }
-    }
 
+
+    // Crouch functions
     private void Crouch()
     {
         boxCollider.offset = new Vector2(0, boxcolliderHeight * 0.125f);
         boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight * 0.75f);
         isCrouching = true;
         ActivateTriggers(triggers, false);
+
         if (!isSliding)
-        {
             Mv.moveSpeed = crouchSpeed;
-            //rb.velocity = new Vector2(crouchSpeed, rb.velocity.y);
-        }
+
     }
     private void StopCrouch()
     {
@@ -125,18 +107,6 @@ public class Crouching : MonoBehaviour {
         isCrouching = false;
         ActivateTriggers(triggers, true);
         Mv.moveSpeed = moveSpeed;
-        //rb.velocity = new Vector2(moveSpeed, rb.velocity.y); // Usikker på dette
-    }
-
-    
-    private bool CheckStartSlide()
-    { 
-        if (isCrouching && timeSpentMoving >= timeSpentMovingMinimum && !isSliding && Mv.isGrounded && 
-            timeSpentNotSliding >= slideCooldown)
-        {
-            return true;
-        }
-        return false;
     }
     private void ActivateTriggers(GameObject[] triggers, bool boolean)
     {
@@ -145,5 +115,34 @@ public class Crouching : MonoBehaviour {
             trigger.SetActive(boolean);
         }
     }
+
+    // Slide functions
+    private void CheckStartSlide()
+    { 
+        if (isCrouching && timeSpentMoving >= timeSpentMovingMinimum && !isSliding && 
+            timeSpentNotSliding >= slideCooldown) // Skal egentlig ha med Mv.IsGrounded
+        {
+            Debug.Log("Sliding");
+            Crouch();
+            isSliding = true;
+            slideTimer = 0;
+            Mv.moveSpeed = slideSpeed;
+        }
+    }
+    private void calculateTimeSpentMoving()
+    {
+        if (Mathf.Abs(Mv.moveHorizontal) == 1 && !isCrouching)
+            timeSpentMoving += Time.deltaTime;
+
+        else
+            timeSpentMoving = 0;
+
+    }
+
+    // Raycast functions 
+    /*private bool IsRoof()
+    {
+        
+    }*/
 }
 
