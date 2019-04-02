@@ -3,276 +3,204 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-/* TO DO
- *
- * Flere abilities
- *     Egne scripts?
- * 
- * Walljump koden kan gjøres mer elegant
- * 
-*/
+enum MovementState
+{
+	STANDARD,
+	JUMPING,
+	AIR_JUMPING,
+	DASHING,
+	WALL_CLINGING,
+	GRAPPLING,
+}
 
 public class MovementV2 : MonoBehaviour
 {
-    public Rigidbody2D rb;
+	private const float MINIMUM_TIME_BEFORE_AIR_JUMP = 0.1f;
+	private const float HORIZONTAL_INPUT_RUNNING_THRESHOLD = 0.3f;
+	private const float JUMPING_GRAVITY_SCALE_MULTIPLIER = 0.8f;
 
-    // Skal ikke være readonly i spillet, ettersom spilleren får tak i abilities underveis
-    private readonly bool CanWalljump = true;
-    private readonly bool CanDash = true;
+	public KeyCode jumpKey = KeyCode.Space;
+	public KeyCode dashKey = KeyCode.LeftShift;
 
-    public int airJumps = 2;
+	public float movementSpeed = 7;
+	public float jumpSpeed = 13.5f;
+	public float baseGravityScale = 5;
+	public float maxVelocityY = 12;
 
-    public float moveHorizontal;
-    public float moveSpeed = 8f;
-    public float jumpSpeed = 15f;
-    public float dashSpeed = 15f;
-    public float dashDuration = 0.2f;
-    public float wallJumpDuration = 0.2f;
-    public float ourGravity = 4f;
-    public float gravityChange = 1.3f;
-    public float maxVelocityY = 12f;
-    private float maxVelocityFix = 1f;
+	private MovementState state;
+	private Rigidbody2D rigidBody;
 
-    public bool isGrounded = false;
-    public bool wallCollision = false;
-    public bool wallHit = false;
-    public bool roofHit = false;
-    public bool hasJumped = false;
-    public bool hasDashed = false;
-    public bool isCrouching = false;
-    public bool dashing = false;
-    private bool jumping = false;
-    private bool wallJumping = false;
+	// TODO: ensure dirty bit is always set
+	private bool isVelocityDirty = false;
+	private Vector2 newVelocity; // for setting velocity in FixedUpdate()
+	private float newGravityScale; // for setting velocity in FixedUpdate()
 
-    public float lastJumpTime;
-    public float dashTime;
-    public float wallJumpTime = -1;
-    public int jumpsSinceGround;
+	private bool isGrounded;
+	private bool hasAirJumped = false;
+	private float jumpTime;
 
-    public float scale;
+	public void SetGrounded(bool grounded)
+	{
+		isGrounded = grounded;
+		if (grounded)
+			hasAirJumped = false;
+		Debug.Log("grounded: " + grounded);
+	}
 
-    private Vector2 velocity;
-    private float lastMove = 1;
+	void Start()
+	{
+		state = MovementState.STANDARD;
+		rigidBody = GetComponent<Rigidbody2D>();
+		newVelocity = rigidBody.velocity;
+		newGravityScale = baseGravityScale;
+	}
 
-    public int wallTrigger;
+	void Update()
+	{
+		if (!isVelocityDirty)
+			newVelocity = rigidBody.velocity;
 
-    // Use this for initialization
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = ourGravity;
-        scale = (rb.transform.localScale).x;
-        Application.targetFrameRate = 60;
-    }
+		HandleChangeState();
 
-    // Update is called once per frame
-    void Update()
-    {
-        bool jumpKeyDown = Input.GetKeyDown(KeyCode.Space);
-        bool shiftKeyDown = Input.GetKeyDown(KeyCode.LeftShift);
+		switch (state)
+		{
+			case MovementState.STANDARD:
+				StandardState();
+				break;
 
-        // DASH ELLER TELEPORT? 
-        if (!hasDashed && shiftKeyDown && CanDash)
-        {
-            hasDashed = true;
-            dashTime = Time.time;
-            dashing = true;
-            dash();
-            return;
-        }
-        else if (dashing && Time.time - dashTime <= dashDuration)
-        {
-            dash();
-            return;
-        }
-        else
-        {
-            dashing = false;
-            rb.gravityScale = ourGravity;
-        }
+			case MovementState.AIR_JUMPING:
+			case MovementState.JUMPING:
+				JumpingState();
+				StandardState();
+				break;
 
-        if (Math.Sign(ourGravity) == 1 && rb.velocity.y <= -maxVelocityY)
-        {
-            maxVelocityFix = 0.9f;
-        }
+			case MovementState.DASHING:
+				DashingState();
+				break;
 
-        else if (Math.Sign(ourGravity) == -1 && rb.velocity.y >= maxVelocityY)
-        {
-            maxVelocityFix = 0.9f;
-        }
+			case MovementState.WALL_CLINGING:
+				WallClingingState();
+				break;
 
-        else
-        {
-            maxVelocityFix = 1f;
-        }
+			case MovementState.GRAPPLING:
+				GrapplingState();
+				break;
+		}
+	}
 
-        if (!dashing)
-        {
-            moveHorizontal = Input.GetAxis("Horizontal");
+	private void HandleChangeState()
+	{
+		if (Input.GetKeyDown(jumpKey))
+		{
+			if (isGrounded)
+				state = MovementState.JUMPING;
+			else if (!hasAirJumped && Time.time >= jumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP)
+				state = MovementState.AIR_JUMPING;
+		} else if (Input.GetKeyDown(dashKey))
+			state = MovementState.DASHING;
+		// if F: grapple
+	}
 
-            if (moveHorizontal != 0)
-            {
-                lastMove = Math.Sign(moveHorizontal);
+	private void StandardState()
+	{
+		float horizontalInput = Input.GetAxis("Horizontal");
+		if (Math.Abs(horizontalInput) > HORIZONTAL_INPUT_RUNNING_THRESHOLD)
+			// Set horizontalInput to max
+			horizontalInput = Math.Sign(horizontalInput);
 
-                if (Math.Abs(moveHorizontal) > 0.3f)
-                {
-                    moveHorizontal = Math.Sign(moveHorizontal);
-                }
-            }
+		newVelocity.x = horizontalInput * movementSpeed * Math.Sign(rigidBody.gravityScale);
 
-            velocity = new Vector2(moveHorizontal * moveSpeed, rb.velocity.y);
-        }
+		if (newVelocity.y > maxVelocityY)
+			newVelocity.y = maxVelocityY;
 
-        if (wallJumping)
-        {
-            if (Time.time - wallJumpTime <= wallJumpDuration / 2)
-            {
-                wallJump(wallTrigger);
-            }
+		isVelocityDirty = true;
+	}
 
-            else if (Time.time - wallJumpTime <= wallJumpDuration)
-            {
-                wallJump(Math.Sign(moveHorizontal));
-            }
-            else
-            {
-                wallJumping = false;
-            }
-            return;
-        }
+	private void JumpingState()
+	{
+		switch (state)
+		{
+			case MovementState.JUMPING:
+				// If just pressed jumpKey:
+				if (Input.GetKeyDown(jumpKey))
+					Jump(1.0f);
+				else if (Input.GetKey(jumpKey) && IsVelocityUpwards())
+					newGravityScale = JUMPING_GRAVITY_SCALE_MULTIPLIER * baseGravityScale;
+				else
+				{
+					newGravityScale = baseGravityScale;
+					state = MovementState.STANDARD;
+				}
+				break;
 
-        // Walljump resetter Dash og airjump (så lenge det er unlocket)
-        if (wallHit)
-        {
-            if (CanWalljump && jumpKeyDown)
-            {
-                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-                wallJump(wallTrigger);
-                wallJumpTime = Time.time;
-                lastJumpTime = Time.time;
+			case MovementState.AIR_JUMPING:
+				Jump(0.8f);
+				Debug.Log("air jumping");
+				hasAirJumped = true;
+				state = MovementState.STANDARD;
+				break;
+		}
+	}
 
-                if (jumpsSinceGround == airJumps && airJumps != 0)
-                {
-                    jumpsSinceGround--;
-                }
+	private bool IsVelocityUpwards()
+	{
+		return rigidBody.velocity.y * Math.Sign(rigidBody.gravityScale) > 0;
+	}
 
-                hasDashed = false;
+	private void Jump(float scale)
+	{
+		newVelocity.y = jumpSpeed * scale * Math.Sign(rigidBody.gravityScale);
+		isVelocityDirty = true;
+		jumpTime = Time.time;
+	}
 
-                return;
-            }
+	private void DashingState()
+	{
 
+	}
 
-            else if (Math.Abs(rb.velocity.y) < 3 && wallTrigger == -moveHorizontal)  //rb.velocity.y * Math.Sign(ourGravity) <= 0
-            {
-                rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
-            }
+	private void WallClingingState()
+	{
 
-            else
-            {
-                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-                maxVelocityFix = 0.2f;
-            }
-        }
+	}
 
-        if (jumpKeyDown || jumping)
-        {
-            if (isGrounded)
-            {
-                jump(1.0f);
-                jumpsSinceGround = 0;
-            }
+	private void GrapplingState()
+	{
 
-            else if (Time.time - lastJumpTime >= 0.1f || rb.gravityScale == ourGravity * gravityChange)
-            {
-                if (jumpsSinceGround == airJumps - 1)
-                {
-                    jump(0.8f);
-                }
-                else if (jumpsSinceGround < airJumps)
-                {
-                    jump(1.0f);
-                }
-            }
-        }
+	}
 
-        if (roofHit)
-        {
-            velocity = new Vector2(velocity.x / 2, 0);
-        }
-    }
+	void FixedUpdate()
+	{
+		rigidBody.velocity = newVelocity;
+		isVelocityDirty = false;
+		if (rigidBody.gravityScale != newGravityScale)
+			rigidBody.gravityScale = newGravityScale;
 
-    void FixedUpdate()
-    {
-        rb.velocity = new Vector2 (velocity.x * Math.Sign(ourGravity), velocity.y * maxVelocityFix);
+		switch (state)
+		{
+			case MovementState.STANDARD:
+				//StandardState_Fixed();
+				break;
 
-        if (dashing)
-        {
-            rb.gravityScale = 0;
-        }
+			case MovementState.JUMPING:
+				//JumpingState();
+				break;
 
-        else if (isGrounded)
-        {
-            grounded();
-        }
-        else if (wallJumping || jumping)
-        {
-            rb.gravityScale = ourGravity;
-        }
+			case MovementState.DASHING:
+				//DashingState();
+				break;
 
-        //jumpsSinceGround <= airJumps - 1  && ...
-        else if ((jumpsSinceGround <= airJumps - 1 && rb.velocity.y * Math.Sign(ourGravity) > 0 && !Input.GetKey(KeyCode.Space)) || rb.velocity.y * Math.Sign(ourGravity) < 0.1f)
-        {
-            rb.gravityScale = ourGravity * gravityChange;
-        }
+			case MovementState.WALL_CLINGING:
+				//WallClingingState();
+				break;
 
-        jumping = false;
+			case MovementState.GRAPPLING:
+				//GrapplingState();
+				break;
+		}
+	}
 
-        //print(rb.velocity);
-    }
-
-    private void grounded()
-    {
-        lastJumpTime = 0;
-        jumpsSinceGround = 0;
-        hasJumped = false;
-        hasDashed = false;
-        rb.gravityScale = ourGravity;
-    }
-
-    private void jump(float scale)
-    {
-        velocity = new Vector2(moveHorizontal * moveSpeed, jumpSpeed * scale * Math.Sign(ourGravity));
-        hasJumped = true;
-        lastJumpTime = Time.time;
-        jumpsSinceGround++;
-        jumping = true;
-    }
-
-    private void wallJump(int x)
-    {
-        if (moveHorizontal != 0)
-        {
-            velocity = new Vector2(x * dashSpeed / 2, jumpSpeed * 0.64f * Math.Sign(ourGravity));
-        }
-
-        else
-        {
-            velocity = new Vector2(x * moveSpeed / 2, jumpSpeed * 0.64f * Math.Sign(ourGravity));
-        }
-        wallJumping = true;
-    }
-
-    private void dash()
-    {
-        if (jumping)
-        {
-            velocity += new Vector2(lastMove * dashSpeed, 0);
-            dashing = false;
-        }
-
-        else
-        {
-            velocity = new Vector2(lastMove * dashSpeed, 0);
-        }
-    }
+	//private void StandardState_Fixed()
+	//{
+	//}
 }

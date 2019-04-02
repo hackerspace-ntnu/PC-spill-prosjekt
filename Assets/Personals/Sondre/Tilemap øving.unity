@@ -1980,6 +1980,11 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114083599772052618, guid: f19a0c2dbd3d92c4099f07cd4dc03667,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 114476352512028306, guid: f19a0c2dbd3d92c4099f07cd4dc03667,
         type: 3}
       propertyPath: CM_camera
@@ -1990,8 +1995,14 @@ PrefabInstance:
       propertyPath: TF_camera
       value: 
       objectReference: {fileID: 1312820726}
-    - target: {fileID: 4369640813755484, guid: f19a0c2dbd3d92c4099f07cd4dc03667, type: 3}
-      propertyPath: m_RootOrder
+    - target: {fileID: 114476352512028306, guid: f19a0c2dbd3d92c4099f07cd4dc03667,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114550198288745828, guid: f19a0c2dbd3d92c4099f07cd4dc03667,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4860033491649912, guid: f19a0c2dbd3d92c4099f07cd4dc03667, type: 3}
@@ -2001,6 +2012,15 @@ PrefabInstance:
     - target: {fileID: 4713543284084368, guid: f19a0c2dbd3d92c4099f07cd4dc03667, type: 3}
       propertyPath: m_RootOrder
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4369640813755484, guid: f19a0c2dbd3d92c4099f07cd4dc03667, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114810796107720944, guid: f19a0c2dbd3d92c4099f07cd4dc03667,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f19a0c2dbd3d92c4099f07cd4dc03667, type: 3}

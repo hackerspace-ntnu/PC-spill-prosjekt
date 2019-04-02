@@ -5,12 +5,12 @@ using UnityEngine;
 public class TriggerDetector : MonoBehaviour
 {
 
-    private Movement playerMovement;
+    private MovementV2 playerMovement;
 
     // Use this for initialization
     void Start()
     {
-        playerMovement = transform.parent.GetComponent<Movement>();
+        playerMovement = transform.parent.GetComponent<MovementV2>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -19,20 +19,20 @@ public class TriggerDetector : MonoBehaviour
         {
             if (this.gameObject.name == "Ground Trigger")
             {
-                playerMovement.GetComponent<Movement>().isGrounded = true;
+                playerMovement.SetGrounded(true);
             }
 
 
-            else if (this.gameObject.name == "Wall Trigger Left")
-            {
-                playerMovement.GetComponent<Movement>().wallTrigger = 1;
-                playerMovement.GetComponent<Movement>().wallHit = true;
-            }
-            else
-            {
-                playerMovement.GetComponent<Movement>().wallTrigger = -1;
-                playerMovement.GetComponent<Movement>().wallHit = true;
-            }
+            //else if (this.gameObject.name == "Wall Trigger Left")
+            //{
+            //    playerMovement.wallTrigger = 1;
+            //    playerMovement.wallHit = true;
+            //}
+            //else
+            //{
+            //    playerMovement.wallTrigger = -1;
+            //    playerMovement.wallHit = true;
+            //}
         }
     }
 
@@ -40,11 +40,11 @@ public class TriggerDetector : MonoBehaviour
     {
         if (this.gameObject.name == "Ground Trigger")
         {
-            playerMovement.GetComponent<Movement>().isGrounded = false;
+            playerMovement.SetGrounded(false);
         }
         else
         {
-            playerMovement.GetComponent<Movement>().wallHit = false;
+            //playerMovement.wallHit = false;
         }
     }
 
