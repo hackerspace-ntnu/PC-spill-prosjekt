@@ -30,7 +30,7 @@ public class PlayerAnim : MonoBehaviour {
 
         anim.SetBool("isGrounded", isGrounded);
 
-        if (wallHit)
+        if (wallHit && !isGrounded)
         {
             /*
             anim.SetBool("wallHit", true);
@@ -107,7 +107,7 @@ public class PlayerAnim : MonoBehaviour {
             anim.SetBool("isJumping", false);
         }
 
-        if (isGrounded && moveHorizontal != 0)
+        if (isGrounded && playerMovement.GetComponent<Movement>().velocity.x != 0)
         {
             anim.SetBool("isRunning", true);
         }

@@ -13,7 +13,7 @@ public class DestroyEffect : MonoBehaviour {
     IEnumerator DestroyEffect_Fuc()
     {
         yield return new WaitForSeconds (time);
-        DestroyObject(this.gameObject);
+        Object.Destroy(this.gameObject);
 
 
        
