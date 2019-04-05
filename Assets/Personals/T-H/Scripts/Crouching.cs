@@ -29,6 +29,7 @@ public class Crouching : MonoBehaviour {
     // Raycast
     private RaycastHit2D raycast;
     private float roofDistance;
+    private int Player_layer;
 
     // Use this for initialization
     void Start () {
@@ -47,13 +48,16 @@ public class Crouching : MonoBehaviour {
 
         // Raycast
         roofDistance = boxcolliderHeight - (boxcolliderHeight * 0.75f);
-        raycast = Physics2D.Raycast(new Vector2(0, boxcolliderHeight), Vector2.up, roofDistance);
+        roofDistance = 10; // Bare temporary bugfixing
+        Player_layer = ~LayerMask.GetMask("Player");
+        raycast = Physics2D.Raycast(transform.position, Vector2.up, roofDistance, Player_layer);
     }
 
     // Update is called once per frame
     void Update() {
 
-        Debug.DrawRay(new Vector2(transform.position.x, transform.position.y + boxcolliderHeight), Vector2.up * roofDistance, Color.red);
+        Debug.DrawRay(new Vector2(transform.position.x, transform.position.y + boxcolliderHeight), Vector2.up * roofDistance, Color.red, 0, false);
+        isRoof();
 
         // Crouch
 
@@ -91,14 +95,13 @@ public class Crouching : MonoBehaviour {
     // Crouch functions
     private void Crouch()
     {
-        boxCollider.offset = new Vector2(0, boxcolliderHeight * 0.125f);
-        boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight * 0.75f);
-        isCrouching = true;
-        ActivateTriggers(triggers, false);
+        boxCollider.offset = new Vector2(0, boxcolliderHeight * 0.125f); // Flytter boxcol opp
+        boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight * 0.75f); // Gjør boxcol mindre
+        isCrouching = true; 
+        ActivateTriggers(triggers, false); // deaktiverer walltriggers
 
         if (!isSliding)
             Mv.moveSpeed = crouchSpeed;
-
     }
     private void StopCrouch()
     {
@@ -140,9 +143,16 @@ public class Crouching : MonoBehaviour {
     }
 
     // Raycast functions 
-    /*private bool IsRoof()
+    private bool isRoof()
     {
-        
-    }*/
+        if (raycast.collider != null)
+        {
+            Debug.Log("RayCast: " + raycast.collider.gameObject.tag);
+            Debug.Log("Roof detected");
+            return true;
+        }
+        Debug.Log("No roof detected");
+        return false;
+    }
 }
 
