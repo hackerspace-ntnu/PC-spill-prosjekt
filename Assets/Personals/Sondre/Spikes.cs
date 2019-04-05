@@ -38,7 +38,8 @@ public class Spikes: MonoBehaviour {
         print("colliderCenter" + colliderCenter);
         print("contactPoint" + contactPoint);
 
-        collisionObject.GetComponent<Rigidbody2D>().velocity = new Vector2(1 * System.Math.Sign(colliderCenter.x - contactPoint.x), 1) * 4;
+        collisionObject.GetComponent<Movement>().velocity = new Vector2(1 * System.Math.Sign(colliderCenter.x - contactPoint.x), 1) * 4;
+        collisionObject.GetComponentInChildren<BoxCollider2D>().isTrigger = true;
 
         colTime = Time.time;
 
@@ -53,7 +54,7 @@ public class Spikes: MonoBehaviour {
         while (0.15f > curTime)
         {
             
-            thisCollisionObject.GetComponent<Movement>().velocity = new Vector2(1 * System.Math.Sign(colliderCenter.x - contactPoint.x), 1) * 4 * System.Math.Abs(1 - curTime); //Sender ikke i X, fix this
+            thisCollisionObject.GetComponent<Movement>().velocity = new Vector2(1 * System.Math.Sign(colliderCenter.x - contactPoint.x), 1) * 4 * System.Math.Abs(1 - curTime * 2);
             print("Nei");
             yield return null;
             curTime += Time.deltaTime;
@@ -63,7 +64,6 @@ public class Spikes: MonoBehaviour {
         {
             playerMovement.GetComponent<Movement>().takingDamage = false;
         }
-
-        
+        thisCollisionObject.GetComponentInChildren<BoxCollider2D>().isTrigger = false;
     }
 }
