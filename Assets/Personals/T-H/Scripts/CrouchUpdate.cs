@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Crouching : MonoBehaviour {
-   
+public class CrouchUpdate : MonoBehaviour
+{
     // Crouch variables
     public BoxCollider2D boxCollider;
     private Movement Mv;
@@ -53,7 +53,8 @@ public class Crouching : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
 
         // RayCast
         raycast = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + boxcolliderHeight), Vector2.up, roofDistance, Player_layer);
@@ -98,7 +99,7 @@ public class Crouching : MonoBehaviour {
     {
         boxCollider.offset = new Vector2(0, boxcolliderHeight * 0.125f); // Flytter boxcol opp
         boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight * 0.75f); // Gjør boxcol mindre
-        isCrouching = true; 
+        isCrouching = true;
         ActivateTriggers(triggers, false); // deaktiverer walltriggers
 
         if (!isSliding)
@@ -110,7 +111,6 @@ public class Crouching : MonoBehaviour {
         boxCollider.offset = new Vector2(0, 0);
         isCrouching = false;
         ActivateTriggers(triggers, true);
-        Mv.moveSpeed = moveSpeed;
     }
     private void ActivateTriggers(GameObject[] triggers, bool boolean)
     {
@@ -122,15 +122,14 @@ public class Crouching : MonoBehaviour {
 
     // Slide functions
     private void CheckStartSlide()
-    { 
-        if (isCrouching && timeSpentMoving >= timeSpentMovingMinimum && !isSliding && 
+    {
+        if (isCrouching && timeSpentMoving >= timeSpentMovingMinimum && !isSliding &&
             timeSpentNotSliding >= slideCooldown) // Skal egentlig ha med Mv.IsGrounded
         {
             Debug.Log("Sliding");
             Crouch();
             isSliding = true;
             slideTimer = 0;
-            Mv.moveSpeed = slideSpeed;
         }
     }
     private void calculateTimeSpentMoving()
@@ -153,8 +152,19 @@ public class Crouching : MonoBehaviour {
             Debug.Log("Roof detected");
             return true;
         }
-        Debug.Log("No roof detected");
         return false;
     }
-}
 
+
+    // Getters
+
+    public bool getIsCrouching()
+    {
+        return isCrouching;
+    }
+
+    public bool getIsSliding()
+    {
+        return isSliding;
+    }
+}
