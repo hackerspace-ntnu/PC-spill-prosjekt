@@ -5,12 +5,12 @@ using UnityEngine;
 public class TriggerDetector : MonoBehaviour
 {
 
-    private MovementV2 playerMovement;
+    private Movement playerMovement;
 
     // Use this for initialization
     void Start()
     {
-        playerMovement = transform.parent.GetComponent<MovementV2>();
+        playerMovement = transform.parent.GetComponent<Movement>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -23,16 +23,14 @@ public class TriggerDetector : MonoBehaviour
             }
 
 
-            //else if (this.gameObject.name == "Wall Trigger Left")
-            //{
-            //    playerMovement.wallTrigger = 1;
-            //    playerMovement.wallHit = true;
-            //}
-            //else
-            //{
-            //    playerMovement.wallTrigger = -1;
-            //    playerMovement.wallHit = true;
-            //}
+            else if (this.gameObject.name == "Wall Trigger Left")
+            {
+                playerMovement.SetWallTrigger(1);
+            }
+            else
+            {
+                playerMovement.SetWallTrigger(-1);
+            }
         }
     }
 
@@ -44,8 +42,7 @@ public class TriggerDetector : MonoBehaviour
         }
         else
         {
-            //playerMovement.wallHit = false;
+            playerMovement.SetWallTrigger(0);
         }
     }
-
 }

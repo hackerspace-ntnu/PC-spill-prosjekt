@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Spikes: MonoBehaviour {
-
+    /*
     private Movement playerMovement;
     private GameObject thisCollisionObject;
 
@@ -65,5 +65,5 @@ public class Spikes: MonoBehaviour {
             playerMovement.GetComponent<Movement>().takingDamage = false;
         }
         thisCollisionObject.GetComponentInChildren<BoxCollider2D>().isTrigger = false;
-    }
+    }*/
 }
