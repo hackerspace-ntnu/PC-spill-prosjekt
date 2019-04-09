@@ -2,24 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Crouching : MonoBehaviour {
-   
+public class CrouchUpdate : MonoBehaviour
+{
     // Crouch variables
     public BoxCollider2D boxCollider;
-    private Movement Mv;
     private float boxcolliderHeight;
     private float boxcolliderWidth;
     private Vector2 boxcolliderOffset;
     public GameObject[] triggers = new GameObject[2];
-    public bool isCrouching;
-    public float crouchSpeed = 3f;
+    private bool isCrouching;
 
     // Slide variables
     private bool isSliding;
-    public int slideSpeedModifier = 10;
-    private float slideSpeed;
     private double slideTimer = 0f;
-    private float moveSpeed;
     public float maxSlidingTime = 1f;
     public float timeSpentNotSliding = 2f;
     private float timeSpentMoving = 0f;
@@ -30,11 +25,11 @@ public class Crouching : MonoBehaviour {
     private RaycastHit2D raycast;
     private float roofDistance;
     private int Player_layer;
+    private bool hasReleased;
 
     // Use this for initialization
     void Start()
     {
-
         isSliding = false;
 
         // Henter verdier til boxcollider
@@ -42,35 +37,35 @@ public class Crouching : MonoBehaviour {
         boxcolliderWidth = boxCollider.size.x;
 
         // Henter movementspeeds
-        Mv = GetComponent<Movement>();
-        moveSpeed = Mv.moveSpeed;
-        slideSpeed = moveSpeed + slideSpeedModifier;
         timeSpentNotSliding = 2f;
 
         // Raycast
         roofDistance = boxcolliderHeight - (boxcolliderHeight * 0.75f);
         Player_layer = ~(LayerMask.GetMask("Player"));
+        hasReleased = false;
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
 
         // RayCast
         raycast = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + boxcolliderHeight), Vector2.up, roofDistance, Player_layer);
         Debug.DrawRay(new Vector2(transform.position.x, transform.position.y + boxcolliderHeight), Vector2.up * roofDistance, Color.red, 0, false);
-        isRoof();
 
-        // Crouch
-
+        // Crouch        
         if (Input.GetKeyDown(KeyCode.C) && !isCrouching) // Funker ikke med control i unity editor
             Crouch();
-
-        else if (Input.GetKeyUp(KeyCode.C) && raycast.collider == null)
+        else if ((hasReleased && raycast.collider == null) || (Input.GetKeyUp(KeyCode.C) && raycast.collider == null)) { // Hvis man slipper C og er ikke under tak
             StopCrouch();
+            hasReleased = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.C)) // Hvis man har sluppet C men er fortsatt under et tak
+            hasReleased = true;
+        
 
 
         // Slide
-
         CheckStartSlide(); // Sjekker om man skal starte å slide. Kommer før calculateTime pga !isCrouching.
         calculateTimeSpentMoving(); // Sjekker hvor lenge man har beveget seg før man prøver å slide
 
@@ -91,28 +86,25 @@ public class Crouching : MonoBehaviour {
 
     }
 
-
-
     // Crouch functions
     private void Crouch()
     {
         boxCollider.offset = new Vector2(0, boxcolliderHeight * 0.125f); // Flytter boxcol opp
         boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight * 0.75f); // Gjør boxcol mindre
-        isCrouching = true; 
+        isCrouching = true;
         ActivateTriggers(triggers, false); // deaktiverer walltriggers
 
-        if (!isSliding)
-            Mv.moveSpeed = crouchSpeed;
+        //if (!isSliding)
+            // Set crouchspeed
     }
     private void StopCrouch()
     {
-        boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight);
-        boxCollider.offset = new Vector2(0, 0);
+        boxCollider.size = new Vector2(boxcolliderWidth, boxcolliderHeight); // Restorer vanlig boxcol
+        boxCollider.offset = new Vector2(0, 0); // Restorer posisjon til boxcol
         isCrouching = false;
-        ActivateTriggers(triggers, true);
-        Mv.moveSpeed = moveSpeed;
+        ActivateTriggers(triggers, true); // reaktiverer walltriggers
     }
-    private void ActivateTriggers(GameObject[] triggers, bool boolean)
+    private void ActivateTriggers(GameObject[] triggers, bool boolean) // For å deaktivere wall triggers
     {
         foreach (GameObject trigger in triggers)
         {
@@ -122,21 +114,20 @@ public class Crouching : MonoBehaviour {
 
     // Slide functions
     private void CheckStartSlide()
-    { 
-        if (isCrouching && timeSpentMoving >= timeSpentMovingMinimum && !isSliding && 
-            timeSpentNotSliding >= slideCooldown) // Skal egentlig ha med Mv.IsGrounded
+    {
+        if (isCrouching && timeSpentMoving >= timeSpentMovingMinimum && !isSliding &&
+            timeSpentNotSliding >= slideCooldown) // Skal egentlig ha med Movement.IsGrounded
         {
             Debug.Log("Sliding");
             Crouch();
             isSliding = true;
             slideTimer = 0;
-            Mv.moveSpeed = slideSpeed;
         }
     }
-    private void calculateTimeSpentMoving()
+    private void calculateTimeSpentMoving() 
     {
         float moveHorizontal = Mathf.Abs(Input.GetAxis("Horizontal"));
-        if (moveHorizontal == 1 && !isCrouching)
+        if (moveHorizontal == 1 && !isCrouching) // Hvis man beveger seg maks i en retning og ikke allerede croucher
             timeSpentMoving += Time.deltaTime;
 
         else
@@ -144,17 +135,15 @@ public class Crouching : MonoBehaviour {
 
     }
 
-    // Raycast functions 
-    private bool isRoof()
+    // Getters
+
+    public bool getIsCrouching()
     {
-        if (raycast.collider != null)
-        {
-            Debug.Log("RayCast: " + raycast.collider.gameObject.tag);
-            Debug.Log("Roof detected");
-            return true;
-        }
-        Debug.Log("No roof detected");
-        return false;
+        return isCrouching;
+    }
+
+    public bool getIsSliding()
+    {
+        return isSliding;
     }
 }
-
