@@ -2,27 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FollowObject : MonoBehaviour {
-
-    public GameObject objToFollow;
+public class FamiliarController : MonoBehaviour {
+    
+    public GameObject player;
+    public SpeechBubble speechBubble;
     public Vector2 targetPos;
 
     public float distanceFactor;
-    public float twitchFactor;
-    public float twitchTolerance;
     public float minVel;
 
+    private GameObject objToFollow;
     private Rigidbody2D thisRBody;
     private Rigidbody2D rBodyOfObj;
     private Vector3 worldTargetPos;
     private Vector2 defaultTarget;
 
 	// Use this for initialization
-	void Start () { 
+	void Start () {
+        player = transform.parent.gameObject;
 
         // Initialize object to follow. Set to parent object if not set in editor.
         if(objToFollow == null) {
-            objToFollow = transform.parent.gameObject;
+            objToFollow = player;
         }
         rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
         thisRBody = GetComponent<Rigidbody2D>();
@@ -37,24 +38,31 @@ public class FollowObject : MonoBehaviour {
         // If player/object is moving to the left, place familiar on the right of player/object.
         if (rBodyOfObj.velocity.x < -0.1f) {
             if (targetPos.x < 0.0f) {
-                targetPos = new Vector2(targetPos.x * -1.0f, targetPos.y);
+                FlipSide(Direction.LEFT);
             }
         }
 
         // If player/object is moving to the right, place familiar on the left of player/object.
         if (rBodyOfObj.velocity.x > 0.1f) {
             if (targetPos.x > 0.0f) {
-                targetPos = new Vector2(targetPos.x * -1.0f, targetPos.y);
+                FlipSide(Direction.RIGHT);
             }
+        }
+
+        if(objToFollow.tag != "Player") {
+            if(player.transform.position.x < objToFollow.transform.position.x) {
+                FlipSide(Direction.LEFT);
+            }
+
+            if (player.transform.position.x > objToFollow.transform.position.x) {
+                FlipSide(Direction.RIGHT);
+            }
+
         }
 
         // Set the target for the familiar in world coordinates.
         worldTargetPos = new Vector3(objToFollow.transform.position.x + targetPos.x, objToFollow.transform.position.y + targetPos.y, 0.0f);
-
-        // Set random twitch movment when familiar is close to player position.
-        if (objToFollow.tag == "Player" && thisRBody.velocity.magnitude < twitchTolerance) {
-            worldTargetPos = new Vector3(worldTargetPos.x + Random.Range(-twitchFactor, twitchFactor), worldTargetPos.y + Random.Range(-twitchFactor, twitchFactor));
-        }
+        
     }
 
     private void FixedUpdate() {
@@ -85,14 +93,31 @@ public class FollowObject : MonoBehaviour {
 
     public void ResetAttachment() {
         if(objToFollow.tag != "Player") {
-            objToFollow = GameObject.FindGameObjectWithTag("Player");
+            objToFollow = player;
             rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
 
             targetPos = defaultTarget;
         }
     }
 
+    private void FlipSide(Direction direction) {
+        targetPos = new Vector2(targetPos.x * -1.0f, targetPos.y);
+        speechBubble.Flip(direction);
+    }
+
     public Vector3 GetTargetPos() {
         return worldTargetPos;
+    }
+
+    public GameObject GetTarget() {
+        return objToFollow;
+    }
+
+    public void ActivateSpeecBubble(bool active) {
+        speechBubble.ActivatePanel(active);
+    }
+
+    public void ActivateSpeecBubble(bool active, string text) {
+        speechBubble.ActivatePanel(active, text);
     }
 }

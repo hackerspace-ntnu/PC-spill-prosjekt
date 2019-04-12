@@ -4,33 +4,32 @@ using UnityEngine;
 
 public class Torch : MonoBehaviour {
 
-    public GameObject familiar;
-    public GameObject player;
-    public float minDistance;
+    private GameObject familiar;
+    private FamiliarController fController;
 
-    private Renderer mRenderer;
-    private float distanceToPlayer;
+    private bool hasShownText;
+    private float textTimer;
 
     // Use this for initialization
     void Start () {
         familiar = GameObject.FindGameObjectWithTag("Familiar");
-        player = GameObject.FindGameObjectWithTag("Player");
-        mRenderer = GetComponent<Renderer>();
+        fController = familiar.GetComponent<FamiliarController>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(mRenderer.isVisible) {
-            distanceToPlayer = (transform.position - player.transform.position).magnitude;
-
-            if(distanceToPlayer <= minDistance) {
-                familiar.GetComponent<FollowObject>().AttachToObject(transform.gameObject, new Vector2(0.0f, 1.0f));
-            }
-        }
-
-        if(!mRenderer.isVisible || distanceToPlayer > minDistance) {
-            familiar.GetComponent<FollowObject>().ResetAttachment();
-        }
-
+        
 	}
+
+    private void OnTriggerStay2D(Collider2D collision) {
+        if(collision.gameObject.tag == "Player") {
+            familiar.GetComponent<FamiliarController>().AttachToObject(transform.gameObject, new Vector2(0.0f, 1.0f));
+            fController.ActivateSpeecBubble(true, "I can help light the way!");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision) {
+        familiar.GetComponent<FamiliarController>().ResetAttachment();
+        fController.ActivateSpeecBubble(false);
+    }
 }
