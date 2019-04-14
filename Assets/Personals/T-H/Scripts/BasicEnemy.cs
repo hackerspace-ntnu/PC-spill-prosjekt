@@ -10,13 +10,13 @@ public class BasicEnemy : MonoBehaviour
     private int currentHealth;
 
     // Navigation
-    NavMeshAgent navMeshAgent;
+    
 
 
 
     private void Awake()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        
     }
 
     // Start is called before the first frame update
