@@ -4,10 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
+<<<<<<< HEAD
   - Hazzard
+=======
+>>>>>>> 24c68ab979026c4079082981f6870d9169249171
   - Torch
   - Familiar
-  - Standard
   layers:
   - Default
   - TransparentFX
