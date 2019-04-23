@@ -7,6 +7,7 @@ TagManager:
   - Hazzard
   - Torch
   - Familiar
+  - Standard
   layers:
   - Default
   - TransparentFX
