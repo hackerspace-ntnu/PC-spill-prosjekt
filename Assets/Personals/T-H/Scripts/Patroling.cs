@@ -14,11 +14,14 @@ public class Patroling : MonoBehaviour
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
     private Vector2 currentPosition;
-    private Vector2 destinationPosition; 
+    private Vector2 destinationPosition;
+    private IEnumerator waitEnumerator;
+
     public float moveTime = 1f; // How fast do you move
     public float vicinityMargin = 0.01f; // How close is close enough to a point
     //private float inverseMoveTime; 
-
+    public float waitTime;
+    public bool shouldWaitAtPoints;
 
 
     void Start()
@@ -29,19 +32,38 @@ public class Patroling : MonoBehaviour
         currentPosition = transform.position;
         destinationPosition = points[destPoint].position;
         //inverseMoveTime = 1 / moveTime;
+        StartCoroutine(Move());
     }
 
     void Update()
     {
-        if (Mathf.Abs(currentPosition.x - destinationPosition.x) <= vicinityMargin) // If the enemy is close enough to the point according to vicinitymargin
-        {
-            GotoNextPoint();
-        }
-
-        AttemptMove();
-        Debug.Log(currentPosition.x - destinationPosition.x);
+        //StartCoroutine(Move());
     }
 
+    IEnumerator Move()
+    {
+        while (true)
+        {
+            if (Mathf.Abs(currentPosition.x - destinationPosition.x) <= vicinityMargin) // If the enemy is close enough to the point according to vicinitymargin
+            {
+                if (shouldWaitAtPoints)
+                {
+                    if (waitTime < 0)
+                    {
+                        waitTime = 0;
+                        Debug.Log("wait time must be greater than 0");
+                    }
+                    yield return new WaitForSeconds(waitTime);
+                }
+                GotoNextPoint();
+                Debug.Log("Changing points");
+            }
+            AttemptMove();
+
+            Debug.Log(currentPosition.x - destinationPosition.x);
+            yield return null;
+        }
+    }
 
     void GotoNextPoint()
     {
@@ -83,22 +105,18 @@ public class Patroling : MonoBehaviour
     {
         Vector2 destination;
         if (right)
-        {
             destination = currentPosition + new Vector2(moveTime, 0);
-        }
         else
-        {
             destination = currentPosition - new Vector2(moveTime, 0);
-        }
 
         boxCollider.enabled = false; // So that boxcollider doesn't interfere
         RaycastHit2D hit = Physics2D.Linecast(currentPosition, destination); // Need layer check here
         boxCollider.enabled = true;
+
         if (hit.collider == null) // If nothing is detected by ray
-        {
-            return false; 
-        }
+            return false;
+
         Debug.Log("Obstacle in the pathway");
-        return true; 
+        return true;
     }
 }
