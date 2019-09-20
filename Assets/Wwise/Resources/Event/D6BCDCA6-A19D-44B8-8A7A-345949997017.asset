@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2512dc673b1d42946ae85254d1adc2dd, type: 3}
+  m_Name: D6BCDCA6-A19D-44B8-8A7A-345949997017
+  m_EditorClassIdentifier: 
+  objectName: Player_Jump_Ground
+  id: 2008461481
+  guid: D6BCDCA6-A19D-44B8-8A7A-345949997017

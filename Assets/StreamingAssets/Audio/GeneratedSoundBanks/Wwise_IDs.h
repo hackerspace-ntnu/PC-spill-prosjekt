@@ -14,10 +14,24 @@ namespace AK
     namespace EVENTS
     {
         static const AkUniqueID PLAYER_FOOTSTEP = 2453392179U;
+        static const AkUniqueID PLAYER_JUMP = 1305133589U;
+        static const AkUniqueID PLAYER_JUMP_AIR = 3229483116U;
+        static const AkUniqueID PLAYER_JUMP_GROUND = 2008461481U;
     } // namespace EVENTS
 
     namespace SWITCHES
     {
+        namespace PLAYER_GROUNDED
+        {
+            static const AkUniqueID GROUP = 4236329311U;
+
+            namespace SWITCH
+            {
+                static const AkUniqueID AIRBORNE = 1785231519U;
+                static const AkUniqueID GROUNDED = 2907122923U;
+            } // namespace SWITCH
+        } // namespace PLAYER_GROUNDED
+
         namespace PLAYER_MOVEMENTSPEED
         {
             static const AkUniqueID GROUP = 2471758783U;

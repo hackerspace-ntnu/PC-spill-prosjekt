@@ -4,14 +4,32 @@ using UnityEngine;
 
 public class Character_animation_event : MonoBehaviour {
 
-    public AK.Wwise.Event MyEvent;
-	// Use this for initialization
-	public void PlayFootstepSound () {
-        MyEvent.Post(gameObject);
+    public bool Debug_Enabled = false;
+
+    public AK.Wwise.Event Footstep;
+    public AK.Wwise.Event Jump;
+    public AK.Wwise.Event Double_Jump;
+
+    // Use this for initialization
+    public void PlayFootstepSound () {
+        if (Debug_Enabled) { Debug.Log("Footstep sound triggered."); }
+        Footstep.Post(gameObject);
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    public void PlayJumpSound()
+    {
+        if (Debug_Enabled) { Debug.Log("Jump sound triggered."); }
+        Double_Jump.Post(gameObject);
+    }
+
+    public void PlayDoubleJumpSound()
+    {
+        if (Debug_Enabled) { Debug.Log("Jump sound triggered."); }
+        Double_Jump.Post(gameObject);
+    }
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 }

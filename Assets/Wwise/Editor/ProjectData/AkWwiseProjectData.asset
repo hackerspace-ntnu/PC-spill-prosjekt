@@ -190,7 +190,7 @@ MonoBehaviour:
     ParentPhysicalPath: 
     guid: 4f70d6f4767be34e82c5869219f25575
     GuidInternal: 
-    m_lastTime: -8586493175939091222
+    m_lastTime: -8586492997056341150
     List:
     - name: All_In_One
       guid: 4dab60b4fa48da4ab5b3dfdfc67d4862
@@ -455,9 +455,8 @@ MonoBehaviour:
     List: []
   ExpandedItems:
   - /PC-spill-prosjekt
-  - /PC-spill-prosjekt/Switches
-  - /PC-spill-prosjekt/Switches/General
-  - /PC-spill-prosjekt/Switches/Player
-  - /PC-spill-prosjekt/Switches/Player/Player_MovementSpeed
+  - /PC-spill-prosjekt/Events
+  - /PC-spill-prosjekt/Events/Player
+  - /PC-spill-prosjekt/Events/Player/SoundBankSpecific
   autoPopulateEnabled: 1
   CurrentPluginConfig: 
