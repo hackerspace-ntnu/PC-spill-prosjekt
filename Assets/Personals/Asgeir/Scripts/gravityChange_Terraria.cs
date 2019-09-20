@@ -12,7 +12,7 @@ public class gravityChange_Terraria : MonoBehaviour {
 
     void flipGravity()
     {
-        movement.ourGravity *= -1;
+        movement.SetFlipGravity();
         transform.Rotate(new Vector3(0, 0, 180));
 
         if (this.tag == "Player")

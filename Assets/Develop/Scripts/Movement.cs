@@ -38,11 +38,11 @@ public class Movement : MonoBehaviour
     private float dashDuration = 0.2f;
 
     private int wallJumpDirection;
+    private int flipGravityScale = 1;
 
 	private MovementState state;
 	private Rigidbody2D rigidBody;
 
-	// TODO: ensure dirty bit is always set
 	private bool isVelocityDirty = false;
 	private Vector2 newVelocity; // for setting velocity in FixedUpdate()
 	private float newGravityScale; // for setting velocity in FixedUpdate()
@@ -62,14 +62,15 @@ public class Movement : MonoBehaviour
 		state = MovementState.STANDARD;
 		rigidBody = GetComponent<Rigidbody2D>();
 		newVelocity = rigidBody.velocity;
-		newGravityScale = baseGravityScale;
+		newGravityScale = baseGravityScale * flipGravityScale;
         maxVelocityFix = 1f;
 	}
 
 	void Update()
 	{
+        /*
 		if (!isVelocityDirty)
-			newVelocity = rigidBody.velocity;
+			newVelocity = rigidBody.velocity;*/
 
         maxVelocityY = 12f;
         HandleChangeState();
@@ -127,7 +128,7 @@ public class Movement : MonoBehaviour
                     state = MovementState.STANDARD;
             }
         }
-        else if (Input.GetKeyDown(jumpKey) && wallTrigger == 0) // If just pressed jumpKey and there's no collision detected by the wallTriggers:
+        else if (Input.GetKeyDown(jumpKey) && (wallTrigger == 0 || isGrounded)) // If just pressed jumpKey and there's no collision detected by the wallTriggers:
         {
             if (isGrounded)
                 state = MovementState.JUMPING;
@@ -152,26 +153,29 @@ public class Movement : MonoBehaviour
 	{
         HandleHorizontalInput();
         isVelocityDirty = true;
-	}
+        if (isGrounded)
+        {
+            hasDashed = false;
+        }
+    }
 
 	private void JumpingState()
 	{
-		switch (state)
+        switch (state)
 		{
 			case MovementState.JUMPING:
 				Jump(1.0f);
 				if (Input.GetKey(jumpKey) && IsVelocityUpwards())
-					newGravityScale = JUMPING_GRAVITY_SCALE_MULTIPLIER * baseGravityScale;
+					newGravityScale = JUMPING_GRAVITY_SCALE_MULTIPLIER * baseGravityScale * flipGravityScale;
 				else
 				{
-					newGravityScale = baseGravityScale;
+					newGravityScale = baseGravityScale * flipGravityScale;
 					state = MovementState.STANDARD;
 				}
 				break;
 
 			case MovementState.AIR_JUMPING:
 				Jump(0.8f);
-				Debug.Log("air jumping");
 				hasAirJumped = true;
 				state = MovementState.STANDARD;
 				break;
@@ -183,13 +187,14 @@ public class Movement : MonoBehaviour
         hasDashed = true;
         if (Time.time - lastActionTime <= dashDuration)
         {
-            newVelocity = new Vector2(spriteDirection * dashSpeed, 0);
+            newVelocity = new Vector2(spriteDirection * dashSpeed * flipGravityScale, 0);
             newGravityScale = 0;
         }
         else
         {
             state = MovementState.STANDARD;
-            newGravityScale = baseGravityScale;
+            newGravityScale = baseGravityScale * flipGravityScale;
+            newVelocity.x = 0;
         }
     }
 
@@ -200,12 +205,12 @@ public class Movement : MonoBehaviour
         wallJumpDirection = wallTrigger;
 
         if (rigidBody.velocity.y * Math.Sign(newGravityScale) <= 0)
-            newGravityScale = baseGravityScale * WALL_SLIDE_GRAVITY_SCALE_MULTIPLIER;
+            newGravityScale = baseGravityScale * WALL_SLIDE_GRAVITY_SCALE_MULTIPLIER * flipGravityScale;
 
         if (Input.GetKeyDown(jumpKey))
         {
             rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
-            newGravityScale = baseGravityScale * JUMPING_GRAVITY_SCALE_MULTIPLIER;
+            newGravityScale = baseGravityScale * JUMPING_GRAVITY_SCALE_MULTIPLIER * flipGravityScale;
             wallJumpTime = Time.time;
             jumpTime = Time.time;
             WallJumpingState();
@@ -217,7 +222,7 @@ public class Movement : MonoBehaviour
 
             return;
         }
-        else if (Math.Abs(rigidBody.velocity.y) <= 6 && wallTrigger == -Math.Sign(newVelocity.x))
+        else if (Math.Abs(rigidBody.velocity.y) <= 6 && wallTrigger == -Math.Sign(newVelocity.x * flipGravityScale)) //wallcling if input towards wall
         {
             rigidBody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }
@@ -231,43 +236,29 @@ public class Movement : MonoBehaviour
 
     private void WallJumpingState()
     {
-        if (Time.time - wallJumpTime <= WALL_JUMP_DURATION / 2)
-        {
-            if (horizontalInput != 0)
-                newVelocity = new Vector2(wallJumpDirection * dashSpeed / 2, jumpSpeed * 0.64f * Math.Sign(newGravityScale));
-            else
-                newVelocity = new Vector2(wallJumpDirection * movementSpeed / 2, jumpSpeed * 0.75f * Math.Sign(newGravityScale));
-        }
-        else if (Time.time - wallJumpTime <= WALL_JUMP_DURATION)
-        {
-            horizontalInput = Input.GetAxis("Horizontal");
-            newVelocity = new Vector2(horizontalInput * dashSpeed / 2, jumpSpeed * 0.64f * Math.Sign(newGravityScale));
-        }
+        if (Math.Abs(horizontalInput) >= 0.3)
+            newVelocity = new Vector2(wallJumpDirection * dashSpeed, jumpSpeed * 0.64f) * flipGravityScale; //jumpSpeed * 0.64f * Math.Sign(newGravityScale)
         else
-        {
-            newGravityScale = baseGravityScale;
-            state = MovementState.STANDARD;
-        }
-
+            newVelocity = new Vector2(wallJumpDirection * movementSpeed, jumpSpeed * 0.75f) * flipGravityScale; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
+        state = MovementState.STANDARD;
         isVelocityDirty = true;
-        Debug.Log("WallJumpingState");
     }
 
-	private void GrapplingState()
+    private void GrapplingState()
 	{
 
 	}
 
-    private void DamagedState()
+    private void DamagedState() //Fix this shit
     {
-
         hasAirJumped = false;
         hasDashed = false;
     }
 
     void FixedUpdate()
 	{
-        if (Math.Sign(baseGravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY || Math.Sign(baseGravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY)
+        rigidBody.AddForce(new Vector2(0, -rigidBody.velocity.y * rigidBody.mass * 2));
+        if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY || Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY)
         {
             maxVelocityFix = 0.8f;
         }
@@ -276,26 +267,46 @@ public class Movement : MonoBehaviour
         {
             maxVelocityFix = 1f;
         }
+        
+        if (newVelocity.x == 0 && state != MovementState.DASHING && state != MovementState.JUMPING) //Check speed issues, also latency
+        {
+            rigidBody.AddForce(new Vector2(-rigidBody.velocity.x * rigidBody.mass, 0), ForceMode2D.Impulse);
+        }
+        else /*if (Math.Abs(rigidBody.velocity.x) <= movementSpeed || Math.Sign(newVelocity.x) != Math.Sign(rigidBody.velocity.x))*/
+        {
+            rigidBody.AddForce(new Vector2(newVelocity.x - rigidBody.velocity.x, -rigidBody.velocity.y * (1 - maxVelocityFix)), ForceMode2D.Impulse);
+        }
 
-        rigidBody.velocity = new Vector2(newVelocity.x, newVelocity.y * maxVelocityFix); // Ta inn MaxVelocityFix, mye renere
-		isVelocityDirty = false;
+        if (Math.Abs(newVelocity.y) > 0) //Might have to multiply by flipGravityScale instead
+        {
+            rigidBody.AddForce(new Vector2(0, newVelocity.y), ForceMode2D.Impulse);
+            newVelocity.y = 0;
+        }
+        //rigidBody.velocity = new Vector2(newVelocity.x, newVelocity.y * maxVelocityFix); // Ta inn maxVelocityFix, mye renere
+        isVelocityDirty = false;
 		if (rigidBody.gravityScale != newGravityScale)
 			rigidBody.gravityScale = newGravityScale;
-
+        //Legg til air drag
+        //Gjør at når du prøver å endre retning i luften, så blir kraften mot deg ganget med en konstant,
+        //slik at man ikke kan endre retning umiddelbart
 	}
 
     private void HandleHorizontalInput()
     {
-        if (Math.Abs(horizontalInput) <= Math.Abs(Input.GetAxis("Horizontal")))
+        if (Math.Abs(Input.GetAxis("Horizontal")) <= 0.1) //Beholde?
+        {
+            horizontalInput = 0;
+        }
+        else if (Math.Abs(horizontalInput) <= Math.Abs(Input.GetAxis("Horizontal")))
         {
             horizontalInput = Input.GetAxis("Horizontal");
             if (Math.Abs(horizontalInput) > HORIZONTAL_INPUT_RUNNING_THRESHOLD)
             {
-                newVelocity.x = Math.Sign(horizontalInput) * movementSpeed; // Set horizontalInput to max
+                newVelocity.x = Math.Sign(horizontalInput) * movementSpeed * flipGravityScale; // Set horizontalInput to max
             }
             else
             {
-                newVelocity.x = horizontalInput * movementSpeed;
+                newVelocity.x = horizontalInput * movementSpeed * flipGravityScale;
             }
         }
         else
@@ -312,10 +323,12 @@ public class Movement : MonoBehaviour
 
     private void Jump(float scale)
     {
-        newVelocity.y = jumpSpeed * scale * Math.Sign(rigidBody.gravityScale);
+        newVelocity.y = (jumpSpeed * scale + Math.Abs(rigidBody.velocity.y)) * flipGravityScale;
         isVelocityDirty = true;
         jumpTime = Time.time;
     }
+
+    //VIDERE ER DET BARE GETTERS
 
     public Vector2 GetVelocity()
     {
@@ -332,9 +345,14 @@ public class Movement : MonoBehaviour
         return isGrounded;
     }
 
-    public float GetHorizontalInput()
+    public float GetHorizontalInputRaw()
     {
         return horizontalInput;
+    }
+
+    public float GetHorizontalInput()
+    {
+        return horizontalInput * flipGravityScale;
     }
 
     public int GetPlayerMovementState()
@@ -349,12 +367,35 @@ public class Movement : MonoBehaviour
         {
             hasAirJumped = false;
             hasDashed = false;
-            newGravityScale = baseGravityScale;
+            newGravityScale = baseGravityScale * flipGravityScale;
         }
     }
 
     public void SetWallTrigger(int trigger)
     {
         wallTrigger = trigger;
+    }
+
+    public void SetFlipGravity() //Ta en titt på dette senere
+    {
+        flipGravityScale *= -1;
+        if (flipGravityScale == 1)
+        {
+            newGravityScale *= -1;
+        }
+        else
+        {
+            newGravityScale *= flipGravityScale;
+        }
+    }
+
+    public int GetFlipGravity()
+    {
+        return flipGravityScale;
+    }
+
+    public float GetGravityScale()
+    {
+        return newGravityScale;
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class wallClip : MonoBehaviour {
+public class wallClip : MonoBehaviour { //Bror, bare få spilleren til å ikke kollidere med laget vi har veggene på
 
     private Collider col;
 
@@ -33,7 +33,7 @@ public class wallClip : MonoBehaviour {
         transform.GetChild(2).GetComponent<GreatCollider>().enabled = true;
 
         transform.GetChild(2).GetComponent<GreatCollider>().isColliding = false;
-        GetComponent<Movement>().isGrounded = false;
+        GetComponent<Movement>().SetGrounded(false);
     }
 
     public void FixedUpdate()

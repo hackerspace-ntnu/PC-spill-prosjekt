@@ -43,7 +43,7 @@ public class Crouching : MonoBehaviour {
 
         // Henter movementspeeds
         Mv = GetComponent<Movement>();
-        moveSpeed = Mv.moveSpeed;
+        moveSpeed = Mv.movementSpeed;
         slideSpeed = moveSpeed + slideSpeedModifier;
         timeSpentNotSliding = 2f;
 
@@ -102,7 +102,7 @@ public class Crouching : MonoBehaviour {
         ActivateTriggers(triggers, false); // deaktiverer walltriggers
 
         if (!isSliding)
-            Mv.moveSpeed = crouchSpeed;
+            Mv.movementSpeed = crouchSpeed; //NEI, IKKE GJØR DETTE
     }
     private void StopCrouch()
     {
@@ -110,7 +110,7 @@ public class Crouching : MonoBehaviour {
         boxCollider.offset = new Vector2(0, 0);
         isCrouching = false;
         ActivateTriggers(triggers, true);
-        Mv.moveSpeed = moveSpeed;
+        Mv.movementSpeed = moveSpeed; //NEI NEI NEI
     }
     private void ActivateTriggers(GameObject[] triggers, bool boolean)
     {
@@ -130,7 +130,7 @@ public class Crouching : MonoBehaviour {
             Crouch();
             isSliding = true;
             slideTimer = 0;
-            Mv.moveSpeed = slideSpeed;
+            Mv.movementSpeed = slideSpeed; //NEI, SLEM
         }
     }
     private void calculateTimeSpentMoving()

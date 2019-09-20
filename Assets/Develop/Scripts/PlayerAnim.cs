@@ -13,6 +13,7 @@ public class PlayerAnim : MonoBehaviour {
     private bool isGrounded;
     private int playerState;
     private int wallTrigger;
+    private int flipGravityScale;
     private float moveHorizontal;
 
 
@@ -34,6 +35,7 @@ public class PlayerAnim : MonoBehaviour {
         moveHorizontal = playerMovement.GetComponent<Movement>().GetHorizontalInput();
         wallTrigger = playerMovement.GetComponent<Movement>().GetWallTrigger();
         playerState = playerMovement.GetComponent<Movement>().GetPlayerMovementState();
+        flipGravityScale = playerMovement.GetComponent<Movement>().GetFlipGravity();
 
         anim.SetBool("isGrounded", isGrounded);
 
@@ -67,13 +69,13 @@ public class PlayerAnim : MonoBehaviour {
             return;
         }
 
-        else if (System.Math.Sign(moveHorizontal) == -1 && playerState != 3)
+        else if (System.Math.Sign(moveHorizontal) * flipGravityScale == -1 && playerState != 3)
         {
             spriteRenderer.flipX = true;
             playerMovement.GetComponent<Movement>().spriteDirection = -1;
         }
 
-        else if (System.Math.Sign(moveHorizontal) == 1 && playerState != 3)
+        else if (System.Math.Sign(moveHorizontal) * flipGravityScale == 1 && playerState != 3)
         {
             spriteRenderer.flipX = false;
             playerMovement.GetComponent<Movement>().spriteDirection = 1;
@@ -92,7 +94,7 @@ public class PlayerAnim : MonoBehaviour {
             anim.SetBool("isDashing", false);
         }
 
-        if (rigidBodyVelocity.y * System.Math.Sign(playerMovement.GetComponent<Movement>().baseGravityScale) < -1)
+        if (rigidBodyVelocity.y * System.Math.Sign(playerMovement.GetComponent<Movement>().GetGravityScale()) < -1)
         {
             /*
             anim.SetBool("isFalling", true);
@@ -104,7 +106,7 @@ public class PlayerAnim : MonoBehaviour {
             anim.SetBool("isGrounded", false);
         }
 
-        if (rigidBodyVelocity.y * System.Math.Sign(playerMovement.GetComponent<Movement>().baseGravityScale) > 0 && !isGrounded)
+        if (rigidBodyVelocity.y * System.Math.Sign(playerMovement.GetComponent<Movement>().GetGravityScale()) > 0 && !isGrounded)
         {
             anim.SetBool("isJumping", true);
             anim.SetBool("isGrounded", false);
@@ -116,7 +118,7 @@ public class PlayerAnim : MonoBehaviour {
             anim.SetBool("isJumping", false);
         }
 
-        if (rigidBodyVelocity.x != 0)
+        if (rigidBodyVelocity.x != 0 && moveHorizontal != 0)
         {
             anim.SetBool("isRunning", true);
         }

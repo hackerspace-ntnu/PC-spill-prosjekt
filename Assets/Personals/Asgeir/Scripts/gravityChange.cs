@@ -10,20 +10,26 @@ public class gravityChange : MonoBehaviour
 {
     public CinemachineVirtualCamera CM_camera;
 
-    public Movement movement;
+    private Movement movement;
     public Transform TF_camera;
 
-    public float duration = 1f;
+    private float duration = 1f;
 
     //Rotation variables
     private bool rotate = false;
-    public float elapsed = 0.0f;
+    private float elapsed = 0.0f;
 
     private bool wait = false;
 
+    void Start()
+    {
+        movement = GetComponent<Movement>();
+    }
+
+
     void flipGravity()
     {
-        movement.ourGravity *= -1;
+        movement.SetFlipGravity();
         transform.Rotate(new Vector3(0, 0, 180));
 
         if (this.tag == "Player")
@@ -41,14 +47,10 @@ public class gravityChange : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-
-    }
 
     void Update()
     {
-        if (movement.isGrounded) //Should
+        if (movement.GetGrounded()) //Should
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
