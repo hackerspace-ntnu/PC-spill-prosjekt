@@ -1,0 +1,62 @@
+
+Character_03.png
+size: 2511,2511
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm_left
+  rotate: true
+  xy: 859, 80
+  size: 374, 1179
+  orig: 376, 1181
+  offset: 1, 1
+  index: -1
+arm_right
+  rotate: true
+  xy: 859, 462
+  size: 481, 1350
+  orig: 483, 1352
+  offset: 1, 1
+  index: -1
+body
+  rotate: false
+  xy: 8, 1020
+  size: 843, 1483
+  orig: 845, 1485
+  offset: 1, 1
+  index: -1
+hair
+  rotate: false
+  xy: 8, 46
+  size: 843, 966
+  orig: 845, 968
+  offset: 1, 1
+  index: -1
+head
+  rotate: true
+  xy: 859, 951
+  size: 873, 1134
+  orig: 875, 1136
+  offset: 1, 1
+  index: -1
+leg_left
+  rotate: false
+  xy: 2217, 274
+  size: 286, 714
+  orig: 288, 716
+  offset: 1, 1
+  index: -1
+leg_right
+  rotate: false
+  xy: 2001, 996
+  size: 427, 828
+  orig: 429, 830
+  offset: 1, 1
+  index: -1
+sword
+  rotate: false
+  xy: 859, 1832
+  size: 1506, 671
+  orig: 1508, 673
+  offset: 1, 1
+  index: -1
