@@ -187,7 +187,7 @@ public class Movement : MonoBehaviour
         hasDashed = true;
         if (Time.time - lastActionTime <= dashDuration)
         {
-            newVelocity = new Vector2(spriteDirection * dashSpeed * flipGravityScale, 0);
+            newVelocity = new Vector2(spriteDirection * dashSpeed * flipGravityScale, -rigidBody.velocity.y);
             newGravityScale = 0;
         }
         else
@@ -266,6 +266,11 @@ public class Movement : MonoBehaviour
         else
         {
             maxVelocityFix = 1f;
+        }
+
+        if (!isGrounded && Math.Sign(newVelocity.x) != Math.Sign(rigidBody.velocity.x))
+        {
+            newVelocity.x *= 0.5f;
         }
         
         if (newVelocity.x == 0 && state != MovementState.DASHING && state != MovementState.JUMPING) //Check speed issues, also latency
