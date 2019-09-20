@@ -33,7 +33,7 @@ public class wallClip : MonoBehaviour {
         transform.GetChild(2).GetComponent<GreatCollider>().enabled = true;
 
         transform.GetChild(2).GetComponent<GreatCollider>().isColliding = false;
-        GetComponent<Movement>().isGrounded = false;
+        GetComponent<Movement>().SetGrounded(false);
     }
 
     public void FixedUpdate()

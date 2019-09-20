@@ -13,7 +13,7 @@ public class crouchReplacer : MonoBehaviour {
 
     private void Update()
     {
-        if (GetComponent<Movement>().isGrounded && Input.GetKey(KeyCode.Z))
+        if (GetComponent<Movement>().GetGrounded() && Input.GetKey(KeyCode.Z))
         {
             isCrouching = true;
         }

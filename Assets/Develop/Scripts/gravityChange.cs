@@ -23,7 +23,7 @@ public class gravityChange : MonoBehaviour
 
     void flipGravity()
     {
-        movement.ourGravity *= -1;
+        movement.SetFlipGravity();
         transform.Rotate(new Vector3(0, 0, 180));
 
         if (this.tag == "Player")
@@ -48,7 +48,7 @@ public class gravityChange : MonoBehaviour
 
     void Update()
     {
-        if (movement.isGrounded) //Should
+        if (movement.GetGrounded()) //Should
         {
             if (Input.GetKeyDown(KeyCode.F))
             {

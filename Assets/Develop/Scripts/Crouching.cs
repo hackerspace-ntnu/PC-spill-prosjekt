@@ -38,7 +38,7 @@ public class Crouching : MonoBehaviour {
 
         // Henter movementspeeds
         Mv2 = GetComponent<Movement>();
-        moveSpeed = Mv2.moveSpeed;
+        moveSpeed = Mv2.movementSpeed;
         slideSpeed = moveSpeed + slideSpeedModifier;
         timeSpentNotSliding = 2f;
     }
@@ -48,7 +48,7 @@ public class Crouching : MonoBehaviour {
         Debug.Log(timeSpentNotSliding);
 
         // Crouch
-        if (Input.GetKey(KeyCode.LeftControl) && Mv2.isGrounded && !isCrouching) // Må vel egentlig bruke GetKeyDown
+        if (Input.GetKey(KeyCode.LeftControl) && Mv2.GetGrounded() && !isCrouching) // Må vel egentlig bruke GetKeyDown
         {
             Crouch();
         }
@@ -72,7 +72,7 @@ public class Crouching : MonoBehaviour {
         {
             isSliding = true;
             slideTimer = 0;
-            Mv2.moveSpeed = slideSpeed;
+            Mv2.movementSpeed = slideSpeed;
         }
 
         if (isSliding && slideTimer < maxSlidingTime)
@@ -103,7 +103,7 @@ public class Crouching : MonoBehaviour {
 
     private void calculateTimeSpentMoving()
     {
-        if (Mathf.Abs(Mv2.moveHorizontal) == 1)
+        if (Mathf.Abs(Mv2.GetHorizontalInput()) == 1)
         {
             timeSpentMoving += Time.deltaTime;
         }
@@ -122,7 +122,7 @@ public class Crouching : MonoBehaviour {
         ActivateTriggers(triggers, false);
         if (!isSliding)
         {
-            Mv2.moveSpeed = crouchSpeed;
+            Mv2.movementSpeed = crouchSpeed;
         }
     }
     private void StopCrouch()
@@ -132,13 +132,13 @@ public class Crouching : MonoBehaviour {
         groundCollider.localPosition = new Vector2(0, -boxcolliderHeight / 2);
         isCrouching = false;
         ActivateTriggers(triggers, true);
-        Mv2.moveSpeed = moveSpeed;
+        Mv2.movementSpeed = moveSpeed;
     }
 
     
     private bool CheckStartSlide()
     { 
-        if (isCrouching && timeSpentMoving > timeSpentMovingMinimum && !isSliding && Mv2.isGrounded)
+        if (isCrouching && timeSpentMoving > timeSpentMovingMinimum && !isSliding && Mv2.GetGrounded())
         {
             return true;
         }
