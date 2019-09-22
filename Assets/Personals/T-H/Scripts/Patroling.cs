@@ -19,7 +19,7 @@ public class Patroling : MonoBehaviour
 
     public float moveTime = 1f; // How fast do you move
     public float vicinityMargin = 0.01f; // How close is close enough to a point
-    //private float inverseMoveTime; 
+    private float inverseMoveTime; 
     public float waitTime;
     public bool shouldWaitAtPoints;
 
@@ -31,13 +31,9 @@ public class Patroling : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         currentPosition = transform.position;
         destinationPosition = points[destPoint].position;
-        //inverseMoveTime = 1 / moveTime;
-        StartCoroutine(Move());
-    }
+        inverseMoveTime = 1 / moveTime;
 
-    void Update()
-    {
-        //StartCoroutine(Move());
+        StartCoroutine(Move()); // Starts the movement
     }
 
     IEnumerator Move()
@@ -53,15 +49,13 @@ public class Patroling : MonoBehaviour
                         waitTime = 0;
                         Debug.Log("wait time must be greater than 0");
                     }
-                    yield return new WaitForSeconds(waitTime);
+                    yield return new WaitForSeconds(waitTime); // Stops the movement for waitTime seconds
                 }
                 GotoNextPoint();
-                Debug.Log("Changing points");
             }
             AttemptMove();
-
             Debug.Log(currentPosition.x - destinationPosition.x);
-            yield return null;
+            yield return null; // Stops while loop until next frame
         }
     }
 
@@ -81,17 +75,23 @@ public class Patroling : MonoBehaviour
     {
         bool right = CheckDirection();
 
-        if (!CheckObstacle(right)) // if there is nothing in the pathway 
+        if (CheckObstacle(right).collider == null) // if there is nothing in the pathway 
         {
-            //Vector2 newPosition = Vector2.MoveTowards(currentPosition, new Vector2(destinationPosition.x, currentPosition.y), inverseMoveTime * Time.deltaTime);
-            //rb.MovePosition(newPosition);
-            if (right) // If destination is to the right
+            Vector2 newPosition = Vector2.MoveTowards(currentPosition, new Vector2(destinationPosition.x, currentPosition.y), inverseMoveTime * Time.deltaTime);
+            rb.MovePosition(newPosition);
+            /*if (right) // If destination is to the right
                 rb.velocity = new Vector2(moveTime, 0); // move right
             else
                 rb.velocity = new Vector2(-moveTime, 0); // move left
+            */
             currentPosition = transform.position; // reset currentPosition
         }
+        else
+        {
+            // OnCantMove
+        }
     }
+
 
     bool CheckDirection() // Checks which direction the enemy is facing. True = right, false = left
     {
@@ -101,22 +101,23 @@ public class Patroling : MonoBehaviour
             return false;
     }
 
-    bool CheckObstacle(bool right) // Checks if something is in the way of the enemy's route. Can be changed to point to point.
+    RaycastHit2D CheckObstacle(bool right) // Checks if something is in the way of the enemy's route. Can be changed to point to point.
     {
         Vector2 destination;
-        if (right)
-            destination = currentPosition + new Vector2(moveTime, 0);
+        if (right) // Decides direction of the vector
+            destination = currentPosition + new Vector2(boxCollider.size.x / 2 + vicinityMargin, 0);
         else
-            destination = currentPosition - new Vector2(moveTime, 0);
+            destination = currentPosition - new Vector2(boxCollider.size.x / 2 + vicinityMargin, 0);
 
         boxCollider.enabled = false; // So that boxcollider doesn't interfere
         RaycastHit2D hit = Physics2D.Linecast(currentPosition, destination); // Need layer check here
         boxCollider.enabled = true;
 
-        if (hit.collider == null) // If nothing is detected by ray
-            return false;
+        return hit;
+    }
 
-        Debug.Log("Obstacle in the pathway");
-        return true;
+    void onCantMove(RaycastHit2D hit) // What should the enemy do if something is blocking the path
+    {
+
     }
 }

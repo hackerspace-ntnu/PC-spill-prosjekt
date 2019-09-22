@@ -10,9 +10,9 @@ public class BasicEnemy : MonoBehaviour
     private int currentHealth;
 
     // Navigation
+    private Patroling moveScript;
+
     
-
-
 
     private void Awake()
     {

@@ -466,8 +466,10 @@ MonoBehaviour:
   - {fileID: 669162343}
   - {fileID: 1970753531}
   - {fileID: 1151214315}
-  moveTime: 1.5
+  moveTime: 0.5
   vicinityMargin: 0.05
+  waitTime: 3
+  shouldWaitAtPoints: 1
 --- !u!61 &610948189
 BoxCollider2D:
   m_ObjectHideFlags: 0
