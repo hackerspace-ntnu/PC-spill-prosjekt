@@ -10,7 +10,6 @@ enum MovementState
 	AIR_JUMPING,
 	DASHING,
 	WALL_CLINGING,
-    WALL_JUMPING,
 	GRAPPLING,
     DAMAGED,
 }
@@ -28,7 +27,7 @@ public class Movement : MonoBehaviour
 
     public int spriteDirection; // direction the character is facing, set in PlayerAnim
 
-    public float movementSpeed = 5;
+    public float movementSpeed = 6;
 	public float jumpForce = 13;
     public float dashForce = 10;
 	public float baseGravityScale = 5; // base gravity affecting the player, is changed when jumping
@@ -66,12 +65,11 @@ public class Movement : MonoBehaviour
         maxVelocityFix = 1f;
 	}
 
+    /*
+     * runs every frame, calls relevant methods depending on state
+     */
 	void Update()
 	{
-        /*
-		if (!isVelocityDirty)
-			newVelocity = rigidBody.velocity;*/
-
         maxVelocityY = 12f;
         HandleChangeState();
 
@@ -99,10 +97,6 @@ public class Movement : MonoBehaviour
 				GrapplingState();
 				break;
 
-            case MovementState.WALL_JUMPING:
-                WallJumpingState();
-                break;
-
             case MovementState.DAMAGED:
                 DamagedState();
                 break;
@@ -117,11 +111,7 @@ public class Movement : MonoBehaviour
         rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
         maxVelocityFix = 1f;
 
-        if (state == MovementState.WALL_JUMPING)
-        {
-            return;
-        }
-        else if (state == MovementState.DASHING)
+        if (state == MovementState.DASHING)
         {
             if (wallTrigger != 0)
             {
@@ -233,7 +223,7 @@ public class Movement : MonoBehaviour
             hasDashed = false;
             hasAirJumped = false;
 
-            state = MovementState.WALL_JUMPING;
+            WallJumpingState();
 
             return;
         }
@@ -254,10 +244,9 @@ public class Movement : MonoBehaviour
     private void WallJumpingState() // walljump is currently wack, might be caused by what causes animationstate somehow switching to running?
     {
         if (Math.Abs(horizontalInput) >= 0.3)
-            newVelocity = new Vector2(wallJumpDirection * dashForce, jumpForce * 0.64f - rigidBody.velocity.y) * flipGravityScale * 2; //jumpSpeed * 0.64f * Math.Sign(newGravityScale)
+            newVelocity = new Vector2(wallJumpDirection * dashForce * 1.5f, jumpForce - rigidBody.velocity.y) * flipGravityScale; //jumpSpeed * 0.64f * Math.Sign(newGravityScale)
         else
-            newVelocity = new Vector2(wallJumpDirection * movementSpeed, jumpForce * 0.75f - rigidBody.velocity.y) * flipGravityScale * 2; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
-        newGravityScale = JUMPING_GRAVITY_SCALE_MULTIPLIER * baseGravityScale * flipGravityScale;
+            newVelocity = new Vector2(wallJumpDirection * movementSpeed * 1.5f, jumpForce * 1.2f - rigidBody.velocity.y) * flipGravityScale; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
         state = MovementState.STANDARD;
     }
 
@@ -304,7 +293,7 @@ public class Movement : MonoBehaviour
         {
             newVelocity.x *= 0.5f;
         }
-        print(newVelocity.y);
+
         rigidBody.AddForce(new Vector2(newVelocity.x - rigidBody.velocity.x, newVelocity.y - rigidBody.velocity.y * (1 - maxVelocityFix)), ForceMode2D.Impulse);
         newVelocity.y = 0;
         //rigidBody.velocity = new Vector2(newVelocity.x, newVelocity.y * maxVelocityFix); // Ta inn maxVelocityFix, mye renere
@@ -321,6 +310,10 @@ public class Movement : MonoBehaviour
      */
     private void HandleHorizontalInput()
     {
+        if (Time.time - wallJumpTime < 0.05f) // kinda ugly, see if you can find a more elegant solution when you have time
+        {
+            return;
+        }
         if (Math.Abs(Input.GetAxis("Horizontal")) <= 0.1) //Beholde?
         {
             horizontalInput = 0;
