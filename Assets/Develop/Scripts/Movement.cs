@@ -28,17 +28,17 @@ public class Movement : MonoBehaviour
 
     public int spriteDirection; // direction the character is facing, set in PlayerAnim
 
-    public float movementSpeed = 7;
-	public float jumpSpeed = 13.5f;
-    public float dashSpeed = 13;
-	public float baseGravityScale = 5;
+    public float movementSpeed = 5;
+	public float jumpForce = 13;
+    public float dashForce = 10;
+	public float baseGravityScale = 5; // base gravity affecting the player, is changed when jumping
 	public float maxVelocityY = 12;
 
     private float lastActionTime;
     private float dashDuration = 0.2f;
 
     private int wallJumpDirection;
-    private int flipGravityScale = 1;
+    private int flipGravityScale = 1; // is -1 if gravity is flipped
 
 	private MovementState state;
 	private Rigidbody2D rigidBody;
@@ -109,6 +109,9 @@ public class Movement : MonoBehaviour
         }
 	}
 
+    /*
+     * changes state based on the current conditions of the player 
+     */
     private void HandleChangeState()
 	{
         rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
@@ -149,6 +152,9 @@ public class Movement : MonoBehaviour
             state = MovementState.STANDARD;
     }
 
+    /*
+     * state when player is on the ground or in freefall
+     */
 	private void StandardState()
 	{
         HandleHorizontalInput();
@@ -159,6 +165,9 @@ public class Movement : MonoBehaviour
         }
     }
 
+    /*
+     * state when player is jumping
+     */
 	private void JumpingState()
 	{
         switch (state)
@@ -182,12 +191,15 @@ public class Movement : MonoBehaviour
 		}
 	}
 
+    /*
+     * state when player is dashing
+     */
 	private void DashingState()
 	{
         hasDashed = true;
         if (Time.time - lastActionTime <= dashDuration)
         {
-            newVelocity = new Vector2(spriteDirection * dashSpeed * flipGravityScale, -rigidBody.velocity.y);
+            newVelocity = new Vector2(spriteDirection * dashForce * flipGravityScale, -rigidBody.velocity.y);
             newGravityScale = 0;
         }
         else
@@ -198,6 +210,9 @@ public class Movement : MonoBehaviour
         }
     }
 
+    /*
+     * state when player is clinging to a wall
+     */
     private void WallClingingState()
 	{
         HandleHorizontalInput();
@@ -230,18 +245,20 @@ public class Movement : MonoBehaviour
         {
             rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
             maxVelocityY = 2f;
-            print(rigidBody.velocity.y);
         }
     }
 
-    private void WallJumpingState()
+    /*
+     * state when player is jumping from a wall
+     */
+    private void WallJumpingState() // walljump is currently wack, might be caused by what causes animationstate somehow switching to running?
     {
         if (Math.Abs(horizontalInput) >= 0.3)
-            newVelocity = new Vector2(wallJumpDirection * dashSpeed, jumpSpeed * 0.64f) * flipGravityScale; //jumpSpeed * 0.64f * Math.Sign(newGravityScale)
+            newVelocity = new Vector2(wallJumpDirection * dashForce, jumpForce * 0.64f - rigidBody.velocity.y) * flipGravityScale * 2; //jumpSpeed * 0.64f * Math.Sign(newGravityScale)
         else
-            newVelocity = new Vector2(wallJumpDirection * movementSpeed, jumpSpeed * 0.75f) * flipGravityScale; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
+            newVelocity = new Vector2(wallJumpDirection * movementSpeed, jumpForce * 0.75f - rigidBody.velocity.y) * flipGravityScale * 2; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
+        newGravityScale = JUMPING_GRAVITY_SCALE_MULTIPLIER * baseGravityScale * flipGravityScale;
         state = MovementState.STANDARD;
-        isVelocityDirty = true;
     }
 
     private void GrapplingState()
@@ -249,20 +266,35 @@ public class Movement : MonoBehaviour
 
 	}
 
+    /*
+     * state when player takes damage
+     */
     private void DamagedState() //Fix this shit
     {
         hasAirJumped = false;
         hasDashed = false;
     }
 
-    void FixedUpdate()
-	{
+    /*
+    * method called when player jumps
+    */
+    private void Jump(float scale)
+    {
+        newVelocity.y = (jumpForce * scale - rigidBody.velocity.y) * flipGravityScale;
+        isVelocityDirty = true;
+        jumpTime = Time.time;
+    }
+
+    /*
+     * runs several times per frame, handles physics
+     */
+    void FixedUpdate() // there's currently a sliding bug, should be able to fix it in this block
+    {
         rigidBody.AddForce(new Vector2(0, -rigidBody.velocity.y * rigidBody.mass * 2));
         if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY || Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY)
         {
             maxVelocityFix = 0.8f;
         }
-
         else
         {
             maxVelocityFix = 1f;
@@ -272,21 +304,9 @@ public class Movement : MonoBehaviour
         {
             newVelocity.x *= 0.5f;
         }
-        
-        if (newVelocity.x == 0 && state != MovementState.DASHING && state != MovementState.JUMPING) //Check speed issues, also latency
-        {
-            rigidBody.AddForce(new Vector2(-rigidBody.velocity.x * rigidBody.mass, 0), ForceMode2D.Impulse);
-        }
-        else /*if (Math.Abs(rigidBody.velocity.x) <= movementSpeed || Math.Sign(newVelocity.x) != Math.Sign(rigidBody.velocity.x))*/
-        {
-            rigidBody.AddForce(new Vector2(newVelocity.x - rigidBody.velocity.x, -rigidBody.velocity.y * (1 - maxVelocityFix)), ForceMode2D.Impulse);
-        }
-
-        if (Math.Abs(newVelocity.y) > 0) //Might have to multiply by flipGravityScale instead
-        {
-            rigidBody.AddForce(new Vector2(0, newVelocity.y), ForceMode2D.Impulse);
-            newVelocity.y = 0;
-        }
+        print(newVelocity.y);
+        rigidBody.AddForce(new Vector2(newVelocity.x - rigidBody.velocity.x, newVelocity.y - rigidBody.velocity.y * (1 - maxVelocityFix)), ForceMode2D.Impulse);
+        newVelocity.y = 0;
         //rigidBody.velocity = new Vector2(newVelocity.x, newVelocity.y * maxVelocityFix); // Ta inn maxVelocityFix, mye renere
         isVelocityDirty = false;
 		if (rigidBody.gravityScale != newGravityScale)
@@ -296,6 +316,9 @@ public class Movement : MonoBehaviour
         //slik at man ikke kan endre retning umiddelbart
 	}
 
+    /*
+     * handles user's input in the horizontal axis
+     */
     private void HandleHorizontalInput()
     {
         if (Math.Abs(Input.GetAxis("Horizontal")) <= 0.1) //Beholde?
@@ -321,19 +344,15 @@ public class Movement : MonoBehaviour
         }
     }
 
+    /*
+     * checks if player's velocity is upwards, relative to gravity
+     */
     private bool IsVelocityUpwards()
     {
         return rigidBody.velocity.y * Math.Sign(rigidBody.gravityScale) > 0;
     }
 
-    private void Jump(float scale)
-    {
-        newVelocity.y = (jumpSpeed * scale + Math.Abs(rigidBody.velocity.y)) * flipGravityScale;
-        isVelocityDirty = true;
-        jumpTime = Time.time;
-    }
-
-    //VIDERE ER DET BARE GETTERS
+    //VIDERE ER DET BARE SETTERS OG GETTERS
 
     public Vector2 GetVelocity()
     {
