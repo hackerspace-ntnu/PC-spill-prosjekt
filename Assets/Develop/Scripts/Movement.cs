@@ -18,8 +18,8 @@ enum MovementState
 public class Movement : MonoBehaviour
 {
 	private const float MINIMUM_TIME_BEFORE_AIR_JUMP = 0.1f;
-	private const float HORIZONTAL_INPUT_RUNNING_THRESHOLD = 0.3f;
-	private const float JUMPING_GRAVITY_SCALE_MULTIPLIER = 0.8f;
+	private const float HORIZONTAL_INPUT_RUNNING_THRESHOLD = 0.3f; // Minimum input needed to move left/right
+	private const float JUMPING_GRAVITY_SCALE_MULTIPLIER = 0.8f; 
     private const float WALL_SLIDE_GRAVITY_SCALE_MULTIPLIER = 0.6f;
     private const float WALL_JUMP_DURATION = 0.2f;
 
@@ -267,7 +267,7 @@ public class Movement : MonoBehaviour
         {
             maxVelocityFix = 1f;
         }
-
+        // decreases horizontal speed in air while falling ( I think?)
         if (!isGrounded && Math.Sign(newVelocity.x) != Math.Sign(rigidBody.velocity.x))
         {
             newVelocity.x *= 0.5f;
