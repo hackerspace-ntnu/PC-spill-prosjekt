@@ -34,7 +34,7 @@ public class HorizontalDirectionController : MonoBehaviour
 
     internal void MoveCharacter(float input)
     {
-        if (input <= 0.1) //Beholde?
+        if (Math.Abs(input) <= 0.1) //Beholde?
         {
             LastInput = 0;
         }

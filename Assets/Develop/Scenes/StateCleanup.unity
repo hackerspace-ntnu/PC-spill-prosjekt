@@ -1900,8 +1900,8 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 0}
+  m_LookAt: {fileID: 1481655355}
+  m_Follow: {fileID: 1481655355}
   m_Lens:
     FieldOfView: 40
     OrthographicSize: 2.5
@@ -1934,6 +1934,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1481655355 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6976032878567393388, guid: f2b408fdb911d59449e3eaac492ba07f,
+    type: 3}
+  m_PrefabInstance: {fileID: 6976032877793493060}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1672261362
 GameObject:
   m_ObjectHideFlags: 0
@@ -6920,6 +6926,11 @@ PrefabInstance:
     - target: {fileID: 6976032878821031637, guid: f2b408fdb911d59449e3eaac492ba07f,
         type: 3}
       propertyPath: spriteDirection
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6976032878821031637, guid: f2b408fdb911d59449e3eaac492ba07f,
+        type: 3}
+      propertyPath: flipGravityScale
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour
         }
         else /*if (Math.Abs(rigidBody.velocity.x) <= movementSpeed || Math.Sign(newVelocity.x) != Math.Sign(rigidBody.velocity.x))*/
         {
-            print("hello2!");
+
             body.AddForce(new Vector2(model.NewVelocity.x - body.velocity.x, -body.velocity.y * (1 - model.MaxVelocityFix)), ForceMode2D.Impulse);
         }
 

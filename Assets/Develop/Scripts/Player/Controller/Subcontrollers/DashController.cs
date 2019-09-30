@@ -24,7 +24,7 @@ public class DashController : MonoBehaviour
             dashRules.NewGravityScale = 0;
         }
         else
-        {;
+        {
             temp = MovementStat.STANDARD;
             dashRules.NewGravityScale = dashRules.BaseGravityScale * dashRules.FlipGravityScale;
             dashRules.HorizontalVelocity = 0;
