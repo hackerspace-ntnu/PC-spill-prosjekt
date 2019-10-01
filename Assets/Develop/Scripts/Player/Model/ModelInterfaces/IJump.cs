@@ -13,4 +13,5 @@ public interface IJump
     float JumpingGravityScaleMultiplier { get; }
     bool IsGrounded { get; set; }
     float JumpTime { get; set; }
+    InAirState PlayerInAirState { get; set; }
 }

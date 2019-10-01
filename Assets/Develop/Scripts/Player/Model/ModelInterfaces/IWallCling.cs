@@ -16,4 +16,6 @@ public interface IWallCling
     bool IsVelocityDirty { set; get; }
 
     float DashSpeed { set; get; }
+    WallClingState PlayerWallClingState { get; set; }
+    MovementStat MoveState { get; set; }
 }

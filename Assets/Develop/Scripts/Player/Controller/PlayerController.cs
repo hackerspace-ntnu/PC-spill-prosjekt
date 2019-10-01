@@ -97,6 +97,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         RecordInputs();
+        model.IsVelocityDirty = false;
         model.MaxVelocityY = 12f;
         HandleChangeState();
         switch (model.MoveState)
@@ -119,10 +120,11 @@ public class PlayerController : MonoBehaviour
             case MovementStat.CROUCHING:
                 break;
             case MovementStat.WALL_CLINGING:
+                horizontalDirectionCtrl.MoveCharacter(horizontalInput);
                 WallClingingState();
                 break;
             case MovementStat.WALL_JUMPING:
-                wallClingCtrl.WallJumpingState(horizontalDirectionCtrl.LastInput);
+                wallClingCtrl.WallJumpingState(horizontalInput);
                 break;
             case MovementStat.GRAPPLING:
                 break;
@@ -248,7 +250,6 @@ public class PlayerController : MonoBehaviour
 
     private void WallClingingState()
     {
-        horizontalDirectionCtrl.MoveCharacter(horizontalInput);
         model.WallJumpDirection = model.WallTrigger;
 
         if (body.velocity.y * Math.Sign(model.NewGravityScale) <= 0)
@@ -260,16 +261,16 @@ public class PlayerController : MonoBehaviour
             model.NewGravityScale = model.BaseGravityScale * model.JumpingGravityScaleMultiplier * model.FlipGravityScale;
             model.WallJumpTime = Time.time;
             model.JumpTime = Time.time;
-            model.MoveState = wallClingCtrl.WallJumpingState(horizontalDirectionCtrl.LastInput); // Input.Get
+            wallClingCtrl.WallJumpingState(horizontalInput); // Input.Get
 
             model.HasDashed = false;
             model.HasAirJumped = false;
 
-            model.MoveState = MovementStat.WALL_JUMPING;
+            model.MoveState = MovementStat.WALL_JUMPING; 
 
-            return;
+            return; //BUG: Character goes to heaven after this return statement.
         }
-        else if (Math.Abs(body.velocity.y) <= 6 && model.WallTrigger == -Math.Sign(model.NewVelocity.x * model.FlipGravityScale)) //wallcling if input towards wall
+        else if (Math.Abs(body.velocity.y) <= 6 && model.WallTrigger == -Math.Sign(model.HorizontalVelocity * model.FlipGravityScale)) //wallcling if input towards wall
         {
             body.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }

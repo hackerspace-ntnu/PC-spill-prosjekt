@@ -69,6 +69,7 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     [SerializeField]
     private float maxVelocityFix;
 
+    [SerializeField]
     private Vector2 newVelocity; // for setting velocity in FixedUpdate()
     [SerializeField]
     private float newGravityScale; // for setting velocity in FixedUpdate()
@@ -109,7 +110,7 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     private bool isVelocityDirty = false;
 
     [RangeAttribute(-1, 1)]
-    [Tooltip(" Which sensor is detecting a wall? -1 == left sensor, 1 is right sensor, and 0 is none. ")]
+    [Tooltip("Which sensor is detecting a wall? -1 == left sensor, 1 is right sensor, and 0 is none. ")]
     [SerializeField]
     private int wallTrigger;
 
