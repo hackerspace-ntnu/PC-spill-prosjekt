@@ -10,7 +10,7 @@ public class HorizontalDirectionController : MonoBehaviour
 
     private IMove moveRules;
 
-    public IMove MoveRules
+    internal IMove MoveRules
     {
 
         set
@@ -43,6 +43,7 @@ public class HorizontalDirectionController : MonoBehaviour
             LastInput = input;
             if (Math.Abs(LastInput) > moveRules.HorizontalInputRunningThreshold)
             {
+                moveRules.PlayerWalkState = WalkState.WALKING;
                 moveRules.HorizontalVelocity = Math.Sign(LastInput) * moveRules.MovementSpeed * moveRules.FlipGravityScale; // Set horizontalInput to max
             }
             else

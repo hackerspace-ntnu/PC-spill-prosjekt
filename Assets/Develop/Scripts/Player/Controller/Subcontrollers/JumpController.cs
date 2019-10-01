@@ -23,6 +23,7 @@ public class JumpController : MonoBehaviour
     {
         jumpRules.VerticalVelocity = (jumpRules.JumpSpeed * input + Mathf.Abs(body.velocity.y)) * jumpRules.FlipGravityScale;
         jumpRules.IsVelocityDirty = true;
+        jumpRules.IsGrounded = false;
         jumpRules.JumpTime = Time.time;
     }
 

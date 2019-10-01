@@ -5,12 +5,12 @@ using UnityEngine;
 public class TriggerDetector : MonoBehaviour
 {
 
-    private PlayerModel playerMovement;
+    private PlayerModel model;
 
     // Use this for initialization
     void Start()
     {
-        playerMovement = GameObject.Find("Models").GetComponent<PlayerModel>();
+        model = GameObject.Find("Models").GetComponent<PlayerModel>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -19,30 +19,31 @@ public class TriggerDetector : MonoBehaviour
         {
             if (this.gameObject.name == "Ground Sensor")
             {
-                playerMovement.IsGrounded = true;
+                model.WallTrigger = 0;
+                model.IsGrounded = true;
             }
 
 
             else if (this.gameObject.name == "Left Sensor")
             {
-                playerMovement.WallTrigger = 1;
+                model.WallTrigger = 1;
             }
             else
             {
-                playerMovement.WallTrigger = -1;
+                model.WallTrigger = -1;
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (this.gameObject.name == "Right Sensor")
+        if ((this.gameObject.name == "Right Sensor") || (this.gameObject.name == "Left Sensor"))
         {
-            playerMovement.IsGrounded = false;
+            model.IsGrounded = false;
         }
         else
         {
-            playerMovement.WallTrigger = 0;
+            model.WallTrigger = 0;
         }
     }
 }

@@ -2,88 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-#region Player enums
-internal enum MovementStat
-{
-    STANDARD, // "IDLE" stance. 
-    JUMPING,
-    AIR_JUMPING,
-    DASHING,
-    CROUCHING,
-    WALL_CLINGING,
-    WALL_JUMPING,
-    GRAPPLING,
-    DAMAGED,
-}
-
-
-internal enum TurnDirectionState
-{
-    LEFT, // character is facing left
-    RIGHT // character is facing right
-}
-
-internal enum WalkState
-{
-    IDLE,
-    WALKING
-}
-
-internal enum InAirState
-{
-    ON_GROUND, // character is either on ground or on a wall
-    UPWARDS, //character have momentum upwards
-    HOVERING, // character reaches peak for a brief moment
-    DOWNWARDS // character is falling downwards
-}
-
-internal enum WallClingState
-{
-    DEFAULT,
-    CLINGING,
-    LEAVING_LEFT,
-    LEAVING_RIGHT
-}
-
-internal enum LifeState
-{
-    ALIVE,
-    DAMAGED,
-    DEAD
-}
-
-internal enum ActionState
-{
-    DEFAULT,
-    ATTACKING,
-    WITHDRAWING
-}
-
-internal enum GraphlingHookState
-{
-    DEFAULT,
-    SHOOTING,
-    HOOKED,
-    PULLING,
-    SWINGING
-}
-#endregion
-
 public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCling, ILife
 {
 
-
     // States(in the form of enums) covering the various states the model can have. 
-    internal MovementStat moveState;
-    internal WalkState walkState;
-    internal TurnDirectionState turnDirState;
-    internal InAirState inAirState;
-    internal WallClingState wallClingState;
-    internal LifeState lifeState;
-    internal ActionState actionState;
-    internal GraphlingHookState graphHookState;
+    // The various states can be found in the file "PlayerStateEnums.cs"
+    [Header("State Settings")]
+    [SerializeField]
+    private MovementStat moveState;
+    [SerializeField]
+    private WalkState playerWalkState;
+    [SerializeField]
+    private TurnDirectionState turnDirState;
+    [SerializeField]
+    private InAirState playerInAirState;
+    [SerializeField]
+    private WallClingState playerWallClingState;
+    [SerializeField]
+    private LifeState playerLifeState;
+    [SerializeField]
+    private ActionState playerActionState;
+    [SerializeField]
+    private GraphlingHookState graphHookState;
 
     // Input keycods. Can be changed in unity editor.
+    [Header("Input Settings")]
+    [Tooltip("How much input 'force' is required before the player start movement along the horizontal axis.")]
+    private readonly float horizontalInputRunningThreshold = 0.3f;
+    [Tooltip("How long time character must wait before it can airjump.")]
+    private readonly float minimumTimeBeforeAirJump = 0.1f;
     [SerializeField]
     private KeyCode jumpKey = KeyCode.Space;
     [SerializeField]
@@ -91,54 +38,30 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     [SerializeField]
     private KeyCode graphHookKey = KeyCode.F;
 
-    [SerializeField]
-    private int spriteDirection; // direction the character is facing, set in PlayerAnim
 
+    [Header("Animation related Settings")]
     [SerializeField]
-    private float movementSpeed = 7;
-    [SerializeField]
-    private float jumpSpeed = 13.5f;
-    [SerializeField]
-    private float dashSpeed = 13;
-    [SerializeField]
-    private float baseGravityScale = 5;
-    [SerializeField]
-    private float maxVelocityY = 12;
-
-    // Constants
-    private readonly float minimumTimeBeforeAirJump = 0.1f;
-    private readonly float horizontalInputRunningThreshold = 0.3f;
-    private readonly float jumpingGravityScaleMultiplier = 0.8f;
-    private readonly float wallslideGravityScaleMultiplier = 0.6f;
-    private readonly float wallJumpDuration = 0.2f;
-
-    [SerializeField]
-    private float lastActionTime;
-    [SerializeField]
-    private float dashDuration = 0.2f;
-
+    [Tooltip("direction the character is facing, set in PlayerAnim")]
+    private int spriteDirection;
     [SerializeField]
     private int wallJumpDirection;
-    [SerializeField]
-    private int flipGravityScale = 1;
 
-    private MovementState state;
-    private Rigidbody2D rigidBody;
-
+    [Header("Physics related Settings")]
     [SerializeField]
-    private bool isVelocityDirty = false;
-    private Vector2 newVelocity; // for setting velocity in FixedUpdate()
+    [Tooltip("The maximum movement speed of the character.")]
+    private float movementSpeed = 7;
     [SerializeField]
-    private float newGravityScale; // for setting velocity in FixedUpdate()
+    [Tooltip("The initial jumpspeed of the character.")]
+    private float jumpSpeed = 13.5f;
     [SerializeField]
-    private float horizontalInput; // input from controller in x-axis
-
+    [Tooltip("The initial dashSpeed of the character.")]
+    private float dashSpeed = 13;
     [SerializeField]
-    private bool isGrounded;
+    [Tooltip("The ")]
+    private float baseGravityScale = 5;
     [SerializeField]
-    private bool hasAirJumped = false;
-    [SerializeField]
-    private bool hasDashed = false;
+    [Tooltip("The maximum Y velocity (up and down speed) the character can have.")]
+    private float maxVelocityY = 12;
     [SerializeField]
     private float jumpTime;
     [SerializeField]
@@ -146,6 +69,47 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     [SerializeField]
     private float maxVelocityFix;
 
+    private Vector2 newVelocity; // for setting velocity in FixedUpdate()
+    [SerializeField]
+    private float newGravityScale; // for setting velocity in FixedUpdate()
+
+    // Constants
+
+
+    [Tooltip(" TODO ")]
+    private readonly float jumpingGravityScaleMultiplier = 0.8f;
+    [Tooltip("")]
+    private readonly float wallslideGravityScaleMultiplier = 0.6f;
+    [Tooltip("How long a wall jump last.")]
+    private readonly float wallJumpDuration = 0.2f;
+
+    [SerializeField]
+    private float lastDashTime;
+    [SerializeField]
+    private float dashDuration = 0.2f;
+
+    [RangeAttribute(-1,1)]
+    [SerializeField]
+    [Tooltip("What 'way' gravity works. -1 = the player is falling upwards. 1 is normal gravity and 0 is no gravity.")]
+    private int flipGravityScale = 1;
+
+    private MovementState state;
+    private Rigidbody2D rigidBody;
+
+
+
+    [SerializeField]
+    private bool isGrounded;
+    [SerializeField]
+    private bool hasAirJumped = false;
+    [SerializeField]
+    private bool hasDashed = false;
+    [Tooltip("Have New Velocity been modified?")]
+    [SerializeField]
+    private bool isVelocityDirty = false;
+
+    [RangeAttribute(-1, 1)]
+    [Tooltip(" Which sensor is detecting a wall? -1 == left sensor, 1 is right sensor, and 0 is none. ")]
     [SerializeField]
     private int wallTrigger;
 
@@ -217,16 +181,16 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
         }
     }
 
-    public float LastActionTime
+    public float LastDashTime
     {
         get
         {
-            return lastActionTime;
+            return lastDashTime;
         }
 
         set
         {
-            lastActionTime = value;
+            lastDashTime = value;
         }
     }
 
@@ -367,12 +331,12 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     {
         get
         {
-            return MaxVelocityFix1;
+            return maxVelocityFix;
         }
 
         set
         {
-            MaxVelocityFix1 = value;
+            maxVelocityFix = value;
         }
     }
 
@@ -422,18 +386,6 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
         }
     }
 
-    public float MaxVelocityFix1
-    {
-        get
-        {
-            return maxVelocityFix;
-        }
-
-        set
-        {
-            maxVelocityFix = value;
-        }
-    }
 
     public KeyCode JumpKey
     {
@@ -523,6 +475,15 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
             wallJumpDirection = value;
         }
     }
+
+    public WalkState PlayerWalkState { get => playerWalkState; set => playerWalkState = value; }
+    public MovementStat MoveState { get => moveState; set => moveState = value; }
+    public TurnDirectionState TurnDirState { get => turnDirState; set => turnDirState = value; }
+    public InAirState PlayerInAirState { get => playerInAirState; set => playerInAirState = value; }
+    public WallClingState PlayerWallClingState { get => playerWallClingState; set => playerWallClingState = value; }
+    public LifeState PlayerLifeState { get => playerLifeState; set => playerLifeState = value; }
+    public ActionState PlayerActionState { get => playerActionState; set => playerActionState = value; }
+    public GraphlingHookState GraphHookState { get => graphHookState; set => graphHookState = value; }
     #endregion
 
     // Start is called before the first frame update
@@ -539,75 +500,5 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
 }
 
 
-// Interface used by JumpController to retrieve and update data in PlayerModel (This script). An instance of this interface is created
-// in playercontroller and then assigned to a field in Jumpcontroller. 
-public interface IJump
-{
-    bool IsVelocityDirty { get; set; } 
-    int FlipGravityScale { get; set; }
-    float VerticalVelocity { get; set; }
-    float BaseGravityScale { get; }
-    float JumpSpeed { get; }
-    float MaxVelocityY { get; }
-    float JumpingGravityScaleMultiplier { get; }
-    bool IsGrounded { get; }
-    float JumpTime { get; set; }
-}
-public interface IMove
-{   
-    float HorizontalVelocity { get; set; }
-    Vector2 NewVelocity { get; set; }
-    int FlipGravityScale { get; }
-    bool IsGrounded { get; }
-    float MovementSpeed { get; }
-    float HorizontalInputRunningThreshold { get; }
-    float MaxVelocityFix { get; set; }
-}
-public interface IDash
-{
-    
-    float HorizontalVelocity { get; set; }
-    int FlipGravityScale { get; }
-    float NewGravityScale { get; set; }
-    float BaseGravityScale { get; set; }
-    bool HasDashed { get; set; }
-    int SpriteDirection { get; set; }
-    float LastActionTime { get; set; }
-    Vector2 NewVelocity { get; set; }
-    int WallTrigger { get; set; }
-    int WallJumpDirection { get; set; }
-    float DashDuration { get; set; }
-    float DashSpeed { get; }
-}
 
-public interface ILife
-{
-    bool HasDashed { get; set; }
-    bool HasAirJumped { set; get; }
-}
 
-public interface IGraphHook
-{
-
-}
-
-public interface IWallCling
-{
-    Vector2 NewVelocity { set; get; }
-
-    int WallJumpDirection { set; get; }
-
-    float MovementSpeed { set; get; }
-    float JumpSpeed { get; }
-
-    int FlipGravityScale { set; get; }
-
-    bool IsVelocityDirty { set; get; }
-
-    float DashSpeed { set; get; }
-}
-
-public interface IAction
-{
-
-}

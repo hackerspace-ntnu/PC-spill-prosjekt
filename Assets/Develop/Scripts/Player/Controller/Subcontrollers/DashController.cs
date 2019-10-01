@@ -18,10 +18,11 @@ public class DashController : MonoBehaviour
     {
         MovementStat temp = MovementStat.DASHING;
         dashRules.HasDashed = true;
-        if (Time.time - dashRules.LastActionTime <= dashRules.DashDuration)
+        if (Time.time - dashRules.LastDashTime <= dashRules.DashDuration)
         {
             dashRules.NewVelocity = new Vector2(dashRules.SpriteDirection * dashRules.DashSpeed * dashRules.FlipGravityScale, -input);
             dashRules.NewGravityScale = 0;
+            dashRules.LastDashTime = Time.time;
         }
         else
         {

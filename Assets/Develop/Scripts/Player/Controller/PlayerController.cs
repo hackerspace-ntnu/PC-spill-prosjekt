@@ -11,12 +11,12 @@ public class PlayerController : MonoBehaviour
 
     // Subcontrollers - contains logic that affect the various model states ( jump controller for jump logic etc.)
     LifeController life; // Controller of life and death
-    JumpController jump; // Kangaroo controller.
-    HorizontalDirectionController move; // general sideway movement, on the ground but also in the air!
-    DashController dash; // You wont be sonic, but pretty close.
+    JumpController jumpCtrl; // Kangaroo controller.
+    HorizontalDirectionController horizontalDirectionCtrl; // general sideway movement, on the ground but also in the air!
+    DashController dashCtrl; // You wont be sonic, but pretty close.
     GraphlingHookController graphHook; // For fishing and doing spiderman things. 
     ActionController action; // Lets you have action... someday.
-    WallClingController wallCling; // Lets you be even more like spiderman.
+    WallClingController wallClingCtrl; // Lets you be even more like spiderman.
 
 
     // Views 
@@ -45,23 +45,23 @@ public class PlayerController : MonoBehaviour
 
     private void InitializePlayerState()
     {
-        model.walkState = WalkState.IDLE;
-        model.moveState = MovementStat.STANDARD; // this state is only one we use currently - but rest can easely be built upon. 
-        model.turnDirState = TurnDirectionState.RIGHT;
-        model.wallClingState = WallClingState.DEFAULT;
-        model.actionState = ActionState.DEFAULT;
-        model.inAirState = InAirState.ON_GROUND;
-        model.lifeState = LifeState.ALIVE;
-        model.graphHookState = GraphlingHookState.DEFAULT;
+        model.PlayerWalkState = WalkState.IDLE;
+        model.MoveState = MovementStat.STANDARD; // this state is only one we use currently - but rest can easely be built upon. 
+        model.TurnDirState = TurnDirectionState.RIGHT;
+        model.PlayerWallClingState = WallClingState.DEFAULT;
+        model.PlayerActionState = ActionState.DEFAULT;
+        model.PlayerInAirState = InAirState.ON_GROUND;
+        model.PlayerLifeState = LifeState.ALIVE;
+        model.GraphHookState = GraphlingHookState.DEFAULT;
     }
 
     private void GetPlayerSubcontrollers()
     {
         life = GetComponent<LifeController>();
-        move = GetComponent<HorizontalDirectionController>();
-        jump = GetComponent<JumpController>();
-        dash = GetComponent<DashController>();
-        wallCling = GetComponent<WallClingController>();
+        horizontalDirectionCtrl = GetComponent<HorizontalDirectionController>();
+        jumpCtrl = GetComponent<JumpController>();
+        dashCtrl = GetComponent<DashController>();
+        wallClingCtrl = GetComponent<WallClingController>();
     }
 
     private void InitializeStandardInputValues()
@@ -75,11 +75,11 @@ public class PlayerController : MonoBehaviour
 
     private void AssignInterfaces()
     {
-        move.MoveRules = (IMove)model;
-        jump.JumpRules = (IJump)model;
-        wallCling.IWallClingRules = (IWallCling)model;
+        horizontalDirectionCtrl.MoveRules = (IMove)model;
+        jumpCtrl.JumpRules = (IJump)model;
+        wallClingCtrl.IWallClingRules = (IWallCling)model;
         life.LifeRules = (ILife)model;
-        dash.DashRules = (IDash)model;
+        dashCtrl.DashRules = (IDash)model;
         //graphHook.GraphHookRules = (IGraphHook)model;
         //action.ActionRules = (IAction)model;
     }
@@ -99,22 +99,22 @@ public class PlayerController : MonoBehaviour
         RecordInputs();
         model.MaxVelocityY = 12f;
         HandleChangeState();
-        switch (model.moveState)
+        switch (model.MoveState)
         {
             case MovementStat.STANDARD:
                 StandardState();
-                move.MoveCharacter(horizontalInput);
+                horizontalDirectionCtrl.MoveCharacter(horizontalInput);
                 break;
             case MovementStat.JUMPING:
                 StandardState();
-                move.MoveCharacter(horizontalInput);
-                jump.Jump(1.0f, body);
+                horizontalDirectionCtrl.MoveCharacter(horizontalInput);
+                jumpCtrl.Jump(1.0f, body);
                 JumpingState();
                 break;
             case MovementStat.AIR_JUMPING:
                 break;
             case MovementStat.DASHING:
-                model.moveState = dash.Dash(body.velocity.y);
+                model.MoveState = dashCtrl.Dash(body.velocity.y);
                 break;
             case MovementStat.CROUCHING:
                 break;
@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour
                 WallClingingState();
                 break;
             case MovementStat.WALL_JUMPING:
-                wallCling.WallJumpingState(move.LastInput);
+                wallClingCtrl.WallJumpingState(horizontalDirectionCtrl.LastInput);
                 break;
             case MovementStat.GRAPPLING:
                 break;
@@ -151,9 +151,8 @@ public class PlayerController : MonoBehaviour
             model.HorizontalVelocity *= 0.5f; // slowdown horizontal speed if character is not on the ground
         }
 
-        if (model.NewVelocity.x == 0 && model.moveState != MovementStat.DASHING && model.moveState != MovementStat.JUMPING) //Check speed issues, also latency
+        if (model.NewVelocity.x == 0 && model.MoveState != MovementStat.DASHING && model.MoveState != MovementStat.JUMPING) //Check speed issues, also latency
         {
-            print("hello!");
             body.AddForce(new Vector2(-body.velocity.x * body.mass, 0), ForceMode2D.Impulse);
         }
         else /*if (Math.Abs(rigidBody.velocity.x) <= movementSpeed || Math.Sign(newVelocity.x) != Math.Sign(rigidBody.velocity.x))*/
@@ -181,39 +180,39 @@ public class PlayerController : MonoBehaviour
         body.constraints = RigidbodyConstraints2D.FreezeRotation;
         model.MaxVelocityFix = 1f;
 
-        if (model.moveState == MovementStat.WALL_JUMPING)
+        if (model.MoveState == MovementStat.WALL_JUMPING)
         {
             return;
         }
-        else if (model.moveState == MovementStat.DASHING)
+        else if (model.MoveState == MovementStat.DASHING)
         {
             if (model.WallTrigger != 0)
             {
                 if (!model.IsGrounded)
-                    model.moveState = MovementStat.WALL_CLINGING;
+                    model.MoveState = MovementStat.WALL_CLINGING;
                 else
-                    model.moveState = MovementStat.STANDARD;
+                    model.MoveState = MovementStat.STANDARD;
             }
         }
         else if (Input.GetKeyDown(model.JumpKey) && (model.WallTrigger == 0 || model.IsGrounded)) // If just pressed jumpKey and there's no collision detected by the wallTriggers:
         {
             if (model.IsGrounded)
-                model.moveState = MovementStat.JUMPING;
+                model.MoveState = MovementStat.JUMPING;
             else if (!model.HasAirJumped && Time.time >= model.JumpTime + model.MinimumTimeBeforeAirJump)
-                model.moveState = MovementStat.AIR_JUMPING;
+                model.MoveState = MovementStat.AIR_JUMPING;
         }
         else if (Input.GetKeyDown(model.DashKey) && !model.HasDashed)
         {
-            model.LastActionTime = Time.time;
-            model.moveState = MovementStat.DASHING;
+            model.LastDashTime = Time.time;
+            model.MoveState = MovementStat.DASHING;
         }
         // if F: grapple
         else if (model.WallTrigger != 0 && !model.IsGrounded)
         {
-            model.moveState = MovementStat.WALL_CLINGING;
+            model.MoveState = MovementStat.WALL_CLINGING;
         }
         else
-            model.moveState = MovementStat.STANDARD;
+            model.MoveState = MovementStat.STANDARD;
     }
     private void StandardState()
     {
@@ -226,30 +225,30 @@ public class PlayerController : MonoBehaviour
     }
     private void JumpingState()
     {
-        switch (model.moveState)
+        switch (model.MoveState)
         {
             case MovementStat.JUMPING:
-                jump.Jump(1.0f,body);
+                jumpCtrl.Jump(1.0f,body);
                 if (jumpInput && IsVelocityUpwards())
                     model.NewGravityScale = model.JumpingGravityScaleMultiplier * model.BaseGravityScale * model.FlipGravityScale;
                 else
                 {
                     model.NewGravityScale = model.BaseGravityScale * model.FlipGravityScale;
-                    model.moveState = MovementStat.STANDARD;
+                    model.MoveState = MovementStat.STANDARD;
                 }
                 break;
 
             case MovementStat.AIR_JUMPING:
-                jump.Jump(0.8f, body);
+                jumpCtrl.Jump(0.8f, body);
                 model.HasAirJumped = true;
-                model.moveState = MovementStat.STANDARD;
+                model.MoveState = MovementStat.STANDARD;
                 break;
         }
     }
 
     private void WallClingingState()
     {
-        move.MoveCharacter(horizontalInput);
+        horizontalDirectionCtrl.MoveCharacter(horizontalInput);
         model.WallJumpDirection = model.WallTrigger;
 
         if (body.velocity.y * Math.Sign(model.NewGravityScale) <= 0)
@@ -261,12 +260,12 @@ public class PlayerController : MonoBehaviour
             model.NewGravityScale = model.BaseGravityScale * model.JumpingGravityScaleMultiplier * model.FlipGravityScale;
             model.WallJumpTime = Time.time;
             model.JumpTime = Time.time;
-            model.moveState = wallCling.WallJumpingState(move.LastInput);
+            model.MoveState = wallClingCtrl.WallJumpingState(horizontalDirectionCtrl.LastInput); // Input.Get
 
             model.HasDashed = false;
             model.HasAirJumped = false;
 
-            model.moveState = MovementStat.WALL_JUMPING;
+            model.MoveState = MovementStat.WALL_JUMPING;
 
             return;
         }

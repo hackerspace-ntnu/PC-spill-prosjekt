@@ -37,7 +37,7 @@ public class PlayerAnim : MonoBehaviour {
         isGrounded = playerMovement.IsGrounded;
         moveHorizontal = horizontalDirectionController.LastInput;
         wallTrigger = playerMovement.WallTrigger;
-        playerState = (int)playerMovement.moveState;
+        playerState = (int)playerMovement.MoveState;
         flipGravityScale = playerMovement.FlipGravityScale;
 
         anim.SetBool("isGrounded", isGrounded);
