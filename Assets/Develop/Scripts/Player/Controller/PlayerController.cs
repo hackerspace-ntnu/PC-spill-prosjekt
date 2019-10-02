@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
         model.PlayerWalkState = WalkState.IDLE;
         model.MoveState = MovementStat.STANDARD; // this state is only one we use currently - but rest can easely be built upon. 
         model.TurnDirState = TurnDirectionState.RIGHT;
-        model.PlayerWallClingState = WallClingState.DEFAULT;
+        model.PlayerWallClingState = WallClingState.CLINGING;
         model.PlayerActionState = ActionState.DEFAULT;
         model.PlayerInAirState = InAirState.ON_GROUND;
         model.PlayerLifeState = LifeState.ALIVE;
@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
             case MovementStat.JUMPING:
                 StandardState();
                 horizontalDirectionCtrl.MoveCharacter(horizontalInput);
-                jumpCtrl.Jump(1.0f, body);
+                jumpCtrl.Jump(1.0f, body.velocity.y,body.gravityScale);
                 JumpingState();
                 break;
             case MovementStat.AIR_JUMPING:
@@ -230,7 +230,7 @@ public class PlayerController : MonoBehaviour
         switch (model.MoveState)
         {
             case MovementStat.JUMPING:
-                jumpCtrl.Jump(1.0f,body);
+                jumpCtrl.Jump(1.0f,body.velocity.y, body.gravityScale);
                 if (jumpInput && IsVelocityUpwards())
                     model.NewGravityScale = model.JumpingGravityScaleMultiplier * model.BaseGravityScale * model.FlipGravityScale;
                 else
@@ -241,7 +241,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case MovementStat.AIR_JUMPING:
-                jumpCtrl.Jump(0.8f, body);
+                jumpCtrl.Jump(0.8f, body.velocity.y, body.gravityScale);
                 model.HasAirJumped = true;
                 model.MoveState = MovementStat.STANDARD;
                 break;
@@ -250,6 +250,7 @@ public class PlayerController : MonoBehaviour
 
     private void WallClingingState()
     {
+        Debug.Log("jumpinput: "+jumpInput);
         model.WallJumpDirection = model.WallTrigger;
 
         if (body.velocity.y * Math.Sign(model.NewGravityScale) <= 0)
@@ -261,14 +262,14 @@ public class PlayerController : MonoBehaviour
             model.NewGravityScale = model.BaseGravityScale * model.JumpingGravityScaleMultiplier * model.FlipGravityScale;
             model.WallJumpTime = Time.time;
             model.JumpTime = Time.time;
-            wallClingCtrl.WallJumpingState(horizontalInput); // Input.Get
+            wallClingCtrl.WallJumpingState(horizontalInput); 
 
             model.HasDashed = false;
             model.HasAirJumped = false;
 
             model.MoveState = MovementStat.WALL_JUMPING; 
 
-            return; //BUG: Character goes to heaven after this return statement.
+            return; 
         }
         else if (Math.Abs(body.velocity.y) <= 6 && model.WallTrigger == -Math.Sign(model.HorizontalVelocity * model.FlipGravityScale)) //wallcling if input towards wall
         {

@@ -19,6 +19,8 @@ public class TriggerDetector : MonoBehaviour
         {
             if (this.gameObject.name == "Ground Sensor")
             {
+                model.MoveState = MovementStat.STANDARD;
+                model.PlayerInAirState = InAirState.ON_GROUND;
                 model.WallTrigger = 0;
                 model.IsGrounded = true;
             }
@@ -37,7 +39,7 @@ public class TriggerDetector : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D col)
     {
-        if ((this.gameObject.name == "Right Sensor") || (this.gameObject.name == "Left Sensor"))
+        if ((this.gameObject.name == "Ground Sensor"))
         {
             model.IsGrounded = false;
         }

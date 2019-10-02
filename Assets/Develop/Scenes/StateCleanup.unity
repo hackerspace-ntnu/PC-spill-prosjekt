@@ -6933,5 +6933,10 @@ PrefabInstance:
       propertyPath: flipGravityScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6976032878821031637, guid: f2b408fdb911d59449e3eaac492ba07f,
+        type: 3}
+      propertyPath: playerWallClingState
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2b408fdb911d59449e3eaac492ba07f, type: 3}

@@ -14,4 +14,7 @@ public interface IJump
     bool IsGrounded { get; set; }
     float JumpTime { get; set; }
     InAirState PlayerInAirState { get; set; }
+    float MinimumTimeBeforeAirJump { get; }
+    bool HasAirJumped { get; set; }
+    MovementStat MoveState { get; set; }
 }
