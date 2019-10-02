@@ -109,7 +109,6 @@ public class PlayerController : MonoBehaviour
             case MovementStat.JUMPING:
                 StandardState();
                 horizontalDirectionCtrl.MoveCharacter(horizontalInput);
-                jumpCtrl.Jump(1.0f, body.velocity.y,body.gravityScale);
                 JumpingState();
                 break;
             case MovementStat.AIR_JUMPING:
@@ -230,7 +229,7 @@ public class PlayerController : MonoBehaviour
         switch (model.MoveState)
         {
             case MovementStat.JUMPING:
-                jumpCtrl.Jump(1.0f,body.velocity.y, body.gravityScale);
+                jumpCtrl.Jump(body.velocity.y, body.gravityScale);
                 if (jumpInput && IsVelocityUpwards())
                     model.NewGravityScale = model.JumpingGravityScaleMultiplier * model.BaseGravityScale * model.FlipGravityScale;
                 else
@@ -241,7 +240,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case MovementStat.AIR_JUMPING:
-                jumpCtrl.Jump(0.8f, body.velocity.y, body.gravityScale);
+                jumpCtrl.Jump(body.velocity.y, body.gravityScale);
                 model.HasAirJumped = true;
                 model.MoveState = MovementStat.STANDARD;
                 break;
@@ -271,7 +270,7 @@ public class PlayerController : MonoBehaviour
 
             return; 
         }
-        else if (Math.Abs(body.velocity.y) <= 6 && model.WallTrigger == -Math.Sign(model.HorizontalVelocity * model.FlipGravityScale)) //wallcling if input towards wall
+        else if (Math.Abs(body.velocity.y) <= 6 && model.WallTrigger == -Math.Sign(horizontalInput * model.FlipGravityScale)) //wallcling if input towards wall
         {
             body.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }

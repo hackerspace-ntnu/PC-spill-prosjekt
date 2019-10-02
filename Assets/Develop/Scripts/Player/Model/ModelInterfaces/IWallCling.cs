@@ -9,7 +9,7 @@ public interface IWallCling
     int WallJumpDirection { set; get; }
 
     float MovementSpeed { set; get; }
-    float JumpSpeed { get; }
+    float GroundJumpSpeed { get; }
 
     int FlipGravityScale { set; get; }
 

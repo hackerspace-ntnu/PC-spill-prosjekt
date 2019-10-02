@@ -20,32 +20,41 @@ public class JumpController : MonoBehaviour
     {
         // TODO: Move Jumpstate code from playercontroller here. 
     }
-    internal void Jump(float input, float velocityY, float gravity)
+    internal void Jump(float velocityY, float gravity)
     {
-        if(jumpRules.PlayerInAirState == InAirState.ON_GROUND && Time.time >= jumpRules.JumpTime + jumpRules.MinimumTimeBeforeAirJump)
+        if(jumpRules.PlayerInAirState == InAirState.ON_GROUND)
         {
-            jumpRules.HasAirJumped = false;
-            jumpRules.VerticalVelocity = (jumpRules.JumpSpeed * input + Mathf.Abs(velocityY)) * jumpRules.FlipGravityScale;
+            GroundJump(gravity);
+        }
+        else if(jumpRules.PlayerInAirState != InAirState.ON_GROUND)
+        {
+            AirJump(velocityY, gravity);
+        }
+    }
+
+    private void GroundJump(float gravity)
+    {
+        jumpRules.VerticalVelocity = jumpRules.GroundJumpSpeed * jumpRules.FlipGravityScale;
+        jumpRules.IsVelocityDirty = true;
+        jumpRules.IsGrounded = false;
+        jumpRules.JumpTime = Time.time;
+    }
+
+    private void AirJump(float velocityY, float gravity)
+    {
+        if (Time.time >= jumpRules.JumpTime + jumpRules.MinimumTimeBeforeAirJump && !jumpRules.HasAirJumped)
+        {
+            jumpRules.HasAirJumped = true;
+            jumpRules.MoveState = MovementStat.AIR_JUMPING;
+            jumpRules.PlayerInAirState = InAirState.UPWARDS;
+            jumpRules.VerticalVelocity = (jumpRules.GroundJumpSpeed + Math.Abs(velocityY)) * jumpRules.FlipGravityScale;
             jumpRules.IsVelocityDirty = true;
             jumpRules.IsGrounded = false;
             jumpRules.JumpTime = Time.time;
         }
-        else if(jumpRules.PlayerInAirState != InAirState.ON_GROUND)
+        else
         {
-            if(Time.time >= jumpRules.JumpTime + jumpRules.MinimumTimeBeforeAirJump && !jumpRules.HasAirJumped)
-            {
-                jumpRules.HasAirJumped = true;
-                jumpRules.MoveState = MovementStat.AIR_JUMPING;
-                jumpRules.PlayerInAirState = InAirState.UPWARDS;
-                jumpRules.VerticalVelocity = (jumpRules.JumpSpeed * input + Mathf.Abs(velocityY)) * jumpRules.FlipGravityScale;
-                jumpRules.IsVelocityDirty = true;
-                jumpRules.IsGrounded = false;
-                jumpRules.JumpTime = Time.time;
-            }
-            else
-            {
-                UpdateInAirState(velocityY, gravity);
-            }
+            UpdateInAirState(velocityY, gravity);
         }
     }
 

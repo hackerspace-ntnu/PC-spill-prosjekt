@@ -8,7 +8,8 @@ public interface IJump
     int FlipGravityScale { get; set; }
     float VerticalVelocity { get; set; }
     float BaseGravityScale { get; }
-    float JumpSpeed { get; }
+    float GroundJumpSpeed { get; }
+    float AirJumpSpeed { get; }
     float MaxVelocityY { get; }
     float JumpingGravityScaleMultiplier { get; }
     bool IsGrounded { get; set; }

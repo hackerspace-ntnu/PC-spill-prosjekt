@@ -51,8 +51,11 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     [Tooltip("The maximum movement speed of the character.")]
     private float movementSpeed = 7;
     [SerializeField]
-    [Tooltip("The initial jumpspeed of the character.")]
-    private float jumpSpeed = 13.5f;
+    [Tooltip("The initial jumpspeed of the character when grounded.")]
+    private float groundJumpSpeed = 13.5f;
+    [SerializeField]
+    [Tooltip("The initial jumpspeed of the character when airborne.")]
+    private float airJumpSpeed = 10.5f;
     [SerializeField]
     [Tooltip("The initial dashSpeed of the character.")]
     private float dashSpeed = 13;
@@ -130,16 +133,29 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
         }
     }
 
-    public float JumpSpeed
+    public float GroundJumpSpeed
     {
         get
         {
-            return jumpSpeed;
+            return groundJumpSpeed;
         }
 
         set
         {
-            jumpSpeed = value;
+            groundJumpSpeed = value;
+        }
+    }
+
+    public float AirJumpSpeed
+    {
+        get
+        {
+            return groundJumpSpeed;
+        }
+
+        set
+        {
+            groundJumpSpeed = value;
         }
     }
 
