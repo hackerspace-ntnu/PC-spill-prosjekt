@@ -1433,6 +1433,32 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &364862939 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1133793365, guid: 23be6bb021894114d90353779a088562,
+    type: 3}
+  m_PrefabInstance: {fileID: 1952621742}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &364862941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 364862939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7846bc9f146845c438e30cd57ca3a606, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpKey: 32
+  dashKey: 304
+  spriteDirection: 0
+  movementSpeed: 5
+  jumpForce: 13
+  dashForce: 10
+  baseGravityScale: 5
+  maxVelocityY: 12
 --- !u!1 &402572379
 GameObject:
   m_ObjectHideFlags: 0
@@ -6911,5 +6937,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4730331677477398689, guid: 23be6bb021894114d90353779a088562, type: 3}
+    - {fileID: 1133793367, guid: 23be6bb021894114d90353779a088562, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 23be6bb021894114d90353779a088562, type: 3}
