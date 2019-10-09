@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
         dashInput = Input.GetKey(model.DashKey);
-        jumpInput = Input.GetKey(model.JumpKey);
+        jumpInput = Input.GetKeyDown(model.JumpKey);
         graphHookInput = Input.GetKey(model.GraphHookKey);
     }
 
