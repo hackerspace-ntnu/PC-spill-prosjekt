@@ -16,12 +16,12 @@ public class WallClingController : MonoBehaviour
     }
 
 
-    internal void WallJumpingState(float input)
+    internal void WallJumpingState(float input, float rigidBodyVelocityY)
     {
         if (Math.Abs(input) >= 0.3) // "Move-jump"
-            iWallClingRules.NewVelocity = new Vector2(iWallClingRules.WallJumpDirection * iWallClingRules.DashSpeed, iWallClingRules.GroundJumpSpeed * 0.64f) * iWallClingRules.FlipGravityScale; //jumpSpeed * 0.64f * Math.Sign(newGravityScale)
+            iWallClingRules.NewVelocity = new Vector2(iWallClingRules.WallJumpDirection * iWallClingRules.DashSpeed, 0.8f * iWallClingRules.GroundJumpSpeed - rigidBodyVelocityY) * iWallClingRules.FlipGravityScale; //jumpSpeed * 0.64f * Math.Sign(newGravityScale)
         else // Actually jump.. 
-            iWallClingRules.NewVelocity = new Vector2(iWallClingRules.WallJumpDirection * iWallClingRules.MovementSpeed, iWallClingRules.GroundJumpSpeed * 0.75f) * iWallClingRules.FlipGravityScale; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
+            iWallClingRules.NewVelocity = new Vector2(iWallClingRules.WallJumpDirection * iWallClingRules.MovementSpeed, iWallClingRules.GroundJumpSpeed - rigidBodyVelocityY) * iWallClingRules.FlipGravityScale; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
 
         if (iWallClingRules.WallJumpDirection == 1)
         {
@@ -31,7 +31,10 @@ public class WallClingController : MonoBehaviour
         {
             iWallClingRules.PlayerWallClingState = WallClingState.LEAVING_RIGHT;
         }
-        iWallClingRules.MoveState = MovementStat.STANDARD;
+        if (Time.time - iWallClingRules.WallJumpTime > 0.05f)
+        {
+            iWallClingRules.MoveState = MovementStat.STANDARD;
+        }
     }
 
 }

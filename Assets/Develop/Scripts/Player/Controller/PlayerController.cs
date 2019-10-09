@@ -125,10 +125,9 @@ public class PlayerController : MonoBehaviour
                 horizontalDirectionCtrl.MoveCharacter(horizontalInput);
                 WallClingingState();
                 break;
-                /*
             case MovementStat.WALL_JUMPING:
-                wallClingCtrl.WallJumpingState(horizontalInput);
-                break;*/
+                wallClingCtrl.WallJumpingState(horizontalInput, body.velocity.y);
+                break;
             case MovementStat.GRAPPLING:
                 break;
             case MovementStat.DAMAGED:
@@ -148,7 +147,7 @@ public class PlayerController : MonoBehaviour
 
         else
         {
-            model.MaxVelocityFix = 1f;// fix/swap for max velocity when  jumping. 0.8F is force when jumping
+            model.MaxVelocityFix = 1f;// fix/swap for max velocity when jumping. 0.8F is force when jumping
         }
 
         if (!model.IsGrounded && Math.Sign(model.NewVelocity.x) != Math.Sign(body.velocity.x))
@@ -172,12 +171,12 @@ public class PlayerController : MonoBehaviour
     {
         body.constraints = RigidbodyConstraints2D.FreezeRotation;
         model.MaxVelocityFix = 1f;
-        /*
+        
         if (model.MoveState == MovementStat.WALL_JUMPING)
         {
             return;
-        }*/
-        if (model.MoveState == MovementStat.DASHING)
+        }
+        else if (model.MoveState == MovementStat.DASHING)
         {
             if (model.WallTrigger != 0)
             {
@@ -254,15 +253,12 @@ public class PlayerController : MonoBehaviour
             model.NewGravityScale = model.BaseGravityScale * model.JumpingGravityScaleMultiplier * model.FlipGravityScale;
             model.WallJumpTime = Time.time;
             model.JumpTime = Time.time;
-            wallClingCtrl.WallJumpingState(horizontalInput); 
+            wallClingCtrl.WallJumpingState(horizontalInput, body.velocity.y); 
 
             model.HasDashed = false;
             model.HasAirJumped = false;
 
-            //model.MoveState = MovementStat.WALL_JUMPING; 
-            model.MoveState = MovementStat.STANDARD;
-
-            return; 
+            model.MoveState = MovementStat.WALL_JUMPING; 
         }
         else if (Math.Abs(body.velocity.y) <= 6 && model.WallTrigger == -Math.Sign(horizontalInput * model.FlipGravityScale)) //wallcling if input towards wall
         {
