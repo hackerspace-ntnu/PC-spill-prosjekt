@@ -22,7 +22,6 @@ public class DashController : MonoBehaviour
         {
             dashRules.NewVelocity = new Vector2(dashRules.SpriteDirection * dashRules.DashSpeed * dashRules.FlipGravityScale, -input);
             dashRules.NewGravityScale = 0;
-            dashRules.LastDashTime = Time.time;
         }
         else
         {

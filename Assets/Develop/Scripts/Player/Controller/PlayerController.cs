@@ -112,6 +112,9 @@ public class PlayerController : MonoBehaviour
                 JumpingState();
                 break;
             case MovementStat.AIR_JUMPING:
+                StandardState();
+                horizontalDirectionCtrl.MoveCharacter(horizontalInput);
+                JumpingState();
                 break;
             case MovementStat.DASHING:
                 model.MoveState = dashCtrl.Dash(body.velocity.y);
@@ -122,9 +125,10 @@ public class PlayerController : MonoBehaviour
                 horizontalDirectionCtrl.MoveCharacter(horizontalInput);
                 WallClingingState();
                 break;
+                /*
             case MovementStat.WALL_JUMPING:
                 wallClingCtrl.WallJumpingState(horizontalInput);
-                break;
+                break;*/
             case MovementStat.GRAPPLING:
                 break;
             case MovementStat.DAMAGED:
@@ -152,21 +156,9 @@ public class PlayerController : MonoBehaviour
             model.HorizontalVelocity *= 0.5f; // slowdown horizontal speed if character is not on the ground
         }
 
-        if (model.NewVelocity.x == 0 && model.MoveState != MovementStat.DASHING && model.MoveState != MovementStat.JUMPING) //Check speed issues, also latency
-        {
-            body.AddForce(new Vector2(-body.velocity.x * body.mass, 0), ForceMode2D.Impulse);
-        }
-        else /*if (Math.Abs(rigidBody.velocity.x) <= movementSpeed || Math.Sign(newVelocity.x) != Math.Sign(rigidBody.velocity.x))*/
-        {
+        body.AddForce(new Vector2(model.HorizontalVelocity - body.velocity.x, model.VerticalVelocity - body.velocity.y * (1 - model.MaxVelocityFix)), ForceMode2D.Impulse);
+        model.VerticalVelocity = 0;
 
-            body.AddForce(new Vector2(model.NewVelocity.x - body.velocity.x, -body.velocity.y * (1 - model.MaxVelocityFix)), ForceMode2D.Impulse);
-        }
-
-        if (Math.Abs(model.NewVelocity.y) > 0) //Might have to multiply by flipGravityScale instead
-        {
-            body.AddForce(new Vector2(0, model.NewVelocity.y), ForceMode2D.Impulse);
-            model.VerticalVelocity = 0;
-        }
         //rigidBody.velocity = new Vector2(newVelocity.x, newVelocity.y * maxVelocityFix); // Ta inn maxVelocityFix, mye renere
         model.IsVelocityDirty = false;
         if (body.gravityScale != model.NewGravityScale)
@@ -180,12 +172,12 @@ public class PlayerController : MonoBehaviour
     {
         body.constraints = RigidbodyConstraints2D.FreezeRotation;
         model.MaxVelocityFix = 1f;
-
+        /*
         if (model.MoveState == MovementStat.WALL_JUMPING)
         {
             return;
-        }
-        else if (model.MoveState == MovementStat.DASHING)
+        }*/
+        if (model.MoveState == MovementStat.DASHING)
         {
             if (model.WallTrigger != 0)
             {
@@ -222,6 +214,7 @@ public class PlayerController : MonoBehaviour
         if (model.IsGrounded)
         {
             model.HasDashed = false;
+            model.HasAirJumped = false;
         }
     }
     private void JumpingState()
@@ -229,7 +222,7 @@ public class PlayerController : MonoBehaviour
         switch (model.MoveState)
         {
             case MovementStat.JUMPING:
-                jumpCtrl.Jump(body.velocity.y, body.gravityScale);
+                jumpCtrl.GroundJump(body.gravityScale);
                 if (jumpInput && IsVelocityUpwards())
                     model.NewGravityScale = model.JumpingGravityScaleMultiplier * model.BaseGravityScale * model.FlipGravityScale;
                 else
@@ -240,7 +233,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case MovementStat.AIR_JUMPING:
-                jumpCtrl.Jump(body.velocity.y, body.gravityScale);
+                jumpCtrl.AirJump(body.velocity.y, body.gravityScale);
                 model.HasAirJumped = true;
                 model.MoveState = MovementStat.STANDARD;
                 break;
@@ -266,7 +259,8 @@ public class PlayerController : MonoBehaviour
             model.HasDashed = false;
             model.HasAirJumped = false;
 
-            model.MoveState = MovementStat.WALL_JUMPING; 
+            //model.MoveState = MovementStat.WALL_JUMPING; 
+            model.MoveState = MovementStat.STANDARD;
 
             return; 
         }

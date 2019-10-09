@@ -20,19 +20,8 @@ public class JumpController : MonoBehaviour
     {
         // TODO: Move Jumpstate code from playercontroller here. 
     }
-    internal void Jump(float velocityY, float gravity)
-    {
-        if(jumpRules.PlayerInAirState == InAirState.ON_GROUND)
-        {
-            GroundJump(gravity);
-        }
-        else if(jumpRules.PlayerInAirState != InAirState.ON_GROUND)
-        {
-            AirJump(velocityY, gravity);
-        }
-    }
 
-    private void GroundJump(float gravity)
+    internal void GroundJump(float gravity)
     {
         jumpRules.VerticalVelocity = jumpRules.GroundJumpSpeed * jumpRules.FlipGravityScale;
         jumpRules.IsVelocityDirty = true;
@@ -40,14 +29,14 @@ public class JumpController : MonoBehaviour
         jumpRules.JumpTime = Time.time;
     }
 
-    private void AirJump(float velocityY, float gravity)
+    internal void AirJump(float velocityY, float gravity)
     {
         if (Time.time >= jumpRules.JumpTime + jumpRules.MinimumTimeBeforeAirJump && !jumpRules.HasAirJumped)
         {
             jumpRules.HasAirJumped = true;
             jumpRules.MoveState = MovementStat.AIR_JUMPING;
             jumpRules.PlayerInAirState = InAirState.UPWARDS;
-            jumpRules.VerticalVelocity = (jumpRules.GroundJumpSpeed + Math.Abs(velocityY)) * jumpRules.FlipGravityScale;
+            jumpRules.VerticalVelocity = (jumpRules.AirJumpSpeed - velocityY) * jumpRules.FlipGravityScale;
             jumpRules.IsVelocityDirty = true;
             jumpRules.IsGrounded = false;
             jumpRules.JumpTime = Time.time;
