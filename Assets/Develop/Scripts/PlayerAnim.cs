@@ -7,7 +7,7 @@ public class PlayerAnim : MonoBehaviour {
     private Animator anim;
     private Rigidbody2D body;
     private PlayerModel playerMovement;
-    private HorizontalDirectionController horizontalDirectionController;
+    private StateMachine inputState;
     private SpriteRenderer spriteRenderer;
     private Vector2 rigidBodyVelocity;
 
@@ -21,7 +21,7 @@ public class PlayerAnim : MonoBehaviour {
 
     private void Start()
     {
-        horizontalDirectionController = GameObject.Find("Controllers").GetComponent<HorizontalDirectionController>();
+        inputState = GameObject.Find("Controllers").GetComponent<StateMachine>();
         anim = GetComponent<Animator>();
         playerMovement = GameObject.Find("Models").GetComponent<PlayerModel>();
         spriteRenderer = GameObject.Find("View").GetComponent<SpriteRenderer>();
@@ -35,7 +35,7 @@ public class PlayerAnim : MonoBehaviour {
     private void Update()
     {
         isGrounded = playerMovement.IsGrounded;
-        moveHorizontal = horizontalDirectionController.LastInput;
+        moveHorizontal = inputState.HorizontalInput;
         wallTrigger = playerMovement.WallTrigger;
         playerState = (int)playerMovement.MoveState;
         flipGravityScale = playerMovement.FlipGravityScale;

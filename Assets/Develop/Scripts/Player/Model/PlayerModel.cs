@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCling, ILife
+public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCling, ILife, IPlayerModel
 {
 
-    // States(in the form of enums) covering the various states the model can have. 
+    // States(in the form of enums) covering the various states the model can have.
     // The various states can be found in the file "PlayerStateEnums.cs"
     [Header("State Settings")]
     [SerializeField]
@@ -24,12 +24,16 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     private ActionState playerActionState;
     [SerializeField]
     private GraphlingHookState graphHookState;
+    [Tooltip("Health points of the character.")]
+    [RangeAttribute(0, 100)]
+    [SerializeField]
+    private int healthPoints = 100;
 
-    // Input keycods. Can be changed in unity editor.
+    // Input keycodes. Can be changed in unity editor.
     [Header("Input Settings")]
     [Tooltip("How much input 'force' is required before the player start movement along the horizontal axis.")]
     private readonly float horizontalInputRunningThreshold = 0.3f;
-    [Tooltip("How long time character must wait before it can airjump.")]
+    [Tooltip("How long time character must wait before it can air jump.")]
     private readonly float minimumTimeBeforeAirJump = 0.1f;
     [SerializeField]
     private KeyCode jumpKey = KeyCode.Space;
@@ -51,10 +55,10 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     [Tooltip("The maximum movement speed of the character.")]
     private float movementSpeed = 7;
     [SerializeField]
-    [Tooltip("The initial jumpspeed of the character when grounded.")]
+    [Tooltip("The initial jump speed of the character when grounded.")]
     private float groundJumpSpeed = 13.5f;
     [SerializeField]
-    [Tooltip("The initial jumpspeed of the character when airborne.")]
+    [Tooltip("The initial jump speed of the character when airborne.")]
     private float airJumpSpeed = 10.5f;
     [SerializeField]
     [Tooltip("The initial dashSpeed of the character.")]
@@ -118,7 +122,7 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     private int wallTrigger;
 
     #region Getters and setters
-   
+
 
     public float MovementSpeed
     {
@@ -501,18 +505,15 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     public LifeState PlayerLifeState { get => playerLifeState; set => playerLifeState = value; }
     public ActionState PlayerActionState { get => playerActionState; set => playerActionState = value; }
     public GraphlingHookState GraphHookState { get => graphHookState; set => graphHookState = value; }
+    public int HealthPoints { get => healthPoints; set => healthPoints = value; }
     #endregion
-
-    // Start is called before the first frame update
     void Start()
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    }
+    void FixedUpdate()
     {
-        
+
     }
 }
 
