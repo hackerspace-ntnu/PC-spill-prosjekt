@@ -60,7 +60,9 @@ public class StateMachine : MonoBehaviour , IStateMachine
     public OnJumpState OnJumpState { get => onJumpState; set => onJumpState = value; }
     public OnAirJumpState OnAirJumpState { get => onAirJumpState; set => onAirJumpState = value; }
     public OnNoActionState OnNoActionState { get => onNoActionState; set => onNoActionState = value; }
-    public bool DictModifiedUpdate { get => dictModifiedUpdate; set => dictModifiedUpdate = value; }
+    public bool DictModifiedUpdate {
+        get => dictModifiedUpdate;
+        set => dictModifiedUpdate = value; }
     public bool HaveSetActiveInInitialStates { get => haveSetActiveInInitialStates; set => haveSetActiveInInitialStates = value; }
     public PlayerModel Model { get => model; set => model = value; }
     public float HorizontalInput { get => horizontalInput; set => horizontalInput = value; }
@@ -222,6 +224,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
                     entry.Value.ExitAction();
                     healthState = trans.Target;
                     healthState.EntryAction();
+                    healthState.IsActive = true;
                     stateModified = true;
                 }
                 else
@@ -238,7 +241,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
                     entry.Value.ExitAction();
                     movementState = trans.Target;
                     movementState.EntryAction();
-                    // entry.Value = trans.Target; - doesnt work, is readonly.
+                    movementState.IsActive = true;
                     stateModified = true;
                 }
                 else
@@ -255,7 +258,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
                     entry.Value.ExitAction();
                     actionState = trans.Target;
                     actionState.EntryAction();
-                    // entry.Value = trans.Target; - doesn't work, is read-only.
+                    actionState.IsActive = true;
                     stateModified = true;
                 }
                 else

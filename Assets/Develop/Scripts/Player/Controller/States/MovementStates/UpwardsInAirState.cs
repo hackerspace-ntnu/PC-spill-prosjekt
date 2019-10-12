@@ -84,7 +84,6 @@ public class UpwardsInAirState : BaseState
 
     protected override void FixedUpdate()
     {
-        base.FixedUpdate();
     }
 
 

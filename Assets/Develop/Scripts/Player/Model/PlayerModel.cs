@@ -507,14 +507,7 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     public GraphlingHookState GraphHookState { get => graphHookState; set => graphHookState = value; }
     public int HealthPoints { get => healthPoints; set => healthPoints = value; }
     #endregion
-    void Start()
-    {
 
-    }
-    void FixedUpdate()
-    {
-
-    }
 }
 
 

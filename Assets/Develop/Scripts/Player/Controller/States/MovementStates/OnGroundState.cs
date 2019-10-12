@@ -82,9 +82,6 @@ public class OnGroundState : BaseState
 
     protected override void FixedUpdate()
     {
-        if (IsActive)
-        {
-        }
     }
 
     protected override void Start()

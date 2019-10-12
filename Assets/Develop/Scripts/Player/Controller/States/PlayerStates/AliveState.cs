@@ -37,7 +37,6 @@ public class AliveState : BaseState
 
     protected override void FixedUpdate()
     {
-        base.FixedUpdate();
     }
 
     protected override void Start()

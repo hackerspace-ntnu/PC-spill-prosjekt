@@ -83,7 +83,6 @@ public class OnNoActionState : BaseState
 
     protected override void FixedUpdate()
     {
-        base.FixedUpdate();
     }
 
     protected override void Start()
@@ -101,9 +100,9 @@ public class OnNoActionState : BaseState
             this.TargetTransitionState = CheckTriggers<OnNoActionState>(Rigidbody);
 
             // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
-            if (this.TargetTransitionState == null)
+            if (this.TargetTransitionState == null || TargetTransitionState == this)
             {
-                // HandleHorizontalInput();    Handle JumpInput?
+                // HandleHorizontalInput();    Handle JumpInput? Dashinput?
             }
         }
     }

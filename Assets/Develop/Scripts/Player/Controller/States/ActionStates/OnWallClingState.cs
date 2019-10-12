@@ -13,7 +13,6 @@ public class OnWallClingState : BaseState
 
     protected override void FixedUpdate()
     {
-        base.FixedUpdate();
     }
 
     protected override void Start()

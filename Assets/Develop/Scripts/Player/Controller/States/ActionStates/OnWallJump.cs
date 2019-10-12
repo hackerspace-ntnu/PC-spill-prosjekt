@@ -11,7 +11,6 @@ public class OnWallJump : BaseState
 
     protected override void FixedUpdate()
     {
-        base.FixedUpdate();
     }
 
     protected override void Start()

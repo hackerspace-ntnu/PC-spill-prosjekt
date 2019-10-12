@@ -19,7 +19,6 @@ public class OnAirJumpState : BaseState
 
     protected override void FixedUpdate()
     {
-        base.FixedUpdate();
     }
 
     protected override void Start()
