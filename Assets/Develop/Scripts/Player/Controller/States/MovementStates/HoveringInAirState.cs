@@ -13,10 +13,31 @@ public class HoveringInAirState : BaseState
     public float LastInput { get => lastInput; set => lastInput = value; }
     public Rigidbody2D Rigidbody { get => rigidbody; set => rigidbody = value; }
 
-
+    protected override BaseState TargetTransitionState
+    {
+        get => base.TargetTransitionState;
+        set
+        {
+            if(value == null)
+            {
+                base.TargetTransitionState = value;
+            }
+            else if (value == StateMachine.OnGroundState || value == StateMachine.HoveringInAirState
+                || value == StateMachine.UpwardsInAirState || value == StateMachine.FallingInAirState ||
+                value == StateMachine.OnWallState)
+            {
+                base.TargetTransitionState = value;
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
 
     protected override void Start()
     {
+        StateName = "Hovering in the air state.";
         IsActive = false;
         Rigidbody = GameObject.Find("View").GetComponent<Rigidbody2D>();
     }
@@ -30,8 +51,8 @@ public class HoveringInAirState : BaseState
 
     internal override void ExitAction()
     {
+        this.TargetTransitionState = null;
         IsActive = false;
-        base.ExitAction();
         LastInput = 0;
     }
 
@@ -41,11 +62,10 @@ public class HoveringInAirState : BaseState
 
     protected override void Update()
     {
-
         if (IsActive)
         {
             // check if any other states can be transitioned into
-            this.TargetTransitionState = CheckTriggers<BaseState>(Rigidbody);
+            this.TargetTransitionState = CheckTriggers<HoveringInAirState>(Rigidbody);
 
             // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
             if(this.TargetTransitionState == null)

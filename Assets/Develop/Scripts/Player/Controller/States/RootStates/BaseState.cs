@@ -68,21 +68,10 @@ public abstract class BaseState : MonoBehaviour
         get => targetTransitionState;
         set
         {
-            if (value == null)
-            {
                 targetTransitionState = value;
-            }
-            else if (value.GetType() == typeof(BaseState))
-            {
-                targetTransitionState = value;
-            }
-            else
-            {
-                return;
-            }
         }
     }
-    protected string StateName { get => stateName; set => stateName = value; }
+    public string StateName { get => stateName; set => stateName = value; }
 
     // Start is called before the first frame update
     protected virtual void Start() {
@@ -114,8 +103,6 @@ public abstract class BaseState : MonoBehaviour
     internal virtual void ExitAction()
     {
         IsActive = false;
-        PlayerModel = null;
-        StateMachine = null;
         CanTransitionTo = true;
     }
 

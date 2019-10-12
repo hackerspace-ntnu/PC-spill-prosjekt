@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class StateMachine : MonoBehaviour , IStateMachine
@@ -9,7 +10,11 @@ public class StateMachine : MonoBehaviour , IStateMachine
 
 
     PlayerModel model; // All variables related to player. Doesn't do any logic, just hold variables. Used ALOT.
+
     private Dictionary<int,BaseState> states = new Dictionary<int, BaseState>();
+    [Tooltip("Print states on each frame if change in states is detected.")]
+    [SerializeField]
+    private bool printStates = true;
 
     // Level 1 states (most important)
     DeadState deadState;
@@ -31,7 +36,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
     OnWallJump onWallJump;
 
     private bool dictModifiedUpdate;
-    private bool dictModifiedFixedUpdate;
+    private bool haveSetActiveInInitialStates = false;
 
 
     // Inputs
@@ -56,7 +61,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
     public OnAirJumpState OnAirJumpState { get => onAirJumpState; set => onAirJumpState = value; }
     public OnNoActionState OnNoActionState { get => onNoActionState; set => onNoActionState = value; }
     public bool DictModifiedUpdate { get => dictModifiedUpdate; set => dictModifiedUpdate = value; }
-    public bool DictModifiedFixedUpdate { get => dictModifiedFixedUpdate; set => dictModifiedFixedUpdate = value; }
+    public bool HaveSetActiveInInitialStates { get => haveSetActiveInInitialStates; set => haveSetActiveInInitialStates = value; }
     public PlayerModel Model { get => model; set => model = value; }
     public float HorizontalInput { get => horizontalInput; set => horizontalInput = value; }
     public float VerticalInput { get => verticalInput; set => verticalInput = value; }
@@ -73,17 +78,23 @@ public class StateMachine : MonoBehaviour , IStateMachine
     {
         InitializeStandardInputValues();
         InitializeStates();
-        InitilizeInterfacesForStates();
+        InitializeInterfacesForStates();
         PrepareInitialStates();
     }
 
     // Update is called once per frame
     public void Update()
     {
-        RecordInputs();
+        if (!this.HaveSetActiveInInitialStates)
+        {
+            ActivateInitialStates();
+            HaveSetActiveInInitialStates = true;
+        }
+        RecordInputs(); // always record inputs each frame!
         if (!DictModifiedUpdate)
         {
             ProcessStateTransitions();
+            DebugPrintStates();
         }
     }
 
@@ -94,6 +105,13 @@ public class StateMachine : MonoBehaviour , IStateMachine
         DashInput = false;
         JumpInput = false; ;
         GraphHookInput = false;
+    }
+
+    private void ActivateInitialStates()
+    {
+        AliveState.IsActive = true;
+        HoveringInAirState.IsActive = true;
+        OnNoActionState.IsActive = true;
     }
     private void InitializeStates()
     {
@@ -128,11 +146,10 @@ public class StateMachine : MonoBehaviour , IStateMachine
         OnNoActionState.IsActive = true;
 
         DictModifiedUpdate = false;
-        DictModifiedFixedUpdate = false;
     }
 
 
-    private void InitilizeInterfacesForStates()
+    private void InitializeInterfacesForStates()
     {
         // lvl 1
         DeadState.PlayerModel = (IPlayerModel)model;
@@ -178,12 +195,14 @@ public class StateMachine : MonoBehaviour , IStateMachine
 
     public void ProcessStateTransitions()
     {
-        if(States.Count == 0)
+        // we should always have three states - one for life/hp, one for position, and one for actions.
+        if (States.Count < 3)
         {
             InitializeStates();
+            DictModifiedUpdate = true;
         }
+        // if one or more transitions to different states is found, this prevent the update function
         DictModifiedUpdate = ProcessStateTransitionsOnce();
-        DictModifiedUpdate = false;
     }
 
     public bool ProcessStateTransitionsOnce()
@@ -262,15 +281,30 @@ public class StateMachine : MonoBehaviour , IStateMachine
             States[1] = healthState;
             DictModifiedUpdate = true;
         }
-        if(movementState != null)
+        else if(movementState != null)
         {
             DictModifiedUpdate = true;
             States[2] = movementState;
         }
-        if(actionState != null)
+        else if(actionState != null)
         {
             DictModifiedUpdate = true;
             States[3] = actionState;
         }
+        else
+        {
+            DictModifiedUpdate = false;
+        }
+    }
+
+    private void DebugPrintStates()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("Current State of player: ");
+        foreach (KeyValuePair<int,BaseState> entry in States)
+        {
+            sb.AppendLine(entry.Key + ": " + entry.Value.StateName);
+        }
+        Debug.Log(sb.ToString());
     }
 }

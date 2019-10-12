@@ -4,15 +4,35 @@ using UnityEngine;
 
 public class OnWallJump : BaseState
 {
-    // Start is called before the first frame update
-    void Start()
+    protected override BaseState CheckTriggers<T>(Rigidbody2D body)
     {
-
+        return base.CheckTriggers<T>(body);
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void FixedUpdate()
     {
-
+        base.FixedUpdate();
     }
+
+    protected override void Start()
+    {
+        base.Start();
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+    }
+
+    internal override void EntryAction()
+    {
+        base.EntryAction();
+    }
+
+    internal override void ExitAction()
+    {
+        this.TargetTransitionState = null;
+        IsActive = false;
+    }
+
 }

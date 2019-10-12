@@ -34,7 +34,8 @@ public class DeadState : BaseState
 
     internal override void ExitAction()
     {
-        base.ExitAction();
+        this.TargetTransitionState = null;
+        IsActive = false;
     }
 
     protected override void FixedUpdate()
@@ -44,6 +45,7 @@ public class DeadState : BaseState
 
     protected override void Start()
     {
+        StateName = " Player is dead ";
         Rigidbody = GameObject.Find("View").GetComponent<Rigidbody2D>();
         base.Start();
     }
@@ -52,20 +54,6 @@ public class DeadState : BaseState
     {
     }
 
-    public override int GetHashCode()
-    {
-        return base.GetHashCode();
-    }
-
-    public override bool Equals(object other)
-    {
-        return base.Equals(other);
-    }
-
-    public override string ToString()
-    {
-        return base.ToString();
-    }
 
     protected override BaseState CheckTriggers<T>(Rigidbody2D body)
     {

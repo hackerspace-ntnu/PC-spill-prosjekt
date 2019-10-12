@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class UpwardsInAirState : BaseState
 {
-
+    private float lastInput;
     public Rigidbody2D Rigidbody { get => rigidbody; private set => rigidbody = value; }
+    public float LastInput { get => lastInput; set => lastInput = value; }
 
     private Rigidbody2D rigidbody;
     protected override BaseState CheckTriggers<T>(Rigidbody2D body)
@@ -70,11 +71,15 @@ public class UpwardsInAirState : BaseState
 
     internal override void EntryAction()
     {
+        IsActive = true;
+        LastInput = 0;
     }
 
     internal override void ExitAction()
     {
-        base.ExitAction();
+        this.TargetTransitionState = null;
+        IsActive = false;
+        LastInput = 0;
     }
 
     protected override void FixedUpdate()
@@ -85,6 +90,7 @@ public class UpwardsInAirState : BaseState
 
     protected override void Start()
     {
+        StateName = "Upwards in air state.";
         base.Start();
         Rigidbody = GameObject.Find("View").GetComponent<Rigidbody2D>();
 
@@ -92,5 +98,41 @@ public class UpwardsInAirState : BaseState
 
     protected override void Update()
     {
+        if (IsActive)
+        {
+            // check if any other states can be transitioned into
+            this.TargetTransitionState = CheckTriggers<BaseState>(Rigidbody);
+
+            // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
+            if (this.TargetTransitionState == null)
+            {
+                HandleHorizontalInput();
+            }
+        }
+    }
+    private void HandleHorizontalInput()
+    {
+        if (Math.Abs(StateMachine.HorizontalInput) <= 0.1) // Beholde?
+        {
+            LastInput = 0;
+        }
+        else if (Math.Abs(LastInput) <= Math.Abs(StateMachine.HorizontalInput))
+        {
+            LastInput = StateMachine.HorizontalInput;
+            if (Math.Abs(LastInput) > PlayerModel.HorizontalInputRunningThreshold)
+            {
+                PlayerModel.PlayerWalkState = WalkState.WALKING;
+                PlayerModel.HorizontalVelocity = Math.Sign(LastInput) * PlayerModel.MovementSpeed * PlayerModel.FlipGravityScale; // Set horizontalInput to max
+            }
+            else
+            {
+                PlayerModel.HorizontalVelocity = LastInput * PlayerModel.MovementSpeed * PlayerModel.FlipGravityScale;
+            }
+        }
+        else
+        {
+            PlayerModel.HorizontalVelocity = 0;
+            LastInput = StateMachine.HorizontalInput;
+        }
     }
 }
