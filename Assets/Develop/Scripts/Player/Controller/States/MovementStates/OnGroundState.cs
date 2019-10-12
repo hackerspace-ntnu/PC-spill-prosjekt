@@ -97,7 +97,7 @@ public class OnGroundState : BaseState
         {
             TargetTransitionState = CheckTriggers<OnGroundState>(Rigidbody);
 
-            if (this.TargetTransitionState == null)
+            if (this.TargetTransitionState == null || this.TargetTransitionState == this)
             {
                 HandleHorizontalInput();
             }

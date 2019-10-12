@@ -15,6 +15,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
     [Tooltip("Print states on each frame if change in states is detected.")]
     [SerializeField]
     private bool printStates = true;
+    private List<BaseState> statesLastFrame = new List<BaseState>();
 
     // Level 1 states (most important)
     DeadState deadState;
@@ -35,7 +36,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
     OnWallClingState onWallClingState;
     OnWallJump onWallJump;
 
-    private bool dictModifiedUpdate;
+    private bool statesModified;
     private bool haveSetActiveInInitialStates = false;
 
 
@@ -60,9 +61,9 @@ public class StateMachine : MonoBehaviour , IStateMachine
     public OnJumpState OnJumpState { get => onJumpState; set => onJumpState = value; }
     public OnAirJumpState OnAirJumpState { get => onAirJumpState; set => onAirJumpState = value; }
     public OnNoActionState OnNoActionState { get => onNoActionState; set => onNoActionState = value; }
-    public bool DictModifiedUpdate {
-        get => dictModifiedUpdate;
-        set => dictModifiedUpdate = value; }
+    public bool StatesModified {
+        get => statesModified;
+        set => statesModified = value; }
     public bool HaveSetActiveInInitialStates { get => haveSetActiveInInitialStates; set => haveSetActiveInInitialStates = value; }
     public PlayerModel Model { get => model; set => model = value; }
     public float HorizontalInput { get => horizontalInput; set => horizontalInput = value; }
@@ -72,6 +73,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
     public bool GraphHookInput { get => graphHookInput; set => graphHookInput = value; }
     public OnWallClingState OnWallClingState { get => onWallClingState; set => onWallClingState = value; }
     public OnWallJump OnWallJump { get => onWallJump; set => onWallJump = value; }
+    public List<BaseState> StatesLastFrame { get => statesLastFrame; set => statesLastFrame = value; }
 
 
 
@@ -83,23 +85,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
         InitializeInterfacesForStates();
         PrepareInitialStates();
     }
-
-    // Update is called once per frame
-    public void Update()
-    {
-        if (!this.HaveSetActiveInInitialStates)
-        {
-            ActivateInitialStates();
-            HaveSetActiveInInitialStates = true;
-        }
-        RecordInputs(); // always record inputs each frame!
-        if (!DictModifiedUpdate)
-        {
-            ProcessStateTransitions();
-            DebugPrintStates();
-        }
-    }
-
+    #region Start methods called
     private void InitializeStandardInputValues()
     {
         HorizontalInput = 0;
@@ -139,15 +125,17 @@ public class StateMachine : MonoBehaviour , IStateMachine
 
     private void PrepareInitialStates()
     {
+        //StatesLastFrame = new List<BaseState>();
         States.Add(1, AliveState);
+        StatesLastFrame.Add(AliveState);
         States.Add(2, HoveringInAirState);
+        StatesLastFrame.Add(HoveringInAirState);
         States.Add(3, OnNoActionState);
+        StatesLastFrame.Add(OnNoActionState);
 
         AliveState.IsActive = true;
         HoveringInAirState.IsActive = true;
         OnNoActionState.IsActive = true;
-
-        DictModifiedUpdate = false;
     }
 
 
@@ -185,7 +173,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
         OnWallJump.PlayerModel = (IPlayerModel)model;
         OnWallJump.StateMachine = (IStateMachine)this;
     }
-        private void RecordInputs()
+    private void RecordInputs()
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
@@ -193,7 +181,26 @@ public class StateMachine : MonoBehaviour , IStateMachine
         jumpInput = Input.GetKeyDown(Model.JumpKey);
         graphHookInput = Input.GetKey(Model.GraphHookKey);
     }
+    #endregion
+    // Update is called once per frame
+    public void Update()
+    {
+        if (!HaveSetActiveInInitialStates)
+        {
+            ActivateInitialStates();
+            HaveSetActiveInInitialStates = true;
+        }
+        RecordInputs(); // always record inputs each frame!
+        ProcessStateTransitions();
+    }
 
+    public void LateUpdate()
+    {
+        if (printStates && StatesModified)
+        {
+            DebugPrintStates();
+        }
+    }
 
     public void ProcessStateTransitions()
     {
@@ -201,18 +208,16 @@ public class StateMachine : MonoBehaviour , IStateMachine
         if (States.Count < 3)
         {
             InitializeStates();
-            DictModifiedUpdate = true;
         }
         // if one or more transitions to different states is found, this prevent the update function
-        DictModifiedUpdate = ProcessStateTransitionsOnce();
+        ProcessStateTransitionsOnce();
     }
 
-    public bool ProcessStateTransitionsOnce()
+    private void ProcessStateTransitionsOnce()
     {
         BaseState healthState = null;
         BaseState movementState = null;
         BaseState actionState = null;
-        bool stateModified = false;
         foreach (KeyValuePair<int, BaseState> entry in States)
         {
             // Handle level 1 state changes (dead/alive)
@@ -225,7 +230,6 @@ public class StateMachine : MonoBehaviour , IStateMachine
                     healthState = trans.Target;
                     healthState.EntryAction();
                     healthState.IsActive = true;
-                    stateModified = true;
                 }
                 else
                 {
@@ -242,7 +246,6 @@ public class StateMachine : MonoBehaviour , IStateMachine
                     movementState = trans.Target;
                     movementState.EntryAction();
                     movementState.IsActive = true;
-                    stateModified = true;
                 }
                 else
                 {
@@ -259,7 +262,6 @@ public class StateMachine : MonoBehaviour , IStateMachine
                     actionState = trans.Target;
                     actionState.EntryAction();
                     actionState.IsActive = true;
-                    stateModified = true;
                 }
                 else
                 {
@@ -273,8 +275,6 @@ public class StateMachine : MonoBehaviour , IStateMachine
 
         }
         UpdateStates(healthState, movementState, actionState);
-        return stateModified;
-
     }
     public void UpdateStates(BaseState healthState, BaseState movementState, BaseState actionState)
     {
@@ -282,31 +282,37 @@ public class StateMachine : MonoBehaviour , IStateMachine
         if(healthState != null)
         {
             States[1] = healthState;
-            DictModifiedUpdate = true;
+            StatesLastFrame[0] = healthState;
+            StatesModified = true;
         }
-        else if(movementState != null)
+        else if(movementState != null || actionState != null)
         {
-            DictModifiedUpdate = true;
-            States[2] = movementState;
-        }
-        else if(actionState != null)
-        {
-            DictModifiedUpdate = true;
-            States[3] = actionState;
+            if(movementState != null)
+            {
+                States[2] = movementState;
+                StatesLastFrame[1] = movementState;
+                StatesModified = true;
+            }
+            if (actionState != null)
+            {
+                States[3] = actionState;
+                StatesLastFrame[2] = actionState;
+                StatesModified = true;
+            }
         }
         else
         {
-            DictModifiedUpdate = false;
+            StatesModified = false;
         }
     }
 
     private void DebugPrintStates()
     {
         StringBuilder sb = new StringBuilder();
-        sb.Append("Current State of player: ");
-        foreach (KeyValuePair<int,BaseState> entry in States)
+        sb.Append("state of player last frame: ");
+        foreach (BaseState item in StatesLastFrame)
         {
-            sb.AppendLine(entry.Key + ": " + entry.Value.StateName);
+            sb.AppendLine(item.StateName);
         }
         Debug.Log(sb.ToString());
     }

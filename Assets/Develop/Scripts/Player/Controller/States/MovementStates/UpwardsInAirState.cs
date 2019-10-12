@@ -103,7 +103,7 @@ public class UpwardsInAirState : BaseState
             this.TargetTransitionState = CheckTriggers<BaseState>(Rigidbody);
 
             // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
-            if (this.TargetTransitionState == null)
+            if (this.TargetTransitionState == null || this.TargetTransitionState == this)
             {
                 HandleHorizontalInput();
             }
