@@ -72,14 +72,4 @@ public class OnJumpState : BaseState
         PlayerModel.JumpTime = Time.time;
         PlayerModel.NewGravityScale = PlayerModel.JumpingGravityScaleMultiplier * PlayerModel.BaseGravityScale * PlayerModel.FlipGravityScale;
     }
-
-
-    internal void AirJump(float velocityY, float gravity)
-    {
-        PlayerModel.HasAirJumped = true;
-        PlayerModel.VerticalVelocity = (PlayerModel.AirJumpSpeed - velocityY) * PlayerModel.FlipGravityScale;
-        PlayerModel.IsVelocityDirty = true;
-        PlayerModel.IsGrounded = false;
-        PlayerModel.JumpTime = Time.time;
-    }
 }

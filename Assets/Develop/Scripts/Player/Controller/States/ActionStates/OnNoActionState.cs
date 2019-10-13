@@ -51,7 +51,9 @@ public class OnNoActionState : BaseState
         // player close to wall
         else if (PlayerModel.WallTrigger != 0 && !PlayerModel.IsGrounded)
         {
-            if (Math.Abs(body.velocity.y) <= 6 && PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale))
+            if (Math.Abs(body.velocity.y) <= 6 &&
+                PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale) &&
+                !StateMachine.JumpInput && !StateMachine.DashInput)
             {
                 temp = StateMachine.OnWallClingState;
             }
