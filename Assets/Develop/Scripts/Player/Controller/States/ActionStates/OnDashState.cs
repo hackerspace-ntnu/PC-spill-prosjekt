@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
+
 public class OnDashState : BaseState
 {
-
     // used to calculate input. Always set to 0 at entry and exit functions.
     private float lastInput;
 

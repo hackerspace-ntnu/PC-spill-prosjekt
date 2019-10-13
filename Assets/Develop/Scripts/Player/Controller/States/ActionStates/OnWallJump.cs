@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class OnWallJump : BaseState
 {
@@ -33,5 +31,4 @@ public class OnWallJump : BaseState
         this.TargetTransitionState = null;
         IsActive = false;
     }
-
 }

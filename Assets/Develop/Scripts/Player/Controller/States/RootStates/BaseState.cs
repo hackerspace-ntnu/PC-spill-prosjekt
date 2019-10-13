@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class BaseState : MonoBehaviour
@@ -17,7 +15,6 @@ public abstract class BaseState : MonoBehaviour
     private IStateMachine stateMachine;
     private IPlayerModel playerModel;
 
-
     protected virtual bool CanTransitionTo
     {
         get => canTransitionTo;
@@ -27,7 +24,9 @@ public abstract class BaseState : MonoBehaviour
             canTransitionFrom = !value;
         }
     }
-    protected virtual bool CanTransitionFrom {
+
+    protected virtual bool CanTransitionFrom
+    {
         get => canTransitionFrom;
         set
         {
@@ -35,15 +34,17 @@ public abstract class BaseState : MonoBehaviour
             canTransitionTo = !value;
         }
     }
+
     protected bool RunningInternalUpdate { get => runningInternalUpdate; set => runningInternalUpdate = value; }
-    public IStateMachine StateMachine {
+
+    public IStateMachine StateMachine
+    {
         get => stateMachine;
         set
         {
-            if(value != null)
+            if (value != null)
             {
                 stateMachine = value;
-
             }
             else
             {
@@ -51,46 +52,50 @@ public abstract class BaseState : MonoBehaviour
             }
         }
     }
+
     public bool IsActive { get => isActive; set => isActive = value; }
-    public IPlayerModel PlayerModel {
+
+    public IPlayerModel PlayerModel
+    {
         get => playerModel;
         set
         {
             if (value != null)
             {
                 playerModel = value;
-
             }
         }
     }
+
     protected virtual BaseState TargetTransitionState
     {
         get => targetTransitionState;
         set
         {
-                targetTransitionState = value;
+            targetTransitionState = value;
         }
     }
+
     public string StateName { get => stateName; set => stateName = value; }
 
     // Start is called before the first frame update
-    protected virtual void Start() {
+    protected virtual void Start()
+    {
         isActive = false; // Disable all states at start, let the statemachine.cs control who is active.
     }
 
     // Update is called once per frame
-    protected virtual void Update() {
+    protected virtual void Update()
+    {
         if (isActive)
         {
             TargetTransitionState = CheckTriggers<BaseState>(null);
         }
-
     }
 
     protected virtual void FixedUpdate()
     {
     }
-
 
     // An activity executed when entering the state
     internal virtual void EntryAction()
@@ -106,16 +111,15 @@ public abstract class BaseState : MonoBehaviour
         CanTransitionTo = true;
     }
 
-
     // Utility method to run all trigger functions. A triggering activity that causes a transition to occur.
     protected virtual BaseState CheckTriggers<T>(Rigidbody2D body) where T : BaseState //
     {
         BaseState temp = null; // defaults to null, but have to be assigned because compiler is annoying me.
-        if (typeof(T) == typeof(DeadState) || typeof(T)  == typeof(AliveState))
+        if (typeof(T) == typeof(DeadState) || typeof(T) == typeof(AliveState))
         {
-            if(PlayerModel.HealthPoints > 0)
+            if (PlayerModel.HealthPoints > 0)
             {
-               temp = StateMachine.AliveState;
+                temp = StateMachine.AliveState;
             }
             else
             {
@@ -164,7 +168,6 @@ public abstract class BaseState : MonoBehaviour
                 {
                     temp = StateMachine.HoveringInAirState;
                 }
-
             }
             else if (PlayerModel.IsGrounded && body.velocity.y == 0)
             {
@@ -179,7 +182,8 @@ public abstract class BaseState : MonoBehaviour
             || typeof(T) == typeof(OnNoActionState) || typeof(T) == typeof(OnWallClingState) || typeof(T) == typeof(OnWallJump))
         {
             // Player on ground..
-            if (PlayerModel.IsGrounded){
+            if (PlayerModel.IsGrounded)
+            {
                 if (StateMachine.JumpInput)
                 {
                     temp = StateMachine.OnJumpState;
@@ -196,7 +200,7 @@ public abstract class BaseState : MonoBehaviour
             // Player in air, and not close to any walls
             else if (!PlayerModel.IsGrounded && PlayerModel.WallTrigger == 0)
             {
-                if(!PlayerModel.HasAirJumped && StateMachine.JumpInput
+                if (!PlayerModel.HasAirJumped && StateMachine.JumpInput
                     && (Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump && !PlayerModel.HasAirJumped))
                 {
                     temp = StateMachine.OnAirJumpState;
@@ -223,7 +227,7 @@ public abstract class BaseState : MonoBehaviour
                 }
                 else if (StateMachine.JumpInput)
                 {
-                    if (Math.Abs(StateMachine.HorizontalInput) >= 0.3 )
+                    if (Math.Abs(StateMachine.HorizontalInput) >= 0.3)
                     {
                         temp = StateMachine.OnJumpState;
                     }
@@ -237,8 +241,6 @@ public abstract class BaseState : MonoBehaviour
                     temp = StateMachine.OnNoActionState;
                 }
             }
-
-
         }
         return temp;
     }
@@ -254,5 +256,4 @@ public abstract class BaseState : MonoBehaviour
             return new Transition<BaseState>(this, this.TargetTransitionState, TransitionType.Sibling);
         }
     }
-
 }

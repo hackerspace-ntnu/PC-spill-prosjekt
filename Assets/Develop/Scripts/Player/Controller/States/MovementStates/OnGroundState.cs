@@ -18,21 +18,21 @@ public class OnGroundState : BaseState
         // Player is air jumping. His movement state will be "Moving upwards in air". Note: We don't sett "has air jumped",
         // as action states execute the physical logic for the jump.
         if (StateMachine.JumpInput && !PlayerModel.HasAirJumped &&
-            (Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump))
+            (Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump && !PlayerModel.IsGrounded))
         {
             temp = StateMachine.UpwardsInAirState;
         }
         // Player is clinging to wall. His movement state will be "On wall state".
         // Player pressing left input (A) towards the wall on his left side.
         else if (!StateMachine.JumpInput && PlayerModel.WallTrigger == -1 &&
-            StateMachine.HorizontalInput < 0)
+            StateMachine.HorizontalInput < 0 && !PlayerModel.IsGrounded)
         {
             temp = StateMachine.OnWallState;
         }
         // Player is clinging to wall. His movement state will be "On wall state".
         // Player pressing left input (D) towards the wall on his right side.
         else if (!StateMachine.JumpInput && PlayerModel.WallTrigger == 1 &&
-            StateMachine.HorizontalInput > 0)
+            StateMachine.HorizontalInput > 0 && !PlayerModel.IsGrounded)
         {
             temp = StateMachine.OnWallState;
         }

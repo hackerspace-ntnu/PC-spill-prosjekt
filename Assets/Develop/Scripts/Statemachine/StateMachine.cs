@@ -1,55 +1,56 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-public class StateMachine : MonoBehaviour , IStateMachine
+public class StateMachine : MonoBehaviour, IStateMachine
 {
+    private Object owner;
 
-    private  Object owner;
+    private PlayerModel model; // All variables related to player. Doesn't do any logic, just hold variables. Used ALOT.
 
+    private Dictionary<int, BaseState> states = new Dictionary<int, BaseState>();
 
-    PlayerModel model; // All variables related to player. Doesn't do any logic, just hold variables. Used ALOT.
-
-    private Dictionary<int,BaseState> states = new Dictionary<int, BaseState>();
     [Tooltip("Print states on each frame if change in states is detected.")]
     [SerializeField]
     private bool printStates = true;
+
     private List<BaseState> statesLastFrame = new List<BaseState>();
 
     // Level 1 states (most important)
-    DeadState deadState;
-    AliveState aliveState;
+    private DeadState deadState;
+
+    private AliveState aliveState;
 
     // Level 2 states  (important)
-    UpwardsInAirState upwardsInAirState;
-    HoveringInAirState hoveringInAirState;
-    FallingInAirState fallingInAirState;
-    OnWallState onWallState;
-    OnGroundState onGroundState;
+    private UpwardsInAirState upwardsInAirState;
+
+    private HoveringInAirState hoveringInAirState;
+    private FallingInAirState fallingInAirState;
+    private OnWallState onWallState;
+    private OnGroundState onGroundState;
 
     // level 3 states (less important)
-    OnDashState onDashState;
-    OnJumpState onJumpState;
-    OnAirJumpState onAirJumpState;
-    OnNoActionState onNoActionState;
-    OnWallClingState onWallClingState;
-    OnWallJump onWallJump;
+    private OnDashState onDashState;
+
+    private OnJumpState onJumpState;
+    private OnAirJumpState onAirJumpState;
+    private OnNoActionState onNoActionState;
+    private OnWallClingState onWallClingState;
+    private OnWallJump onWallJump;
 
     private bool statesModified;
     private bool haveSetActiveInInitialStates = false;
 
-
     // Inputs
     private float horizontalInput; // a value between -1 to +1, in float value (0.0043) for example. -1 is to the left. + 1 to the right.
+
     private float verticalInput; // a value between -1 to +1, in float value (0.0043) for example. -1 is down. + 1 is up.
     private bool dashInput; // is key pressed?
     private bool jumpInput; // is key pressed?
     private bool graphHookInput; // is key pressed?
 
-
     public virtual Object Owner { get => owner; set => owner = value; }
-    public Dictionary<int,BaseState> States { get => states; set => states = value; }
+    public Dictionary<int, BaseState> States { get => states; set => states = value; }
     public DeadState DeadState { get => deadState; private set => deadState = value; }
     public AliveState AliveState { get => aliveState; private set => aliveState = value; }
     public UpwardsInAirState UpwardsInAirState { get => upwardsInAirState; set => upwardsInAirState = value; }
@@ -61,9 +62,13 @@ public class StateMachine : MonoBehaviour , IStateMachine
     public OnJumpState OnJumpState { get => onJumpState; set => onJumpState = value; }
     public OnAirJumpState OnAirJumpState { get => onAirJumpState; set => onAirJumpState = value; }
     public OnNoActionState OnNoActionState { get => onNoActionState; set => onNoActionState = value; }
-    public bool StatesModified {
+
+    public bool StatesModified
+    {
         get => statesModified;
-        set => statesModified = value; }
+        set => statesModified = value;
+    }
+
     public bool HaveSetActiveInInitialStates { get => haveSetActiveInInitialStates; set => haveSetActiveInInitialStates = value; }
     public PlayerModel Model { get => model; set => model = value; }
     public float HorizontalInput { get => horizontalInput; set => horizontalInput = value; }
@@ -75,8 +80,6 @@ public class StateMachine : MonoBehaviour , IStateMachine
     public OnWallJump OnWallJump { get => onWallJump; set => onWallJump = value; }
     public List<BaseState> StatesLastFrame { get => statesLastFrame; set => statesLastFrame = value; }
 
-
-
     // Start is called before the first frame update
     public void Start()
     {
@@ -85,7 +88,9 @@ public class StateMachine : MonoBehaviour , IStateMachine
         InitializeInterfacesForStates();
         PrepareInitialStates();
     }
+
     #region Start methods called
+
     private void InitializeStandardInputValues()
     {
         HorizontalInput = 0;
@@ -101,6 +106,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
         HoveringInAirState.IsActive = true;
         OnNoActionState.IsActive = true;
     }
+
     private void InitializeStates()
     {
         Model = GameObject.Find("Models").GetComponent<PlayerModel>();
@@ -138,7 +144,6 @@ public class StateMachine : MonoBehaviour , IStateMachine
         OnNoActionState.IsActive = true;
     }
 
-
     private void InitializeInterfacesForStates()
     {
         // lvl 1
@@ -158,7 +163,6 @@ public class StateMachine : MonoBehaviour , IStateMachine
         OnWallState.PlayerModel = (IPlayerModel)model;
         OnWallState.StateMachine = (IStateMachine)this;
 
-
         //lvl 3
         OnDashState.PlayerModel = (IPlayerModel)model;
         OnDashState.StateMachine = (IStateMachine)this;
@@ -173,6 +177,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
         OnWallJump.PlayerModel = (IPlayerModel)model;
         OnWallJump.StateMachine = (IStateMachine)this;
     }
+
     private void RecordInputs()
     {
         horizontalInput = Input.GetAxis("Horizontal");
@@ -181,7 +186,9 @@ public class StateMachine : MonoBehaviour , IStateMachine
         jumpInput = Input.GetKeyDown(Model.JumpKey);
         graphHookInput = Input.GetKey(Model.GraphHookKey);
     }
-    #endregion
+
+    #endregion Start methods called
+
     // Update is called once per frame
     public void Update()
     {
@@ -221,7 +228,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
         foreach (KeyValuePair<int, BaseState> entry in States)
         {
             // Handle level 1 state changes (dead/alive)
-            if(entry.Key == 1)
+            if (entry.Key == 1)
             {
                 Transition<BaseState> trans = entry.Value.GetTransition();
                 if (trans.Target != entry.Value && trans.Target != null)
@@ -237,7 +244,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
                 }
             }
             // Handle level 2 state changes (Movement - on ground, in air, on wall etc.)
-            else if(entry.Key == 2)
+            else if (entry.Key == 2)
             {
                 Transition<BaseState> trans = entry.Value.GetTransition();
                 if (trans.Target != entry.Value && trans.Target != null)
@@ -253,7 +260,7 @@ public class StateMachine : MonoBehaviour , IStateMachine
                 }
             }
             // Handle level 3 state changes - actions (Jump, dash, hook etc.)
-            else if(entry.Key == 3)
+            else if (entry.Key == 3)
             {
                 Transition<BaseState> trans = entry.Value.GetTransition();
                 if (trans.Target != entry.Value && trans.Target != null)
@@ -272,23 +279,25 @@ public class StateMachine : MonoBehaviour , IStateMachine
             {
                 break;
             }
-
         }
         UpdateStates(healthState, movementState, actionState);
     }
+
     public void UpdateStates(BaseState healthState, BaseState movementState, BaseState actionState)
     {
-
-        if(healthState != null)
+        // allways check healthstate first!
+        if (healthState != null)
         {
             States[1] = healthState;
             StatesLastFrame[0] = healthState;
             StatesModified = true;
         }
-        else if(movementState != null || actionState != null)
+        // movement and actionstates are less important and gets checked in same check.
+        else if (movementState != null || actionState != null)
         {
-            if(movementState != null)
+            if (movementState != null)
             {
+                Debug.Log(movementState.StateName);
                 States[2] = movementState;
                 StatesLastFrame[1] = movementState;
                 StatesModified = true;

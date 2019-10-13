@@ -11,71 +11,68 @@ public class OnNoActionState : BaseState
     public float LastInput { get => lastInput; set => lastInput = value; }
     public Rigidbody2D Rigidbody { get => rigidbody; set => rigidbody = value; }
     protected override BaseState TargetTransitionState { get => base.TargetTransitionState; set => base.TargetTransitionState = value; }
+
     protected override BaseState CheckTriggers<T>(Rigidbody2D body)
     {
         BaseState temp = null;
-        if (typeof(T) == typeof(OnDashState) || typeof(T) == typeof(OnJumpState) || typeof(T) == typeof(OnAirJumpState)
-            || typeof(T) == typeof(OnNoActionState) || typeof(T) == typeof(OnWallClingState) || typeof(T) == typeof(OnWallJump))
+        // Player on ground..
+        if (PlayerModel.IsGrounded)
         {
-            // Player on ground..
-            if (PlayerModel.IsGrounded)
+            if (StateMachine.JumpInput)
             {
-                if (StateMachine.JumpInput)
+                temp = StateMachine.OnJumpState;
+            }
+            else if (StateMachine.DashInput && (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration))
+            {
+                temp = StateMachine.OnDashState;
+            }
+            else
+            {
+                temp = StateMachine.OnNoActionState;
+            }
+        }
+        // Player in air, and not close to any walls
+        else if (!PlayerModel.IsGrounded && PlayerModel.WallTrigger == 0)
+        {
+            if (!PlayerModel.HasAirJumped && StateMachine.JumpInput
+                && (Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump && !PlayerModel.HasAirJumped))
+            {
+                temp = StateMachine.OnAirJumpState;
+            }
+            else if (StateMachine.DashInput && (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration))
+            {
+                temp = StateMachine.OnDashState;
+            }
+            else
+            {
+                temp = StateMachine.OnNoActionState;
+            }
+        }
+        // player close to wall
+        else if (PlayerModel.WallTrigger != 0 && !PlayerModel.IsGrounded)
+        {
+            if (Math.Abs(body.velocity.y) <= 6 && PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale))
+            {
+                temp = StateMachine.OnWallClingState;
+            }
+            else if (StateMachine.DashInput && (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration))
+            {
+                temp = StateMachine.OnDashState;
+            }
+            else if (StateMachine.JumpInput)
+            {
+                if (Math.Abs(StateMachine.HorizontalInput) >= 0.3)
                 {
                     temp = StateMachine.OnJumpState;
                 }
-                else if (StateMachine.DashInput && (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration))
-                {
-                    temp = StateMachine.OnDashState;
-                }
                 else
                 {
-                    temp = StateMachine.OnNoActionState;
+                    temp = StateMachine.OnWallJump;
                 }
             }
-            // Player in air, and not close to any walls
-            else if (!PlayerModel.IsGrounded && PlayerModel.WallTrigger == 0)
+            else
             {
-                if (!PlayerModel.HasAirJumped && StateMachine.JumpInput
-                    && (Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump && !PlayerModel.HasAirJumped))
-                {
-                    temp = StateMachine.OnAirJumpState;
-                }
-                else if (StateMachine.DashInput && (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration))
-                {
-                    temp = StateMachine.OnDashState;
-                }
-                else
-                {
-                    temp = StateMachine.OnNoActionState;
-                }
-            }
-            // player close to wall
-            else if (PlayerModel.WallTrigger != 0 && !PlayerModel.IsGrounded)
-            {
-                if (Math.Abs(body.velocity.y) <= 6 && PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale))
-                {
-                    temp = StateMachine.OnWallClingState;
-                }
-                else if (StateMachine.DashInput && (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration))
-                {
-                    temp = StateMachine.OnDashState;
-                }
-                else if (StateMachine.JumpInput)
-                {
-                    if (Math.Abs(StateMachine.HorizontalInput) >= 0.3)
-                    {
-                        temp = StateMachine.OnJumpState;
-                    }
-                    else
-                    {
-                        temp = StateMachine.OnWallJump;
-                    }
-                }
-                else
-                {
-                    temp = StateMachine.OnNoActionState;
-                }
+                temp = StateMachine.OnNoActionState;
             }
         }
         return temp;
@@ -102,7 +99,7 @@ public class OnNoActionState : BaseState
             // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
             if (this.TargetTransitionState == null || TargetTransitionState == this)
             {
-                // HandleHorizontalInput();    Handle JumpInput? Dashinput?
+                UpdateActionVariables();
             }
         }
     }
@@ -119,5 +116,28 @@ public class OnNoActionState : BaseState
         this.TargetTransitionState = null;
         IsActive = false;
         LastInput = 0;
+    }
+
+    private void UpdateActionVariables()
+    {
+
+        if (PlayerModel.IsGrounded)
+        {
+            PlayerModel.HasAirJumped = false;
+            if(Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration)
+            {
+                PlayerModel.HasDashed = false;
+            }
+        }
+        else if (!PlayerModel.IsGrounded)
+        {
+            //PlayerModel.HasAirJumped = Time.time  PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump;
+            if (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration)
+            {
+                PlayerModel.HasAirJumped = Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump;
+                PlayerModel.HasDashed = false;
+            }
+        }
+        //PlayerModel.HasAirJumped = Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump;
     }
 }

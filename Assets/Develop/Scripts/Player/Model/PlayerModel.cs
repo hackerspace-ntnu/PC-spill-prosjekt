@@ -1,29 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCling, ILife, IPlayerModel
 {
-
     // States(in the form of enums) covering the various states the model can have.
     // The various states can be found in the file "PlayerStateEnums.cs"
     [Header("State Settings")]
     [SerializeField]
     private MovementStat moveState;
+
     [SerializeField]
     private WalkState playerWalkState;
+
     [SerializeField]
     private TurnDirectionState turnDirState;
+
     [SerializeField]
     private InAirState playerInAirState;
+
     [SerializeField]
     private WallClingState playerWallClingState;
+
     [SerializeField]
     private LifeState playerLifeState;
+
     [SerializeField]
     private ActionState playerActionState;
+
     [SerializeField]
     private GraphlingHookState graphHookState;
+
     [Tooltip("Health points of the character.")]
     [RangeAttribute(0, 100)]
     [SerializeField]
@@ -33,20 +38,24 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     [Header("Input Settings")]
     [Tooltip("How much input 'force' is required before the player start movement along the horizontal axis.")]
     private readonly float horizontalInputRunningThreshold = 0.3f;
+
     [Tooltip("How long time character must wait before it can air jump.")]
     private readonly float minimumTimeBeforeAirJump = 0.1f;
+
     [SerializeField]
     private KeyCode jumpKey = KeyCode.Space;
+
     [SerializeField]
     private KeyCode dashKey = KeyCode.LeftShift;
+
     [SerializeField]
     private KeyCode graphHookKey = KeyCode.F;
-
 
     [Header("Animation related Settings")]
     [SerializeField]
     [Tooltip("direction the character is facing, set in PlayerAnim")]
     private int spriteDirection;
+
     [SerializeField]
     private int wallJumpDirection;
 
@@ -54,49 +63,60 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     [SerializeField]
     [Tooltip("The maximum movement speed of the character.")]
     private float movementSpeed = 7;
+
     [SerializeField]
     [Tooltip("The initial jump speed of the character when grounded.")]
     private float groundJumpSpeed = 13.5f;
+
     [SerializeField]
     [Tooltip("The initial jump speed of the character when airborne.")]
     private float airJumpSpeed = 10.5f;
+
     [SerializeField]
     [Tooltip("The initial dashSpeed of the character.")]
     private float dashSpeed = 13;
+
     [SerializeField]
     [Tooltip("The ")]
     private float baseGravityScale = 5;
+
     [SerializeField]
     [Tooltip("The maximum Y velocity (up and down speed) the character can have.")]
     private float maxVelocityY = 12;
+
     [SerializeField]
     private float jumpTime;
+
     [SerializeField]
     private float wallJumpTime;
+
     [SerializeField]
     private float maxVelocityFix;
 
     [SerializeField]
     private Vector2 newVelocity; // for setting velocity in FixedUpdate()
+
     [SerializeField]
     private float newGravityScale; // for setting velocity in FixedUpdate()
 
     // Constants
 
-
     [Tooltip(" TODO ")]
     private readonly float jumpingGravityScaleMultiplier = 0.8f;
+
     [Tooltip("")]
     private readonly float wallslideGravityScaleMultiplier = 0.6f;
+
     [Tooltip("How long a wall jump last.")]
     private readonly float wallJumpDuration = 0.2f;
 
     [SerializeField]
     private float lastDashTime;
+
     [SerializeField]
     private float dashDuration = 0.2f;
 
-    [RangeAttribute(-1,1)]
+    [RangeAttribute(-1, 1)]
     [SerializeField]
     [Tooltip("What 'way' gravity works. -1 = the player is falling upwards. 1 is normal gravity and 0 is no gravity.")]
     private int flipGravityScale = 1;
@@ -104,14 +124,15 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     private MovementState state;
     private Rigidbody2D rigidBody;
 
-
-
     [SerializeField]
     private bool isGrounded;
+
     [SerializeField]
     private bool hasAirJumped = false;
+
     [SerializeField]
     private bool hasDashed = false;
+
     [Tooltip("Have New Velocity been modified?")]
     [SerializeField]
     private bool isVelocityDirty = false;
@@ -122,7 +143,6 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     private int wallTrigger;
 
     #region Getters and setters
-
 
     public float MovementSpeed
     {
@@ -228,7 +248,6 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
         }
     }
 
-
     public bool IsVelocityDirty
     {
         get
@@ -241,7 +260,6 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
             isVelocityDirty = value;
         }
     }
-
 
     public float HorizontalInput
     {
@@ -281,7 +299,6 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
             graphHookKey = value;
         }
     }
-
 
     public bool IsGrounded
     {
@@ -374,7 +391,6 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
         }
     }
 
-
     public float HorizontalInputRunningThreshold
     {
         get
@@ -406,7 +422,6 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
             return wallJumpDuration;
         }
     }
-
 
     public KeyCode JumpKey
     {
@@ -506,10 +521,6 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     public ActionState PlayerActionState { get => playerActionState; set => playerActionState = value; }
     public GraphlingHookState GraphHookState { get => graphHookState; set => graphHookState = value; }
     public int HealthPoints { get => healthPoints; set => healthPoints = value; }
-    #endregion
 
+    #endregion Getters and setters
 }
-
-
-
-
