@@ -100,13 +100,14 @@ public class OnWallState : BaseState
             // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
             if (this.TargetTransitionState == null || this.TargetTransitionState == this)
             {
+                // Dont handle horizontal input here, as that is taken over by OnWallCling action state
                 HandleHorizontalInput();
             }
         }
     }
     private void HandleHorizontalInput()
     {
-        if (Math.Abs(StateMachine.HorizontalInput) <= 0.1) // Beholde?
+        if (Math.Abs(StateMachine.HorizontalInput) <= 0.1) //Beholde?
         {
             LastInput = 0;
         }
@@ -128,5 +129,6 @@ public class OnWallState : BaseState
             PlayerModel.HorizontalVelocity = 0;
             LastInput = StateMachine.HorizontalInput;
         }
+
     }
 }

@@ -297,7 +297,6 @@ public class StateMachine : MonoBehaviour, IStateMachine
         {
             if (movementState != null)
             {
-                Debug.Log(movementState.StateName);
                 States[2] = movementState;
                 StatesLastFrame[1] = movementState;
                 StatesModified = true;
