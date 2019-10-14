@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class AliveState : BaseState
 {
-    protected override bool CanTransitionTo { get => base.CanTransitionTo; set => base.CanTransitionTo = value; }
-    protected override bool CanTransitionFrom { get => base.CanTransitionFrom; set => base.CanTransitionFrom = value; }
     protected override BaseState TargetTransitionState {
         get => base.TargetTransitionState;
         set

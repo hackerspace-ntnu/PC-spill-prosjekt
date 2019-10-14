@@ -6,8 +6,6 @@ public class DeadState : BaseState
 {
     private Rigidbody2D rigidbody;
     public Rigidbody2D Rigidbody { get => rigidbody; set => rigidbody = value; }
-    protected override bool CanTransitionTo { get => base.CanTransitionTo; set => base.CanTransitionTo = value; }
-    protected override bool CanTransitionFrom { get => base.CanTransitionFrom; set => base.CanTransitionFrom = value; }
     protected override BaseState TargetTransitionState
     {
         get => base.TargetTransitionState;

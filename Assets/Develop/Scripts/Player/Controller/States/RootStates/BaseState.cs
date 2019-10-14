@@ -1,6 +1,13 @@
 ﻿using System;
 using UnityEngine;
 
+/// <summary>
+/// An abstract class used in <see cref="StateMachine"/>
+/// This class provides access to interfaces to access the statemachine,
+/// and is the class all concrete states are based upon. The class provides many virtual methods
+/// which are important i an State Machine, such as OnEntry, OnExit and CheckTriggers.
+/// The class derives from monobehaviour to allow concrete states to have update and fixedupdate calls in Unity.
+/// </summary>
 public abstract class BaseState : MonoBehaviour
 {
     private bool canTransitionTo;
@@ -12,9 +19,13 @@ public abstract class BaseState : MonoBehaviour
     private bool runningInternalUpdate;
 
     private BaseState targetTransitionState;
+
+
     private IStateMachine stateMachine;
+
     private IPlayerModel playerModel;
 
+    [Obsolete("This is not used anymore, we're just using IsActive and OnEntry() and OnExit() instead. ", true)]
     protected virtual bool CanTransitionTo
     {
         get => canTransitionTo;
@@ -25,6 +36,7 @@ public abstract class BaseState : MonoBehaviour
         }
     }
 
+    [Obsolete("This is not used anymore, we're just using IsActive and OnEntry() and OnExit() instead. ", true)]
     protected virtual bool CanTransitionFrom
     {
         get => canTransitionFrom;
@@ -52,7 +64,6 @@ public abstract class BaseState : MonoBehaviour
             }
         }
     }
-
     public bool IsActive { get => isActive; set => isActive = value; }
 
     public IPlayerModel PlayerModel
@@ -100,7 +111,6 @@ public abstract class BaseState : MonoBehaviour
     // An activity executed when entering the state
     internal virtual void EntryAction()
     {
-        CanTransitionTo = false;
         IsActive = true;
     }
 
@@ -108,7 +118,6 @@ public abstract class BaseState : MonoBehaviour
     internal virtual void ExitAction()
     {
         IsActive = false;
-        CanTransitionTo = true;
     }
 
     // Utility method to run all trigger functions. A triggering activity that causes a transition to occur.

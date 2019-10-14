@@ -2,6 +2,7 @@
 using System.Text;
 using UnityEngine;
 
+
 public class StateMachine : MonoBehaviour, IStateMachine
 {
     private Object owner;
@@ -325,3 +326,4 @@ public class StateMachine : MonoBehaviour, IStateMachine
         Debug.Log(sb.ToString());
     }
 }
+
