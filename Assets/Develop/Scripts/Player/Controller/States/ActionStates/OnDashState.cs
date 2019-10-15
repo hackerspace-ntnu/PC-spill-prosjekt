@@ -13,7 +13,7 @@ public class OnDashState : BaseState
 
     protected override BaseState CheckTriggers<T>(Rigidbody2D body)
     {
-        return base.CheckTriggers<T>(body);
+        return StateMachine.OnNoActionState;
     }
 
     protected override void FixedUpdate()
@@ -32,13 +32,8 @@ public class OnDashState : BaseState
         if (IsActive)
         {
             // check if any other states can be transitioned into
-            this.TargetTransitionState = CheckTriggers<BaseState>(Rigidbody);
-
-            // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
-            if (this.TargetTransitionState == null)
-            {
-                // HandleHorizontalInput();    Handle JumpInput?
-            }
+            this.TargetTransitionState = CheckTriggers<OnDashState>(Rigidbody);
+            Dash();
         }
     }
 
@@ -54,5 +49,14 @@ public class OnDashState : BaseState
         this.TargetTransitionState = null;
         IsActive = false;
         LastInput = 0;
+    }
+
+
+    internal void Dash()
+    {
+        PlayerModel.NewVelocity = new Vector2(PlayerModel.SpriteDirection * PlayerModel.DashSpeed * PlayerModel.FlipGravityScale, -Rigidbody.velocity.y);
+        PlayerModel.NewGravityScale = 0;
+        PlayerModel.LastDashTime = Time.time;
+        PlayerModel.HasDashed = true;
     }
 }

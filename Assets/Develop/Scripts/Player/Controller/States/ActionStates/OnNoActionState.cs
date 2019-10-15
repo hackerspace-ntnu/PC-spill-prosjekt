@@ -22,7 +22,8 @@ public class OnNoActionState : BaseState
             {
                 temp = StateMachine.OnJumpState;
             }
-            else if (StateMachine.DashInput && (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration))
+            // Time.time >= PlayerModel.LastDashTime + PlayerModel.
+            else if (StateMachine.DashInput && (Time.time >= PlayerModel.LastDashTime + PlayerModel.DashDuration))
             {
                 temp = StateMachine.OnDashState;
             }
@@ -39,7 +40,7 @@ public class OnNoActionState : BaseState
             {
                 temp = StateMachine.OnAirJumpState;
             }
-            else if (StateMachine.DashInput && (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration))
+            else if (StateMachine.DashInput && (Time.time >= PlayerModel.LastDashTime + PlayerModel.DashDuration))
             {
                 temp = StateMachine.OnDashState;
             }
@@ -97,17 +98,12 @@ public class OnNoActionState : BaseState
         {
             // check if any other states can be transitioned into
             this.TargetTransitionState = CheckTriggers<OnNoActionState>(Rigidbody);
-
-            // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
-            if (this.TargetTransitionState == null || TargetTransitionState == this)
-            {
-                UpdateActionVariables();
-            }
         }
     }
 
     internal override void EntryAction()
     {
+        UpdateActionVariables();
         IsActive = true;
         LastInput = 0;
     }
@@ -121,24 +117,34 @@ public class OnNoActionState : BaseState
 
     private void UpdateActionVariables()
     {
+        UpdateDashVariables();
+        UpdateAirJumpVariables();
+    }
 
+
+    private void UpdateDashVariables()
+    {
+        if (((Time.time >= PlayerModel.LastDashTime + PlayerModel.DashDuration)
+            && PlayerModel.HasDashed) || (PlayerModel.HasDashed && PlayerModel.WallTrigger != 0))
+        {
+            PlayerModel.HasDashed = false;
+            PlayerModel.NewGravityScale = PlayerModel.BaseGravityScale * PlayerModel.FlipGravityScale;
+            PlayerModel.HorizontalVelocity = 0;
+        }
+        else
+        {
+            return;
+        }
+    }
+    private void UpdateAirJumpVariables()
+    {
         if (PlayerModel.IsGrounded)
         {
             PlayerModel.HasAirJumped = false;
-            if(Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration)
-            {
-                PlayerModel.HasDashed = false;
-            }
         }
-        else if (!PlayerModel.IsGrounded)
+        else
         {
-            //PlayerModel.HasAirJumped = Time.time  PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump;
-            if (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration)
-            {
-                PlayerModel.HasAirJumped = Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump;
-                PlayerModel.HasDashed = false;
-            }
+            return;
         }
-        //PlayerModel.HasAirJumped = Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump;
     }
 }

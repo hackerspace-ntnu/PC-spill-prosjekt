@@ -13,7 +13,6 @@ public class PlayerAnim : MonoBehaviour {
 
 
     private bool isGrounded;
-    private int playerState;
     private int wallTrigger;
     private int flipGravityScale;
     private float moveHorizontal;
@@ -37,7 +36,6 @@ public class PlayerAnim : MonoBehaviour {
         isGrounded = playerMovement.IsGrounded;
         moveHorizontal = inputState.HorizontalInput;
         wallTrigger = playerMovement.WallTrigger;
-        playerState = (int)playerMovement.MoveState;
         flipGravityScale = playerMovement.FlipGravityScale;
 
         anim.SetBool("isGrounded", isGrounded);
@@ -72,19 +70,19 @@ public class PlayerAnim : MonoBehaviour {
             return;
         }
 
-        else if (System.Math.Sign(moveHorizontal) * flipGravityScale == -1 && playerState != 3)
+        else if (System.Math.Sign(moveHorizontal) * flipGravityScale == -1 && !playerMovement.HasDashed)
         {
             spriteRenderer.flipX = true;
             playerMovement.SpriteDirection = -1;
         }
 
-        else if (System.Math.Sign(moveHorizontal) * flipGravityScale == 1 && playerState != 3)
+        else if (System.Math.Sign(moveHorizontal) * flipGravityScale == 1 && !playerMovement.HasDashed)
         {
             spriteRenderer.flipX = false;
             playerMovement.SpriteDirection = 1;
         }
 
-        if (playerState == 3)
+        if (playerMovement.HasDashed)
         {
             anim.SetBool("isDashing", true);
             anim.SetBool("isRunning", false);

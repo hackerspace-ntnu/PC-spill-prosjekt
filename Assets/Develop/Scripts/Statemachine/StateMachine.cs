@@ -132,7 +132,6 @@ public class StateMachine : MonoBehaviour, IStateMachine
 
     private void PrepareInitialStates()
     {
-        //StatesLastFrame = new List<BaseState>();
         States.Add(1, AliveState);
         StatesLastFrame.Add(AliveState);
         States.Add(2, HoveringInAirState);
@@ -286,14 +285,14 @@ public class StateMachine : MonoBehaviour, IStateMachine
 
     public void UpdateStates(BaseState healthState, BaseState movementState, BaseState actionState)
     {
-        // allways check healthstate first!
+        // always check health state first!
         if (healthState != null)
         {
             States[1] = healthState;
             StatesLastFrame[0] = healthState;
             StatesModified = true;
         }
-        // movement and actionstates are less important and gets checked in same check.
+        // movement and action states are less important and gets checked in same check.
         else if (movementState != null || actionState != null)
         {
             if (movementState != null)

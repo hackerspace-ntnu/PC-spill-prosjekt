@@ -6933,6 +6933,11 @@ PrefabInstance:
       propertyPath: maxVelocityFix
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 6976032878821031637, guid: f2b408fdb911d59449e3eaac492ba07f,
+        type: 3}
+      propertyPath: dashDuration
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 377341731, guid: f2b408fdb911d59449e3eaac492ba07f, type: 3}
       propertyPath: printStates
       value: 1
