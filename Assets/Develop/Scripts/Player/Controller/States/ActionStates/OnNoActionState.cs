@@ -98,12 +98,12 @@ public class OnNoActionState : BaseState
         {
             // check if any other states can be transitioned into
             this.TargetTransitionState = CheckTriggers<OnNoActionState>(Rigidbody);
+            UpdateActionVariables();
         }
     }
 
     internal override void EntryAction()
     {
-        UpdateActionVariables();
         IsActive = true;
         LastInput = 0;
     }
@@ -124,7 +124,7 @@ public class OnNoActionState : BaseState
 
     private void UpdateDashVariables()
     {
-        if (((Time.time >= PlayerModel.LastDashTime + PlayerModel.DashDuration)
+         if (((Time.time >= PlayerModel.LastDashTime + PlayerModel.DashDuration)
             && PlayerModel.HasDashed) || (PlayerModel.HasDashed && PlayerModel.WallTrigger != 0))
         {
             PlayerModel.HasDashed = false;
@@ -138,7 +138,7 @@ public class OnNoActionState : BaseState
     }
     private void UpdateAirJumpVariables()
     {
-        if (PlayerModel.IsGrounded)
+        if (PlayerModel.IsGrounded || Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump)
         {
             PlayerModel.HasAirJumped = false;
         }

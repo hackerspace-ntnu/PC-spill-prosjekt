@@ -18,7 +18,6 @@ public class JumpController : MonoBehaviour
 
     internal void Jumpstate()
     {
-        // TODO: Move Jumpstate code from playercontroller here. 
     }
 
     internal void GroundJump(float gravity)

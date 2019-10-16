@@ -46,7 +46,6 @@ public class OnJumpState : BaseState
 
     internal override void EntryAction()
     {
-        // TODO: Add force of jumping? Since some state detected jump press and transitioned to this state, we should assume the player should jump!
         IsActive = true;
         LastInput = 0;
     }

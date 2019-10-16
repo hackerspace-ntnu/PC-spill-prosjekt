@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="StateMachine" Collapsed="true">
+    <Position X="5.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUQIAJCAIKQAyASGAohAYhDAFAQQUAgUgJ1gDQHJAA0=</HashCode>
+      <FileName>Assets\Develop\Scripts\Statemachine\StateMachine.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BaseState" Collapsed="true">
+    <Position X="10.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQQAAIEAEiCBABAAEAACABAAAABABABACAgCYAECAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\RootStates\BaseState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.MonoBehaviour" Collapsed="true">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="OnAirJumpState" Collapsed="true">
+    <Position X="13.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAAAiAAAAAIAAAACAAAAABAAAAACAgAACADCAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\ActionStates\OnAirJumpState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OnDashState" Collapsed="true">
+    <Position X="15.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAAAiAAAAAIAAAACAAAAABAAAAgCAgAAAACCAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\ActionStates\OnDashState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OnJumpState" Collapsed="true">
+    <Position X="17.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQoAAAAAiAAAAAIAAAACAAAAABAAgAACAgAAAADKAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\ActionStates\OnJumpState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OnNoActionState" Collapsed="true">
+    <Position X="20" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQIIAAAAiAAAAAIAAAACAAAAABAAAAACAgAAAACDAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\ActionStates\OnNoActionState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OnWallClingState" Collapsed="true">
+    <Position X="22.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAACAAiAAAAAIAAAACAAAAABAAAAACAgAAAACCAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\ActionStates\OnWallClingState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OnWallJump" Collapsed="true">
+    <Position X="24.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAAAiAAAAAIAAIACAAAAABAAAAAAAgAAAADCAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\ActionStates\OnWallJump.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FallingInAirState" Collapsed="true">
+    <Position X="26.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAAAiAAAAAIAAAACAAAAABAAAAACAgAAAACCAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\MovementStates\FallingInAirState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HoveringInAirState" Collapsed="true">
+    <Position X="29" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAAAiAAAAAIAAAACAAAAABAAAAACAgAAAACCAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\MovementStates\HoveringInAirState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OnGroundState" Collapsed="true">
+    <Position X="31.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAAAiAAAAAIAAAACAAAAABAAAAAAAgAAAACCAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\MovementStates\OnGroundState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OnWallState" Collapsed="true">
+    <Position X="33.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAAAiAAAAAIAAAACAAAAABAAAAACAgAAAACCAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\MovementStates\OnWallState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UpwardsInAirState" Collapsed="true">
+    <Position X="35.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAAAiAAAAAIAAAACAAAAABAAAAAAAgAAAACCAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\MovementStates\UpwardsInAirState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AliveState" Collapsed="true">
+    <Position X="38" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAiAAAAAAAAAAAAAAAABAAAAACAgAAAACAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\PlayerStates\AliveState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DeadState" Collapsed="true">
+    <Position X="40.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAAAiAAAAAAAAAAAAAAAABAAAAACAgAAAACCAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\PlayerStates\DeadState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VitalState" Collapsed="true">
+    <Position X="42.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAiAAAAAAAAAAAAAAAABAAAAACAgAAAACAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\States\RootStates\VitalState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerController" Collapsed="true">
+    <Position X="1.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAIAAAiCAAAAAAAAAAAAAAQAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Controller\PlayerController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Transition&lt;T&gt;" Collapsed="true">
+    <Position X="8.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAIAIAAAACAEAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\Transition.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="IStateMachine" Collapsed="true">
+    <Position X="4.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAIAIAAIAAAQAACAAhAABBAAAQAAAAAAJAACQAAAAU=</HashCode>
+      <FileName>Assets\Develop\Scripts\Statemachine\IStateMachine.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="IPlayerModel" Collapsed="true">
+    <Position X="11.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EEEBAQBAwAYBAACGCAggBCAACYgAAAQIAUggiIBUAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\ModelInterfaces\IPlayerModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="MovementStat" Collapsed="true">
+    <Position X="14.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAhAAAAAAAAEAAAgAAAAAAAAAAGAAgAAACAAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\PlayerStateEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TurnDirectionState" Collapsed="true">
+    <Position X="16" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\PlayerStateEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WalkState" Collapsed="true">
+    <Position X="12.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\PlayerStateEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="InAirState" Collapsed="true">
+    <Position X="16" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAACAAAQgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\PlayerStateEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WallClingState" Collapsed="true">
+    <Position X="14.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAIAAggAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\PlayerStateEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LifeState" Collapsed="true">
+    <Position X="12.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAgAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\PlayerStateEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ActionState" Collapsed="true">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAggAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\PlayerStateEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GraphlingHookState" Collapsed="true">
+    <Position X="14.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAgIAAAAIAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\PlayerStateEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TransitionType" Collapsed="true">
+    <Position X="8.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAEAAAAAAAAAAAAAAgAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Develop\Scripts\Player\Model\Transition.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
