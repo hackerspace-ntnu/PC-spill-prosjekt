@@ -8,6 +8,7 @@ TagManager:
   - Torch
   - Familiar
   - Standard
+  - Enemy
   layers:
   - Default
   - TransparentFX
