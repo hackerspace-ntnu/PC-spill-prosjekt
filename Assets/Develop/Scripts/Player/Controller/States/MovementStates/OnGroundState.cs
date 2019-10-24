@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class OnGroundState : BaseState
+public class OnGroundState : APositionState
 {
     // used to calculate input. Always set to 0 at entry and exit functions.
     private float lastInput;
 
     public float LastInput { get => lastInput; set => lastInput = value; }
-    public Rigidbody2D Rigidbody { get => rigidbody; set => rigidbody = value; }
 
-    private Rigidbody2D rigidbody;
-    protected override BaseState CheckTriggers<T>(Rigidbody2D body)
+
+    protected override APositionState CheckTriggers()
     {
-        BaseState temp = null;
+        APositionState temp = null;
         // Player is air jumping. His movement state will be "Moving upwards in air". Note: We don't sett "has air jumped",
         // as action states execute the physical logic for the jump.
         if (StateMachine.JumpInput && !PlayerModel.HasAirJumped &&
@@ -37,15 +36,15 @@ public class OnGroundState : BaseState
             temp = StateMachine.OnWallState;
         }
         // if no input and no walls, check for current rigid body velocity. Might need rework for upside down-gravity.
-        else if ((!StateMachine.JumpInput && PlayerModel.WallTrigger == 0) && Math.Abs(body.velocity.y * Math.Sign(body.gravityScale)) > 0)
+        else if ((!StateMachine.JumpInput && PlayerModel.WallTrigger == 0) && Math.Abs(Body.velocity.y * Math.Sign(Body.gravityScale)) > 0)
         {
             // is velocity going upwards?
-            if (body.velocity.y * Math.Sign(body.gravityScale) > 0)
+            if (Body.velocity.y * Math.Sign(Body.gravityScale) > 0.2f)
             {
                 temp = StateMachine.UpwardsInAirState;
             }
             // is velocity going downwards?
-            else if (body.velocity.y * Math.Sign(body.gravityScale) < 0)
+            else if (Body.velocity.y * Math.Sign(Body.gravityScale) < -0.2f)
             {
                 temp = StateMachine.FallingInAirState;
             }
@@ -55,7 +54,7 @@ public class OnGroundState : BaseState
             }
 
         }
-        else if (PlayerModel.IsGrounded && body.velocity.y == 0)
+        else if (PlayerModel.IsGrounded && Body.velocity.y == 0)
         {
             temp = StateMachine.OnGroundState;
         }
@@ -80,22 +79,18 @@ public class OnGroundState : BaseState
         LastInput = 0;
     }
 
-    protected override void FixedUpdate()
-    {
-    }
-
     protected override void Start()
     {
-        StateName = "On the ground state";
+        Body = GameObject.Find("View").GetComponent<Rigidbody2D>();
+        StateName = "- On the ground -";
         IsActive = false;
-        Rigidbody = GameObject.Find("View").GetComponent<Rigidbody2D>();
     }
 
     protected override void Update()
     {
         if (IsActive)
         {
-            TargetTransitionState = CheckTriggers<OnGroundState>(Rigidbody);
+            TargetTransitionState = CheckTriggers();
 
             if (this.TargetTransitionState == null || this.TargetTransitionState == this)
             {
@@ -127,6 +122,18 @@ public class OnGroundState : BaseState
         {
             PlayerModel.HorizontalVelocity = 0;
             LastInput = StateMachine.HorizontalInput;
+        }
+    }
+
+    internal override StateTransition GetTransition()
+    {
+        if (TargetTransitionState == this || TargetTransitionState == null)
+        {
+            return new StateTransition(null, null, TransitionType.No);
+        }
+        else
+        {
+            return new StateTransition(this, TargetTransitionState, TransitionType.Sibling);
         }
     }
 }

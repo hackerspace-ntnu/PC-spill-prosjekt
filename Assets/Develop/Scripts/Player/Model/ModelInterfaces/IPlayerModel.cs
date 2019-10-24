@@ -27,7 +27,7 @@ public interface IPlayerModel
     MovementStat MoveState { get; set; }
     float NewGravityScale { get; set; }
     Vector2 NewVelocity { get; set; }
-    ActionState PlayerActionState { get; set; }
+    AActionState PlayerActionState { get; set; }
     InAirState PlayerInAirState { get; set; }
     LifeState PlayerLifeState { get; set; }
     WalkState PlayerWalkState { get; set; }
@@ -40,4 +40,5 @@ public interface IPlayerModel
     float WallJumpTime { get; set; }
     float WallslideGravityScaleMultiplier { get; }
     int HealthPoints { get; }
+    float GrapplingHookCooldown { get; }
 }

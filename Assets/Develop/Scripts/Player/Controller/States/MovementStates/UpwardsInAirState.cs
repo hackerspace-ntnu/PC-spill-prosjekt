@@ -3,16 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UpwardsInAirState : BaseState
+public class UpwardsInAirState : APositionState
 {
     private float lastInput;
-    public Rigidbody2D Rigidbody { get => rigidbody; private set => rigidbody = value; }
     public float LastInput { get => lastInput; set => lastInput = value; }
 
-    private Rigidbody2D rigidbody;
-    protected override BaseState CheckTriggers<T>(Rigidbody2D body)
+    protected override APositionState CheckTriggers()
     {
-        BaseState temp = null;
+        APositionState temp = null;
         // Player is air jumping. His movement state will be "Moving upwards in air". Note: We don't sett "has air jumped",
         // as action states execute the physical logic for the jump.
         if (StateMachine.JumpInput && !PlayerModel.HasAirJumped &&
@@ -20,40 +18,33 @@ public class UpwardsInAirState : BaseState
         {
             temp = StateMachine.UpwardsInAirState;
         }
-        // Player is clinging to wall. His movement state will be "On wall state".
-        // Player pressing left input (A) towards the wall on his left side.
-        else if (!StateMachine.JumpInput && PlayerModel.WallTrigger == -1 &&
-            StateMachine.HorizontalInput < 0)
-        {
-            temp = StateMachine.OnWallState;
-        }
-        // Player is clinging to wall. His movement state will be "On wall state".
-        // Player pressing left input (D) towards the wall on his right side.
-        else if (!StateMachine.JumpInput && PlayerModel.WallTrigger == 1 &&
-            StateMachine.HorizontalInput > 0)
+        // Player is clinging to a wall. His movement state will be "OnwWallState".
+        else if (!StateMachine.JumpInput && PlayerModel.WallTrigger != 0 &&
+            StateMachine.HorizontalInput != 0)
         {
             temp = StateMachine.OnWallState;
         }
         // if no input and no walls, check for current rigid body velocity. Might need rework for upside down-gravity.
-        else if ((!StateMachine.JumpInput && PlayerModel.WallTrigger == 0) && Math.Abs(body.velocity.y * Math.Sign(body.gravityScale)) > 0)
+        else if ((!StateMachine.JumpInput && PlayerModel.WallTrigger == 0) && Math.Abs(Body.velocity.y * Math.Sign(Body.gravityScale)) > 0)
         {
             // is velocity going upwards?
-            if (body.velocity.y * Math.Sign(body.gravityScale) > 0)
+            if (Body.velocity.y * Math.Sign(Body.gravityScale) > 0.2F)
             {
                 temp = StateMachine.UpwardsInAirState;
             }
             // is velocity going downwards?
-            else if (body.velocity.y * Math.Sign(body.gravityScale) < 0)
+            else if (Body.velocity.y * Math.Sign(Body.gravityScale) < -0.2F)
             {
                 temp = StateMachine.FallingInAirState;
             }
             else
             {
+                // if vertical velocity is really low, the player is hovering in the air.
                 temp = StateMachine.HoveringInAirState;
             }
 
         }
-        else if (PlayerModel.IsGrounded && body.velocity.y == 0)
+        else if (PlayerModel.IsGrounded && Body.velocity.y == 0)
         {
             temp = StateMachine.OnGroundState;
         }
@@ -77,17 +68,12 @@ public class UpwardsInAirState : BaseState
         LastInput = 0;
     }
 
-    protected override void FixedUpdate()
-    {
-    }
-
 
     protected override void Start()
     {
-        StateName = "Upwards in air state.";
+        Body = GameObject.Find("View").GetComponent<Rigidbody2D>();
+        StateName = "-Upwards in air state-";
         base.Start();
-        Rigidbody = GameObject.Find("View").GetComponent<Rigidbody2D>();
-
     }
 
     protected override void Update()
@@ -95,9 +81,9 @@ public class UpwardsInAirState : BaseState
         if (IsActive)
         {
             // check if any other states can be transitioned into
-            this.TargetTransitionState = CheckTriggers<UpwardsInAirState>(Rigidbody);
+            this.TargetTransitionState = CheckTriggers();
 
-            // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
+            // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current action state.
             if (this.TargetTransitionState == null || this.TargetTransitionState == this)
             {
                 HandleHorizontalInput();
@@ -127,6 +113,18 @@ public class UpwardsInAirState : BaseState
         {
             PlayerModel.HorizontalVelocity = 0;
             LastInput = StateMachine.HorizontalInput;
+        }
+    }
+
+    internal override StateTransition GetTransition()
+    {
+        if (TargetTransitionState == this || TargetTransitionState == null)
+        {
+            return new StateTransition(null, null, TransitionType.No);
+        }
+        else
+        {
+            return new StateTransition(this, TargetTransitionState, TransitionType.Sibling);
         }
     }
 }

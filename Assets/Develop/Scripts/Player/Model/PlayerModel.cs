@@ -24,7 +24,7 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     private LifeState playerLifeState;
 
     [SerializeField]
-    private ActionState playerActionState;
+    private AActionState playerActionState;
 
     [SerializeField]
     private GraphlingHookState graphHookState;
@@ -115,6 +115,26 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
 
     [SerializeField]
     private float dashDuration = 0.2f;
+
+    [Tooltip("How long time before you can use grappling hook again.")]
+    [SerializeField]
+    private readonly float grapplingHookCooldown = 2f;
+
+    [Tooltip("How fast the grappling hook moves.")]
+    [SerializeField]
+    private readonly float grapplingHookSpeed = 15f;
+
+    [Tooltip("Represent if the player is hooked to the graphling hook or not.")]
+    [SerializeField]
+    private bool isGrappled;
+
+    [Tooltip("How long the player can hang in the rope when grappling is attached.")]
+    [SerializeField]
+    private readonly float grapplingHookHangTime = 10f;
+
+    [Tooltip("The reach of the grappling hook.")]
+    [SerializeField]
+    private readonly float grapplingHookReach = 100;
 
     [RangeAttribute(-1, 1)]
     [SerializeField]
@@ -518,9 +538,19 @@ public class PlayerModel : MonoBehaviour, IJump, IMove, IDash, IAction, IWallCli
     public InAirState PlayerInAirState { get => playerInAirState; set => playerInAirState = value; }
     public WallClingState PlayerWallClingState { get => playerWallClingState; set => playerWallClingState = value; }
     public LifeState PlayerLifeState { get => playerLifeState; set => playerLifeState = value; }
-    public ActionState PlayerActionState { get => playerActionState; set => playerActionState = value; }
+    public AActionState PlayerActionState { get => playerActionState; set => playerActionState = value; }
     public GraphlingHookState GraphHookState { get => graphHookState; set => graphHookState = value; }
     public int HealthPoints { get => healthPoints; set => healthPoints = value; }
+
+    public float GrapplingHookCooldown => grapplingHookCooldown;
+
+    public float GrapplingHookSpeed => grapplingHookSpeed;
+
+    public bool IsGrappled { get => isGrappled; set => isGrappled = value; }
+
+    public float GrapplingHookHangTime => grapplingHookHangTime;
+
+    public float GrapplingHookReach => grapplingHookReach;
 
     #endregion Getters and setters
 }
