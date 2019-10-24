@@ -7228,11 +7228,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 6976032877529301744, guid: f2b408fdb911d59449e3eaac492ba07f,
-        type: 3}
-      propertyPath: m_Mass
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 6976032878567393388, guid: f2b408fdb911d59449e3eaac492ba07f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7303,6 +7298,16 @@ PrefabInstance:
       propertyPath: dashDuration
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 6976032877529301744, guid: f2b408fdb911d59449e3eaac492ba07f,
+        type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6976032877529301750, guid: f2b408fdb911d59449e3eaac492ba07f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 377341731, guid: f2b408fdb911d59449e3eaac492ba07f, type: 3}
       propertyPath: printStates
       value: 1
@@ -7313,15 +7318,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 377341731, guid: f2b408fdb911d59449e3eaac492ba07f, type: 3}
       propertyPath: printPositionalStates
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 377341731, guid: f2b408fdb911d59449e3eaac492ba07f, type: 3}
       propertyPath: printVitalStates
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6976032877529301750, guid: f2b408fdb911d59449e3eaac492ba07f,
-        type: 3}
-      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:

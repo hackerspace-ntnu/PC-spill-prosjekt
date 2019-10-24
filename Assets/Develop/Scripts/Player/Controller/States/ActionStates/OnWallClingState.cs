@@ -21,7 +21,7 @@ public class OnWallClingState : AActionState
             if (Math.Abs(Body.velocity.y) <= 6 && PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale)
                 && !StateMachine.JumpInput)
             {
-                temp = StateMachine.OnWallClingState;
+                temp = this;
             }
             else if (StateMachine.DashInput && (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration))
             {
@@ -31,11 +31,13 @@ public class OnWallClingState : AActionState
             {
                 if (Math.Abs(StateMachine.HorizontalInput) >= 0.3)
                 {
-                    temp = StateMachine.OnJumpState;
+                    temp = this;
+                    //temp = StateMachine.OnJumpState; TODO : Only let players jump from wall if glitching is enabled
                 }
                 else
                 {
-                    temp = StateMachine.OnJumpState;
+                    temp = this;
+                    // temp = StateMachine.OnJumpState; TODO : Only let players jump from wall if glitching is enabled
                 }
             }
             else
@@ -98,15 +100,15 @@ public class OnWallClingState : AActionState
 
     private void HandleInput()
     {
-        if (StateMachine.JumpInput)
-        {
-            PlayerModel.NewVelocity = new Vector2(PlayerModel.WallJumpDirection * PlayerModel.MovementSpeed, PlayerModel.GroundJumpSpeed - Body.velocity.y) * PlayerModel.FlipGravityScale; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
-        }
+        //if (StateMachine.JumpInput)
+        // {
+            // PlayerModel.NewVelocity = new Vector2(PlayerModel.WallJumpDirection * PlayerModel.MovementSpeed, PlayerModel.GroundJumpSpeed - Body.velocity.y) * PlayerModel.FlipGravityScale; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
+        // }
         if (Body.velocity.y * Math.Sign(PlayerModel.NewGravityScale) <= 0)
         {
-            PlayerModel.NewGravityScale = PlayerModel.BaseGravityScale * PlayerModel.WallslideGravityScaleMultiplier * PlayerModel.FlipGravityScale;
+            PlayerModel.NewGravityScale = (PlayerModel.BaseGravityScale/3)  * PlayerModel.FlipGravityScale; // PlayerModel.WallslideGravityScaleMultiplier
         }
-        if (Math.Abs(Body.velocity.y) <= 6 && PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale))
+        else if (Math.Abs(Body.velocity.y) <= 6 && PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale))
         {
             Body.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }

@@ -108,7 +108,6 @@ public class OnWallState : APositionState
             LastInput = StateMachine.HorizontalInput;
             if (Math.Abs(LastInput) > PlayerModel.HorizontalInputRunningThreshold)
             {
-                PlayerModel.PlayerWalkState = WalkState.WALKING;
                 PlayerModel.HorizontalVelocity = Math.Sign(LastInput) * PlayerModel.MovementSpeed * PlayerModel.FlipGravityScale; // Set horizontalInput to max
             }
             else
