@@ -28,7 +28,7 @@ public class UpwardsInAirState : BaseState
             temp = StateMachine.OnWallState;
         }
         // Player is clinging to wall. His movement state will be "On wall state".
-        // Player pressing left input (D) towards the wall on his right side.
+        // Player pressing right input (D) towards the wall on his right side.
         else if (!StateMachine.JumpInput && PlayerModel.WallTrigger == 1 &&
             StateMachine.HorizontalInput > 0)
         {

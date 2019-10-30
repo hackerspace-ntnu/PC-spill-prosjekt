@@ -63,13 +63,7 @@ public class StateMachine : MonoBehaviour, IStateMachine
     public OnJumpState OnJumpState { get => onJumpState; set => onJumpState = value; }
     public OnAirJumpState OnAirJumpState { get => onAirJumpState; set => onAirJumpState = value; }
     public OnNoActionState OnNoActionState { get => onNoActionState; set => onNoActionState = value; }
-
-    public bool StatesModified
-    {
-        get => statesModified;
-        set => statesModified = value;
-    }
-
+    public bool StatesModified { get => statesModified; set => statesModified = value; }
     public bool HaveSetActiveInInitialStates { get => haveSetActiveInInitialStates; set => haveSetActiveInInitialStates = value; }
     public PlayerModel Model { get => model; set => model = value; }
     public float HorizontalInput { get => horizontalInput; set => horizontalInput = value; }
@@ -192,7 +186,7 @@ public class StateMachine : MonoBehaviour, IStateMachine
     // Update is called once per frame
     public void Update()
     {
-        if (!HaveSetActiveInInitialStates)
+        if (!HaveSetActiveInInitialStates) // put this in respawn state later
         {
             ActivateInitialStates();
             HaveSetActiveInInitialStates = true;
@@ -212,7 +206,7 @@ public class StateMachine : MonoBehaviour, IStateMachine
     public void ProcessStateTransitions()
     {
         // we should always have three states - one for life/hp, one for position, and one for actions.
-        if (States.Count < 3)
+        if (States.Count < 4)
         {
             InitializeStates();
         }

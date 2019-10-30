@@ -36,7 +36,7 @@ public class OnNoActionState : BaseState
         else if (!PlayerModel.IsGrounded && PlayerModel.WallTrigger == 0)
         {
             if (!PlayerModel.HasAirJumped && StateMachine.JumpInput
-                && (Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump && !PlayerModel.HasAirJumped))
+                && Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump)
             {
                 temp = StateMachine.OnAirJumpState;
             }
