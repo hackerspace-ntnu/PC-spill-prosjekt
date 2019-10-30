@@ -1,20 +1,17 @@
 ﻿using System;
 using UnityEngine;
 
-public class OnNoActionState : BaseState
+public class OnNoActionState : AActionState
 {
     // used to calculate input. Always set to 0 at entry and exit functions.
     private float lastInput;
 
-    private Rigidbody2D rigidbody;
 
     public float LastInput { get => lastInput; set => lastInput = value; }
-    public Rigidbody2D Rigidbody { get => rigidbody; set => rigidbody = value; }
-    protected override BaseState TargetTransitionState { get => base.TargetTransitionState; set => base.TargetTransitionState = value; }
 
-    protected override BaseState CheckTriggers<T>(Rigidbody2D body)
+    protected override AActionState CheckTriggers( )
     {
-        BaseState temp = null;
+        AActionState temp = null;
         // Player on ground..
         if (PlayerModel.IsGrounded)
         {
@@ -26,6 +23,10 @@ public class OnNoActionState : BaseState
             else if (StateMachine.DashInput && (Time.time >= PlayerModel.LastDashTime + PlayerModel.DashDuration))
             {
                 temp = StateMachine.OnDashState;
+            }
+            else if (StateMachine.GraphHookInput)
+            {
+                return temp;
             }
             else
             {
@@ -52,7 +53,7 @@ public class OnNoActionState : BaseState
         // player close to wall
         else if (PlayerModel.WallTrigger != 0 && !PlayerModel.IsGrounded)
         {
-            if (Math.Abs(body.velocity.y) <= 6 &&
+            if (Math.Abs(Body.velocity.y) <= 6 &&
                 PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale) &&
                 !StateMachine.JumpInput && !StateMachine.DashInput)
             {
@@ -81,15 +82,12 @@ public class OnNoActionState : BaseState
         return temp;
     }
 
-    protected override void FixedUpdate()
-    {
-    }
 
     protected override void Start()
     {
-        StateName = "Just chilling, not doing anything. You ?";
+        Body = GameObject.Find("View").GetComponent<Rigidbody2D>();
+        StateName = "- No action -";
         IsActive = false;
-        Rigidbody = GameObject.Find("View").GetComponent<Rigidbody2D>();
     }
 
     protected override void Update()
@@ -97,7 +95,7 @@ public class OnNoActionState : BaseState
         if (IsActive)
         {
             // check if any other states can be transitioned into
-            this.TargetTransitionState = CheckTriggers<OnNoActionState>(Rigidbody);
+            this.TargetTransitionState = CheckTriggers();
             UpdateActionVariables();
         }
     }
@@ -128,7 +126,7 @@ public class OnNoActionState : BaseState
             && PlayerModel.HasDashed) || (PlayerModel.HasDashed && PlayerModel.WallTrigger != 0))
         {
             PlayerModel.HasDashed = false;
-            PlayerModel.NewGravityScale = PlayerModel.BaseGravityScale * PlayerModel.FlipGravityScale;
+            //PlayerModel.NewGravityScale = PlayerModel.BaseGravityScale * PlayerModel.FlipGravityScale;
             PlayerModel.HorizontalVelocity = 0;
         }
         else
@@ -138,13 +136,25 @@ public class OnNoActionState : BaseState
     }
     private void UpdateAirJumpVariables()
     {
-        if (PlayerModel.IsGrounded || Time.time >= PlayerModel.JumpTime + PlayerModel.MinimumTimeBeforeAirJump)
+        if (PlayerModel.IsGrounded)
         {
             PlayerModel.HasAirJumped = false;
         }
         else
         {
             return;
+        }
+    }
+
+    internal override StateTransition GetTransition()
+    {
+        if (this.TargetTransitionState == this || this.TargetTransitionState == null)
+        {
+            return new StateTransition(null, null, TransitionType.No);
+        }
+        else
+        {
+            return new StateTransition(this, TargetTransitionState, TransitionType.Sibling);
         }
     }
 }

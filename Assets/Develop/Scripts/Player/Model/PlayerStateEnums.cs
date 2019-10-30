@@ -5,7 +5,7 @@ using UnityEngine;
 #region Player state enums
 public enum MovementStat
 {
-    STANDARD, // "IDLE" stance. 
+    STANDARD, // "IDLE" stance.
     JUMPING,
     AIR_JUMPING,
     DASHING,
@@ -52,12 +52,6 @@ public enum LifeState
     DEAD
 }
 
-public enum ActionState
-{
-    DEFAULT,
-    ATTACKING,
-    WITHDRAWING
-}
 
 public enum GraphlingHookState
 {

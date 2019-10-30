@@ -1,30 +1,35 @@
 ﻿using UnityEngine;
 
-public class OnDashState : BaseState
+public class OnDashState : AActionState
 {
     // used to calculate input. Always set to 0 at entry and exit functions.
     private float lastInput;
 
-    private Rigidbody2D rigidbody;
 
     public float LastInput { get => lastInput; set => lastInput = value; }
-    public Rigidbody2D Rigidbody { get => rigidbody; set => rigidbody = value; }
-    protected override BaseState TargetTransitionState { get => base.TargetTransitionState; set => base.TargetTransitionState = value; }
 
-    protected override BaseState CheckTriggers<T>(Rigidbody2D body)
+    protected override AActionState CheckTriggers()
     {
-        return StateMachine.OnNoActionState;
+        if(PlayerModel.WallTrigger != 0)
+        {
+            return StateMachine.OnWallClingState;
+        }
+        else if(Time.time >= PlayerModel.LastDashTime + PlayerModel.DashDuration)
+        {
+            return StateMachine.OnNoActionState;
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    protected override void FixedUpdate()
-    {
-    }
 
     protected override void Start()
     {
+        Body = GameObject.Find("View").GetComponent<Rigidbody2D>();
         StateName = "Dashing!";
-        IsActive = false;
-        Rigidbody = GameObject.Find("View").GetComponent<Rigidbody2D>();
+        base.Start();
     }
 
     protected override void Update()
@@ -32,8 +37,12 @@ public class OnDashState : BaseState
         if (IsActive)
         {
             // check if any other states can be transitioned into
-            this.TargetTransitionState = CheckTriggers<OnDashState>(Rigidbody);
-            Dash();
+            this.TargetTransitionState = CheckTriggers();
+
+            if(!PlayerModel.HasDashed && Time.time >= PlayerModel.LastDashTime + PlayerModel.DashDuration && StateMachine.DashInput)
+            {
+                Dash();
+            }
         }
     }
 
@@ -45,17 +54,30 @@ public class OnDashState : BaseState
 
     internal override void ExitAction()
     {
+        PlayerModel.NewGravityScale = PlayerModel.BaseGravityScale * PlayerModel.FlipGravityScale; // fix gravity back to normal!
         this.TargetTransitionState = null;
         IsActive = false;
         LastInput = 0;
     }
 
 
-    internal void Dash()
+    private void Dash()
     {
-        PlayerModel.NewVelocity = new Vector2(PlayerModel.SpriteDirection * PlayerModel.DashSpeed * PlayerModel.FlipGravityScale, -Rigidbody.velocity.y);
+        PlayerModel.NewVelocity = new Vector2(PlayerModel.SpriteDirection * PlayerModel.DashSpeed * PlayerModel.FlipGravityScale, 0);
         PlayerModel.NewGravityScale = 0;
         PlayerModel.LastDashTime = Time.time;
         PlayerModel.HasDashed = true;
+    }
+
+    internal override StateTransition GetTransition()
+    {
+        if (this.TargetTransitionState == this || this.TargetTransitionState == null)
+        {
+            return new StateTransition(null, null, TransitionType.No);
+        }
+        else
+        {
+            return new StateTransition(this, TargetTransitionState, TransitionType.Sibling);
+        }
     }
 }

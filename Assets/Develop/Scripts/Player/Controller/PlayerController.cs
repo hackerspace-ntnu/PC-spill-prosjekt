@@ -43,7 +43,10 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        body.AddForce(new Vector2(0, -body.velocity.y * body.mass * 2));  // gravity.
+
+        body.AddForce(new Vector2(0, -body.velocity.y * body.mass * 2));// gravity.
+
+        //body.AddForce(new Vector2(0, -body.velocity.y * body.mass * 2));
 
         if (Math.Sign(body.gravityScale) == 1 && body.velocity.y <= -model.MaxVelocityY || Math.Sign(body.gravityScale) == -1 && body.velocity.y >= model.MaxVelocityY)
         {
@@ -55,7 +58,7 @@ public class PlayerController : MonoBehaviour
             model.MaxVelocityFix = 1f;// fix/swap for max velocity when jumping. 0.8F is force when jumping
         }
 
-        if (!model.IsGrounded && Math.Sign(model.NewVelocity.x) != Math.Sign(body.velocity.x))
+        if (!model.IsGrounded && Math.Sign(model.NewVelocity.x) != Math.Sign(body.velocity.x) && !model.HasDashed)
         {
             model.HorizontalVelocity *= 0.5f; // slowdown horizontal speed if character is not on the ground
         }

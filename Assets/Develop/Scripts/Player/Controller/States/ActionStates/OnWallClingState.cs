@@ -5,30 +5,23 @@ using UnityEngine;
 /// <summary>
 ///
 /// </summary>
-public class OnWallClingState : BaseState
+public class OnWallClingState : AActionState
 {
-
-
     // used to calculate input. Always set to 0 at entry and exit functions.
     private float lastInput;
 
-    private Rigidbody2D rigidbody;
-
     public float LastInput { get => lastInput; set => lastInput = value; }
-    public Rigidbody2D Rigidbody { get => rigidbody; set => rigidbody = value; }
-    protected override BaseState TargetTransitionState { get => base.TargetTransitionState; set => base.TargetTransitionState = value; }
 
-
-    protected override BaseState CheckTriggers<T>(Rigidbody2D body)
+    protected override AActionState CheckTriggers()
     {
-        BaseState temp = null;
+        AActionState temp = null;
         // player close to wall
         if (PlayerModel.WallTrigger != 0 && !PlayerModel.IsGrounded)
         {
-            if (Math.Abs(body.velocity.y) <= 6 && PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale)
+            if (Math.Abs(Body.velocity.y) <= 6 && PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale)
                 && !StateMachine.JumpInput)
             {
-                temp = StateMachine.OnWallClingState;
+                temp = this;
             }
             else if (StateMachine.DashInput && (Time.time - PlayerModel.LastDashTime <= PlayerModel.DashDuration))
             {
@@ -38,11 +31,13 @@ public class OnWallClingState : BaseState
             {
                 if (Math.Abs(StateMachine.HorizontalInput) >= 0.3)
                 {
-                    temp = StateMachine.OnJumpState;
+                    temp = this;
+                    //temp = StateMachine.OnJumpState; TODO : Only let players jump from wall if glitching is enabled
                 }
                 else
                 {
-                    temp = StateMachine.OnJumpState;
+                    temp = this;
+                    // temp = StateMachine.OnJumpState; TODO : Only let players jump from wall if glitching is enabled
                 }
             }
             else
@@ -53,16 +48,12 @@ public class OnWallClingState : BaseState
         return temp;
     }
 
-    protected override void FixedUpdate()
-    {
-    }
-
     protected override void Start()
     {
+        Body = GameObject.Find("View").GetComponent<Rigidbody2D>();
         PlayerModel.WallJumpDirection = PlayerModel.WallTrigger;
-        StateName = "Spider pig on dat wall.";
+        StateName = "- Clinging to wall - ";
         IsActive = false;
-        Rigidbody = GameObject.Find("View").GetComponent<Rigidbody2D>();
     }
 
     protected override void Update()
@@ -70,7 +61,7 @@ public class OnWallClingState : BaseState
         if (IsActive)
         {
             // check if any other states can be transitioned into
-            this.TargetTransitionState = CheckTriggers<OnWallClingState>(Rigidbody);
+            this.TargetTransitionState = CheckTriggers();
 
             // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
             if (this.TargetTransitionState == null || TargetTransitionState == this)
@@ -88,29 +79,42 @@ public class OnWallClingState : BaseState
 
     internal override void ExitAction()
     {
-        Rigidbody.constraints = RigidbodyConstraints2D.FreezePosition;
+        PlayerModel.NewGravityScale = PlayerModel.BaseGravityScale * PlayerModel.FlipGravityScale; // fix gravity back to normal!
+        Body.constraints = RigidbodyConstraints2D.FreezePosition;
         this.TargetTransitionState = null;
         IsActive = false;
         LastInput = 0;
     }
 
-    private void HandleInput()
+    internal override StateTransition GetTransition()
     {
-        if (StateMachine.JumpInput)
+        if (this.TargetTransitionState == this || this.TargetTransitionState == null)
         {
-            PlayerModel.NewVelocity = new Vector2(PlayerModel.WallJumpDirection * PlayerModel.MovementSpeed, PlayerModel.GroundJumpSpeed - Rigidbody.velocity.y) * PlayerModel.FlipGravityScale; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
-        }
-        if (Rigidbody.velocity.y * Math.Sign(PlayerModel.NewGravityScale) <= 0)
-        {
-            PlayerModel.NewGravityScale = PlayerModel.BaseGravityScale * PlayerModel.WallslideGravityScaleMultiplier * PlayerModel.FlipGravityScale;
-        }
-        if (Math.Abs(Rigidbody.velocity.y) <= 6 && PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale))
-        {
-            Rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+            return new StateTransition(null, null, TransitionType.No);
         }
         else
         {
-            Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            return new StateTransition(this, TargetTransitionState, TransitionType.Sibling);
+        }
+    }
+
+    private void HandleInput()
+    {
+        //if (StateMachine.JumpInput)
+        // {
+            // PlayerModel.NewVelocity = new Vector2(PlayerModel.WallJumpDirection * PlayerModel.MovementSpeed, PlayerModel.GroundJumpSpeed - Body.velocity.y) * PlayerModel.FlipGravityScale; // jumpSpeed * 0.75f * Math.Sign(newGravityScale)
+        // }
+        if (Body.velocity.y * Math.Sign(PlayerModel.NewGravityScale) <= 0)
+        {
+            PlayerModel.NewGravityScale = (PlayerModel.BaseGravityScale/3)  * PlayerModel.FlipGravityScale; // PlayerModel.WallslideGravityScaleMultiplier
+        }
+        else if (Math.Abs(Body.velocity.y) <= 6 && PlayerModel.WallTrigger == -Math.Sign(StateMachine.HorizontalInput * PlayerModel.FlipGravityScale))
+        {
+            Body.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+        }
+        else
+        {
+            Body.constraints = RigidbodyConstraints2D.FreezeRotation;
             PlayerModel.MaxVelocityY = 2f;
         }
     }

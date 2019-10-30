@@ -1,20 +1,16 @@
 ﻿using System;
 using UnityEngine;
 
-public class OnWallState : BaseState
+public class OnWallState : APositionState
 {
     private float lastInput;
 
-    private Rigidbody2D rigidbody;
-
     public float LastInput { get => lastInput; set => lastInput = value; }
-    public Rigidbody2D Rigidbody { get => rigidbody; set => rigidbody = value; }
 
-    protected override BaseState TargetTransitionState { get => base.TargetTransitionState; set => base.TargetTransitionState = value; }
 
-    protected override BaseState CheckTriggers<T>(Rigidbody2D rigidbody)
+    protected override APositionState CheckTriggers()
     {
-        BaseState temp = null;
+        APositionState temp = null;
         // Player is air jumping. His movement state will be "Moving upwards in air". Note: We don't sett "has air jumped",
         // as action states execute the physical logic for the jump.
         if (StateMachine.JumpInput && !PlayerModel.HasAirJumped &&
@@ -37,15 +33,15 @@ public class OnWallState : BaseState
             temp = StateMachine.OnWallState;
         }
         // if no input and no walls, check for current rigid body velocity. Might need rework for upside down-gravity.
-        else if ((!StateMachine.JumpInput && PlayerModel.WallTrigger == 0) && Math.Abs(rigidbody.velocity.y * Math.Sign(rigidbody.gravityScale)) > 0)
+        else if ((!StateMachine.JumpInput && PlayerModel.WallTrigger == 0) && Math.Abs(Body.velocity.y * Math.Sign(Body.gravityScale)) > 0)
         {
             // is velocity going upwards?
-            if (rigidbody.velocity.y * Math.Sign(rigidbody.gravityScale) > 0)
+            if (Body.velocity.y * Math.Sign(Body.gravityScale) > 0)
             {
                 temp = StateMachine.UpwardsInAirState;
             }
             // is velocity going downwards?
-            else if (rigidbody.velocity.y * Math.Sign(rigidbody.gravityScale) < 0)
+            else if (Body.velocity.y * Math.Sign(Body.gravityScale) < 0)
             {
                 temp = StateMachine.FallingInAirState;
             }
@@ -55,7 +51,7 @@ public class OnWallState : BaseState
             }
 
         }
-        else if (PlayerModel.IsGrounded && rigidbody.velocity.y == 0)
+        else if (PlayerModel.IsGrounded && Body.velocity.y == 0)
         {
             temp = StateMachine.OnGroundState;
         }
@@ -79,14 +75,10 @@ public class OnWallState : BaseState
         LastInput = 0;
     }
 
-    protected override void FixedUpdate()
-    {
-    }
-
     protected override void Start()
     {
-        StateName = "On wall state";
-        Rigidbody = GameObject.Find("View").GetComponent<Rigidbody2D>();
+        Body = GameObject.Find("View").GetComponent<Rigidbody2D>();
+        StateName = "- Position on Wall -";
         base.Start();
     }
 
@@ -95,7 +87,7 @@ public class OnWallState : BaseState
         if (IsActive)
         {
             // check if any other states can be transitioned into
-            this.TargetTransitionState = CheckTriggers<OnWallState>(Rigidbody);
+            this.TargetTransitionState = CheckTriggers();
 
             // if no targeted states is found, handle horizontal movement input, other input (jump/dash etc) is handled in current actionstate.
             if (this.TargetTransitionState == null || this.TargetTransitionState == this)
@@ -116,7 +108,6 @@ public class OnWallState : BaseState
             LastInput = StateMachine.HorizontalInput;
             if (Math.Abs(LastInput) > PlayerModel.HorizontalInputRunningThreshold)
             {
-                PlayerModel.PlayerWalkState = WalkState.WALKING;
                 PlayerModel.HorizontalVelocity = Math.Sign(LastInput) * PlayerModel.MovementSpeed * PlayerModel.FlipGravityScale; // Set horizontalInput to max
             }
             else
@@ -130,5 +121,17 @@ public class OnWallState : BaseState
             LastInput = StateMachine.HorizontalInput;
         }
 
+    }
+
+    internal override StateTransition GetTransition()
+    {
+        if (TargetTransitionState == this || TargetTransitionState == null)
+        {
+            return new StateTransition(null, null, TransitionType.No);
+        }
+        else
+        {
+            return new StateTransition(this, TargetTransitionState, TransitionType.Sibling);
+        }
     }
 }

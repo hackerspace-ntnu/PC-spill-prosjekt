@@ -9,13 +9,23 @@ public class StateMachine : MonoBehaviour, IStateMachine
 
     private PlayerModel model; // All variables related to player. Doesn't do any logic, just hold variables. Used ALOT.
 
-    private Dictionary<int, BaseState> states = new Dictionary<int, BaseState>();
+    private Dictionary<int, AState> states = new Dictionary<int, AState>();
+
 
     [Tooltip("Print states on each frame if change in states is detected.")]
     [SerializeField]
     private bool printStates = true;
+    [Tooltip("Do you want to print Vital states and print when it changes?")]
+    [SerializeField]
+    private bool printVitalStates = true;
+    [Tooltip("Do you want to print Positional states and print when it changes?")]
+    [SerializeField]
+    private bool printPositionalStates = true;
+    [Tooltip("Do you want to print Action states and print when it changes?")]
+    [SerializeField]
+    private bool printActionStates = true;
 
-    private List<BaseState> statesLastFrame = new List<BaseState>();
+    private List<AState> statesLastFrame = new List<AState>();
 
     // Level 1 states (most important)
     private DeadState deadState;
@@ -49,9 +59,12 @@ public class StateMachine : MonoBehaviour, IStateMachine
     private bool dashInput; // is key pressed?
     private bool jumpInput; // is key pressed?
     private bool graphHookInput; // is key pressed?
+    private Vector2 mousePos; // position of mouse on screen.
+    private bool primaryMouseButton;
+    private bool secondaryMouseButton;
 
     public virtual Object Owner { get => owner; set => owner = value; }
-    public Dictionary<int, BaseState> States { get => states; set => states = value; }
+    public Dictionary<int, AState> States { get => states; set => states = value; }
     public DeadState DeadState { get => deadState; private set => deadState = value; }
     public AliveState AliveState { get => aliveState; private set => aliveState = value; }
     public UpwardsInAirState UpwardsInAirState { get => upwardsInAirState; set => upwardsInAirState = value; }
@@ -73,7 +86,10 @@ public class StateMachine : MonoBehaviour, IStateMachine
     public bool GraphHookInput { get => graphHookInput; set => graphHookInput = value; }
     public OnWallClingState OnWallClingState { get => onWallClingState; set => onWallClingState = value; }
     public OnWallJump OnWallJump { get => onWallJump; set => onWallJump = value; }
-    public List<BaseState> StatesLastFrame { get => statesLastFrame; set => statesLastFrame = value; }
+    public List<AState> StatesLastFrame { get => statesLastFrame; set => statesLastFrame = value; }
+    public Vector2 MousePos { get => mousePos; set => mousePos = value; }
+    public bool PrimaryMouseButton { get => primaryMouseButton; set => primaryMouseButton = value; }
+    public bool SecondaryMouseButton { get => secondaryMouseButton; set => secondaryMouseButton = value; }
 
     // Start is called before the first frame update
     public void Start()
@@ -179,6 +195,9 @@ public class StateMachine : MonoBehaviour, IStateMachine
         dashInput = Input.GetKey(Model.DashKey);
         jumpInput = Input.GetKeyDown(Model.JumpKey);
         graphHookInput = Input.GetKey(Model.GraphHookKey);
+        MousePos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        PrimaryMouseButton = Input.GetMouseButton(0);
+        SecondaryMouseButton = Input.GetMouseButton(1);
     }
 
     #endregion Start methods called
@@ -214,17 +233,19 @@ public class StateMachine : MonoBehaviour, IStateMachine
         ProcessStateTransitionsOnce();
     }
 
+    /// <summary>
+    /// Check each of the current active states in States dictionary, and check if they have a transition possible, if so,
+    /// do the exit method on current state and entry action on next state.
+    /// </summary>
     private void ProcessStateTransitionsOnce()
     {
-        BaseState healthState = null;
-        BaseState movementState = null;
-        BaseState actionState = null;
-        foreach (KeyValuePair<int, BaseState> entry in States)
+        AState healthState  = null , movementState = null , actionState  = null ;
+        foreach (KeyValuePair<int, AState> entry in States)
         {
             // Handle level 1 state changes (dead/alive)
             if (entry.Key == 1)
             {
-                Transition<BaseState> trans = entry.Value.GetTransition();
+                StateTransition trans = entry.Value.GetTransition();
                 if (trans.Target != entry.Value && trans.Target != null)
                 {
                     entry.Value.ExitAction();
@@ -240,7 +261,7 @@ public class StateMachine : MonoBehaviour, IStateMachine
             // Handle level 2 state changes (Movement - on ground, in air, on wall etc.)
             else if (entry.Key == 2)
             {
-                Transition<BaseState> trans = entry.Value.GetTransition();
+                StateTransition trans = entry.Value.GetTransition();
                 if (trans.Target != entry.Value && trans.Target != null)
                 {
                     entry.Value.ExitAction();
@@ -256,7 +277,7 @@ public class StateMachine : MonoBehaviour, IStateMachine
             // Handle level 3 state changes - actions (Jump, dash, hook etc.)
             else if (entry.Key == 3)
             {
-                Transition<BaseState> trans = entry.Value.GetTransition();
+                StateTransition trans = entry.Value.GetTransition();
                 if (trans.Target != entry.Value && trans.Target != null)
                 {
                     entry.Value.ExitAction();
@@ -274,17 +295,25 @@ public class StateMachine : MonoBehaviour, IStateMachine
                 break;
             }
         }
+        // At the end, we updates the current states with the new states.
         UpdateStates(healthState, movementState, actionState);
     }
 
-    public void UpdateStates(BaseState healthState, BaseState movementState, BaseState actionState)
+
+    /// <summary>
+    /// Updates the states in the statemachine if the parameters are not set to null.
+    /// </summary>
+    /// <param name="healthState"></param>
+    /// <param name="movementState"></param>
+    /// <param name="actionState"></param>
+    public void UpdateStates(AState healthState, AState movementState, AState actionState)
     {
         // always check health state first!
         if (healthState != null)
         {
             States[1] = healthState;
             StatesLastFrame[0] = healthState;
-            StatesModified = true;
+            if (printVitalStates) { StatesModified = true; }
         }
         // movement and action states are less important and gets checked in same check.
         else if (movementState != null || actionState != null)
@@ -293,13 +322,13 @@ public class StateMachine : MonoBehaviour, IStateMachine
             {
                 States[2] = movementState;
                 StatesLastFrame[1] = movementState;
-                StatesModified = true;
+                if (printPositionalStates) { StatesModified = true; }
             }
             if (actionState != null)
             {
                 States[3] = actionState;
                 StatesLastFrame[2] = actionState;
-                StatesModified = true;
+                if (printActionStates) { StatesModified = true; }
             }
         }
         else
@@ -311,10 +340,21 @@ public class StateMachine : MonoBehaviour, IStateMachine
     private void DebugPrintStates()
     {
         StringBuilder sb = new StringBuilder();
-        sb.Append("state of player last frame: ");
-        foreach (BaseState item in StatesLastFrame)
+        sb.Append("state of player last frame:");
+        foreach (AState item in StatesLastFrame)
         {
-            sb.AppendLine(item.StateName);
+            if(printVitalStates && item is AVitalState)
+            {
+                sb.AppendLine(item.StateName);
+            }
+            else if(printPositionalStates && item is APositionState)
+            {
+                sb.AppendLine(item.StateName);
+            }
+            else if (printActionStates && item is AActionState)
+            {
+                sb.AppendLine(item.StateName);
+            }
         }
         Debug.Log(sb.ToString());
     }
