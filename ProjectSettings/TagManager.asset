@@ -8,6 +8,7 @@ TagManager:
   - Torch
   - Familiar
   - Standard
+  - Boss
   layers:
   - Default
   - TransparentFX
