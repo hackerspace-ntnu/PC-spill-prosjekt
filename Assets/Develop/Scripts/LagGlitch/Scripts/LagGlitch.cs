@@ -10,6 +10,7 @@ public class LagGlitch : MonoBehaviour
     public bool ghostActive;
     public SpriteLoad spriteLoad;
     public EnemyMovement enemyMovement;
+    public GlobalScript globalScript;
     void Start()
     {
         ghostActive = false;
@@ -29,7 +30,16 @@ public class LagGlitch : MonoBehaviour
     GameObject clone;
     LagGlitch cloneScript;
     PlayerStats cloneStats;
+    public SimpleCameramovement camScript;
     public GameObject lagTimer;
+    public GlitchObscuring gObscuring;
+    IEnumerator addToGlitchMeter()
+    {
+        while(true) {
+            gObscuring.ChangeGlitchValue(5);
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
     public void ActivateLagGlitch()
     {
         if(!ghostActive)
@@ -50,6 +60,12 @@ public class LagGlitch : MonoBehaviour
             lagTimer.SetActive(true); // Make lag glitch timer visible 
             StartCoroutine(StartCountdown());
             StartCoroutine(SpawnGhostTrail());
+            StartCoroutine(addToGlitchMeter());
+            globalScript.glitchActive = true; // Update globalscript
+
+            // Camera
+            camScript.player = clone;
+
             // Enemies
             enemyMovement.boxColliderToggle(false); // Turn off enemy box colliders
         } else if (ghostActive) // You press H, and the following shall be done to the original sprite:
@@ -57,6 +73,8 @@ public class LagGlitch : MonoBehaviour
             Teleport();
         }
     }
+
+    public GlitchMask gMask;
     public void Teleport()
     {
         enemyMovement.boxColliderToggle(true); // Turn enemy box colliders back on
@@ -72,7 +90,8 @@ public class LagGlitch : MonoBehaviour
         cloneScript.enabled = true;
         // clone.GetComponent<Rigidbody2D>().velocity *= 1.9f; // Get speedboost when converting back to regular 
         clone.name = "Player";
-        
+        StopCoroutine(addToGlitchMeter());
+        globalScript.glitchActive = false; // Update globalscript
     }
 
     float currCountdownValue = 10f;
