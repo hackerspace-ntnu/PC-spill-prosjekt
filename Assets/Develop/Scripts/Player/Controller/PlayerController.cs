@@ -24,9 +24,15 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        WalkingState.INSTANCE.Init(this);
+        AirborneState.INSTANCE.Init(this);
+        CrouchingState.INSTANCE.Init(this);
+        DashingState.INSTANCE.Init(this);
+        GrapplingState.INSTANCE.Init(this);
         IdleState.INSTANCE.Init(this);
-        // TODO: adddd the rest of the states
+        JumpingState.INSTANCE.Init(this);
+        KnockbackState.INSTANCE.Init(this);
+        WalkingState.INSTANCE.Init(this);
+        WallClingingState.INSTANCE.Init(this);
     }
 
     void Update()
