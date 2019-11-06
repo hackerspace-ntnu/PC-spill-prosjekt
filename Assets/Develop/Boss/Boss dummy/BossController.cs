@@ -8,11 +8,13 @@ public class BossController : MonoBehaviour
 
     private void Awake()
     {
-
+        //Play boss cutscene or something
     }
 
     void Start()
     {
+        //Set boss state to it's starting state, potencially an attack
+
         bossJump = GetComponent<BossJump>();
     }
 
@@ -24,6 +26,7 @@ public class BossController : MonoBehaviour
             bossJump.enabled = true;
         }
     }
+
 
     
 

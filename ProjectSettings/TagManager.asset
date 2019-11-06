@@ -9,6 +9,9 @@ TagManager:
   - Familiar
   - Standard
   - Boss
+  - Wall
+  - Ground
+  - Roof
   layers:
   - Default
   - TransparentFX

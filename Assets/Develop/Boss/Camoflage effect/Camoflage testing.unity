@@ -442,6 +442,9 @@ MonoBehaviour:
   spitPref: {fileID: 4125516658142558423, guid: cd3b0ccb63930b24a8f18582c15d1672,
     type: 3}
   spawnPos: {fileID: 371681414}
+  smallSpitSpeed: 1000
+  bigSpitSpeed: 1500
+  angleVariationDeg: 90
 --- !u!61 &371681412
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -571,7 +574,7 @@ GameObject:
   - component: {fileID: 821845859}
   m_Layer: 0
   m_Name: Ceiling
-  m_TagString: Untagged
+  m_TagString: Roof
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -677,7 +680,7 @@ GameObject:
   - component: {fileID: 1236193002}
   m_Layer: 0
   m_Name: Right Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -946,7 +949,7 @@ GameObject:
   - component: {fileID: 1519003858}
   m_Layer: 0
   m_Name: Left Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1237,7 +1240,7 @@ GameObject:
   - component: {fileID: 1913143538}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
