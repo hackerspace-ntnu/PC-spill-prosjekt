@@ -83,7 +83,7 @@ public class StateMachine : MonoBehaviour, IStateMachine
     public float VerticalInput { get => verticalInput; set => verticalInput = value; }
     public bool DashInput { get => dashInput; set => dashInput = value; }
     public bool JumpInput { get => jumpInput; set => jumpInput = value; }
-    public bool GraphHookInput { get => graphHookInput; set => graphHookInput = value; }
+    public bool GrapHookInput { get => graphHookInput; set => graphHookInput = value; }
     public OnWallClingState OnWallClingState { get => onWallClingState; set => onWallClingState = value; }
     public OnWallJump OnWallJump { get => onWallJump; set => onWallJump = value; }
     public List<AState> StatesLastFrame { get => statesLastFrame; set => statesLastFrame = value; }
@@ -108,7 +108,7 @@ public class StateMachine : MonoBehaviour, IStateMachine
         VerticalInput = 0;
         DashInput = false;
         JumpInput = false; ;
-        GraphHookInput = false;
+        GrapHookInput = false;
     }
 
     private void ActivateInitialStates()

@@ -15,7 +15,7 @@
     float VerticalInput { get; }
     bool DashInput { get;  }
     bool JumpInput { get; }
-    bool GraphHookInput { get; }
+    bool GrapHookInput { get; }
     OnWallClingState OnWallClingState { get; set; }
     OnWallJump OnWallJump { get; set; }
 }

@@ -24,7 +24,7 @@ public class OnNoActionState : AActionState
             {
                 temp = StateMachine.OnDashState;
             }
-            else if (StateMachine.GraphHookInput)
+            else if (StateMachine.GrapHookInput)
             {
                 return temp;
             }

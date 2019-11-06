@@ -28,16 +28,13 @@ public class AliveState : AVitalState
     {
         if (IsActive)
         {
-            if (IsActive)
+            // check if any other states can be transitioned into
+            this.TargetTransitionState = CheckTriggers();
+
+
+            if (this.TargetTransitionState == null || this.TargetTransitionState == this)
             {
-                // check if any other states can be transitioned into
-                this.TargetTransitionState = CheckTriggers();
-
-
-                if(this.TargetTransitionState == null || this.TargetTransitionState == this)
-                {
-                    // TODO: Any health related logic that decreases/increases life of player, put it here.
-                }
+                // TODO: Any health related logic that decreases/increases life of player, put it here.
             }
         }
     }
