@@ -24,7 +24,11 @@ public class WalkingState : PlayerState
     {
         HandleHorizontalInput();
 
-        if (rigidBody.velocity.magnitude < idleSpeedThreshold)
+        if (Input.GetKeyDown("Jump"))
+        {
+            controller.ChangeState(JumpingState.INSTANCE);
+        }
+        else if (rigidBody.velocity.magnitude < idleSpeedThreshold)
             controller.ChangeState(IdleState.INSTANCE);
     }
 
@@ -42,29 +46,16 @@ public class WalkingState : PlayerState
         }
 
         // decreases horizontal speed in air while falling ( I think?)
-        if (!isGrounded && Math.Sign(newVelocity.x) != Math.Sign(rigidBody.velocity.x))
+        if (!isGrounded && Math.Sign(targetVelocity.x) != Math.Sign(rigidBody.velocity.x))
         {
-            newVelocity.x *= 0.5f;
+            targetVelocity.x *= 0.5f;
         }
 
-        if (newVelocity.x == 0) //Check speed issues, also latency
-        {
-            rigidBody.AddForce(new Vector2(-rigidBody.velocity.x * rigidBody.mass, 0), ForceMode2D.Impulse);
-        }
-        else /*if (Math.Abs(rigidBody.velocity.x) <= movementSpeed || Math.Sign(newVelocity.x) != Math.Sign(rigidBody.velocity.x))*/
-        {
-            rigidBody.AddForce(new Vector2(newVelocity.x - rigidBody.velocity.x, -rigidBody.velocity.y * (1 - maxVelocityFix)), ForceMode2D.Impulse);
-        }
+        float newVelocityX = targetVelocity.x - rigidBody.velocity.x;
+        float newVelocityY = targetVelocity.y - rigidBody.velocity.y * (1 - maxVelocityFix);
 
-        if (Math.Abs(newVelocity.y) > 0) //Might have to multiply by flipGravityScale instead
-        {
-            rigidBody.AddForce(new Vector2(0, newVelocity.y), ForceMode2D.Impulse);
-            newVelocity.y = 0;
-        }
-
-        //rigidBody.velocity = new Vector2(newVelocity.x, newVelocity.y * maxVelocityFix); // Ta inn maxVelocityFix, mye renere
-        if (rigidBody.gravityScale != newGravityScale)
-            rigidBody.gravityScale = newGravityScale;
+        rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
+        targetVelocity.y = 0;
     }
 
     public override void Exit() {}

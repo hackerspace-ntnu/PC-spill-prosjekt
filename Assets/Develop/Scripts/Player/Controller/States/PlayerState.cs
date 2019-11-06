@@ -5,12 +5,13 @@ using UnityEngine;
 
 public abstract class PlayerState
 {
+    public float baseGravityScale = 5; // base gravity affecting the player
     public float horizontalInputRunningThreshold = 0.3f; // Minimum input needed to move left/right
     public float movementSpeed = 7;
-    private int flipGravityScale = 1;
+    protected int flipGravityScale = 1;
 
     protected float horizontalInput; // input from controller in x-axis
-    protected Vector2 newVelocity; // for setting velocity in FixedUpdate()
+    protected Vector2 targetVelocity; // for setting velocity in FixedUpdate()
 
     protected PlayerController controller;
     protected Rigidbody2D rigidBody;
@@ -21,6 +22,7 @@ public abstract class PlayerState
     {
         this.controller = controller;
         rigidBody = controller.GetComponent<Rigidbody2D>();
+        rigidBody.gravityScale = baseGravityScale;
     }
 
     public abstract void Enter();
@@ -42,16 +44,16 @@ public abstract class PlayerState
             horizontalInput = Input.GetAxis("Horizontal");
             if (Math.Abs(horizontalInput) > horizontalInputRunningThreshold)
             {
-                newVelocity.x = Math.Sign(horizontalInput) * movementSpeed * flipGravityScale; // Set horizontalInput to max
+                targetVelocity.x = Math.Sign(horizontalInput) * movementSpeed * flipGravityScale; // Set horizontalInput to max
             }
             else
             {
-                newVelocity.x = horizontalInput * movementSpeed * flipGravityScale;
+                targetVelocity.x = horizontalInput * movementSpeed * flipGravityScale;
             }
         }
         else
         {
-            newVelocity.x = 0;
+            targetVelocity.x = 0;
             horizontalInput = Input.GetAxis("Horizontal");
         }
     }
