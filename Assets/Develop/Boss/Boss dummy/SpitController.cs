@@ -17,73 +17,83 @@ public class SpitController : MonoBehaviour
     private float angle;
     private Vector2 lastPos;
 
+    private bool firstFrame = true;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
         direction = target - (Vector2)transform.position;
         direction.Normalize();
         transform.localScale *= scale;
-
         rb.AddForce(direction * spitSpeed);
-
-        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
-    void FixedUpdate()
+    private void Update()
     {
         lastPos = transform.position;
         direction = rb.velocity;
         angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        if (!firstFrame)
+        {
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
+        firstFrame = false;
     }
 
-    // Detect collisions on stuffs
+    // Detect collisions
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.tag != "Boss")
+        // Handle player damage / knockback
+        if (col.tag == "Player")
         {
-            if (col.tag == "Player")
-            {
-                print("Hit Player!");
-            }
-            else if (col.tag == "Ground") 
-            {
-                Bounds bnd = col.bounds;
-
-                Vector2 closestPoint = bnd.ClosestPoint(lastPos);
-
-                GameObject goo = Instantiate(spitGooBot, closestPoint, Quaternion.identity);
-                goo.transform.localScale *= scale;
-                Destroy(gameObject);
-            }
-            else if (col.tag == "Roof")
-            {
-                Bounds bnd = col.bounds;
-
-                Vector2 closestPoint = bnd.ClosestPoint(lastPos);
-
-                GameObject goo = Instantiate(spitGooTop, closestPoint, Quaternion.identity);
-                goo.transform.localScale *= scale;
-                Destroy(gameObject);
-            }
-            else if (col.tag == "Wall")
-            {
-                Bounds bnd = col.bounds;
-
-                Vector2 closestPoint = bnd.ClosestPoint(lastPos);
-
-                GameObject goo = Instantiate(spitGooSide, closestPoint, Quaternion.identity);
-                goo.transform.localScale *= scale;
-                
-                if (lastPos.x > col.transform.position.x)
-                {
-                    goo.transform.localScale = new Vector3(goo.transform.localScale.x*-1, goo.transform.localScale.y, goo.transform.localScale.z);
-                }
-                Destroy(gameObject);
-            }
-
+            print("Hit Player!");
         }
+
+        /* HANDLES ROOM COLLISIOINS
+         * Spawns in different pools of accid depending on if
+        */
+        
+        // Handle ground collision
+        else if (col.tag == "Ground") 
+        {
+            Bounds bnd = col.bounds;
+
+            Vector2 closestPoint = bnd.ClosestPoint(lastPos);
+
+            GameObject goo = Instantiate(spitGooBot, closestPoint, Quaternion.identity);
+            goo.transform.localScale *= scale;
+            Destroy(gameObject);
+        }
+
+        // Handle roof collision
+        else if (col.tag == "Roof")
+        {
+            Bounds bnd = col.bounds;
+
+            Vector2 closestPoint = bnd.ClosestPoint(lastPos);
+
+            GameObject goo = Instantiate(spitGooTop, closestPoint, Quaternion.identity);
+            goo.transform.localScale *= scale;
+            Destroy(gameObject);
+        }
+
+        // Handle wall collision
+        else if (col.tag == "Wall")
+        {
+            // Finds the closes edge point on the collision.
+            Bounds bnd = col.bounds;
+            Vector2 closestPoint = bnd.ClosestPoint(lastPos);
+
+            GameObject goo = Instantiate(spitGooSide, closestPoint, Quaternion.identity);
+            goo.transform.localScale *= scale;
+                
+            if (lastPos.x > col.transform.position.x)
+            {
+                goo.transform.localScale = new Vector3(goo.transform.localScale.x*-1, goo.transform.localScale.y, goo.transform.localScale.z);
+            }
+            Destroy(gameObject);
+        }
+
+        
     }
 }

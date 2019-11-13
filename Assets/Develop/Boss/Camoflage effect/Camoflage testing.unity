@@ -444,7 +444,7 @@ MonoBehaviour:
   spawnPos: {fileID: 371681414}
   smallSpitSpeed: 1000
   bigSpitSpeed: 1500
-  angleVariationDeg: 90
+  angleVariationDeg: 20
 --- !u!61 &371681412
 BoxCollider2D:
   m_ObjectHideFlags: 0

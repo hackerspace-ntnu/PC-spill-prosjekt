@@ -122,7 +122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spitGooBot: {fileID: 5608285695979021865, guid: 3dc0b471034bef64c8f2fe96f89ae5cc,
     type: 3}
-  spitGooTop: {fileID: 247735233352953226, guid: 9886ee1e213323f43ab02a4144db990f,
+  spitGooTop: {fileID: 247735233352953226, guid: 92145edf7c972a847a10ff544ea25560,
     type: 3}
   spitGooSide: {fileID: 247735233352953226, guid: 9886ee1e213323f43ab02a4144db990f,
     type: 3}
