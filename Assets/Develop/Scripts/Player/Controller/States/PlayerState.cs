@@ -12,7 +12,8 @@ public abstract class PlayerState
     protected int flipGravityScale = 1;
     private float maxVelocityY = 12;
     private float maxVelocityFix;
-    protected float jumpSpeed = 13.5f;
+    protected float groundJumpSpeed = 13.5f;
+    protected float airJumpSpeed = 11.5f;
     protected float jumpTime;
 
     protected float horizontalInput; // input from controller in x-axis
@@ -43,19 +44,15 @@ public abstract class PlayerState
     public virtual void Update() {}
 
     public virtual void FixedUpdate() {
-
-        if(!runFixedUpdate) {
-            return;
-        }
-
         //rigidBody.AddForce(new Vector2(0, -rigidBody.velocity.y * rigidBody.mass * 2));
-        if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY || Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY) {
+        if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY || 
+            Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY) {
             maxVelocityFix = 0.8f;
         } else {
             maxVelocityFix = 1f;
         }
 
-        // decreases horizontal speed in air while falling ( I think?)
+        // decreases horizontal acceleration in air while input in opposite direction of velocity
         if (!grounded && Math.Sign(targetVelocity.x) != Math.Sign(rigidBody.velocity.x)) {
             targetVelocity.x *= 0.5f;
         }

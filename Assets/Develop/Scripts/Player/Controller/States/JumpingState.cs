@@ -11,13 +11,8 @@ public class JumpingState : PlayerState
 
     private float newGravityScale;
 
-    private float singleJumpScale = 1.0f;
-    private float doubleJumpScale = 0.8f;
-
     public override void Enter()
     {
-        Grounded = false;
-
         if(controller.GetPreviousState() == AirborneState.INSTANCE) {
             hasAirJumped = controller.GetPreviousState().getHasAirJumped();
             jumpTime = controller.GetPreviousState().getJumpTime();
@@ -25,10 +20,10 @@ public class JumpingState : PlayerState
             hasAirJumped = false;
         }
         
-        if(hasAirJumped) {
-            Jump(doubleJumpScale);
+        if(controller.GetPreviousState() == AirborneState.INSTANCE) {
+            AirJump();
         } else {
-            Jump(singleJumpScale);
+            GroundJump();
         }
     }
 
@@ -39,7 +34,7 @@ public class JumpingState : PlayerState
         if(Input.GetButtonDown("Jump")) {
             if(!hasAirJumped && Time.time >= jumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
                 hasAirJumped = true;
-                Jump(doubleJumpScale);
+                AirJump();
             }
         }
 
@@ -58,8 +53,18 @@ public class JumpingState : PlayerState
 
     }
 
-    private void Jump(float scale) {
-        targetVelocity.y = (jumpSpeed * scale + Math.Abs(rigidBody.velocity.y)) * flipGravityScale;
+    internal void GroundJump()
+    {
+        Grounded = false;
+
+        targetVelocity.y = groundJumpSpeed * flipGravityScale;
+        jumpTime = Time.time;
+    }
+
+    internal void AirJump()
+    {
+        hasAirJumped = true;
+        targetVelocity.y = (airJumpSpeed - rigidBody.velocity.y) * flipGravityScale;
         jumpTime = Time.time;
     }
 }

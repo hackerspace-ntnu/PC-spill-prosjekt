@@ -1578,11 +1578,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 738136620}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14a07d14067a30f4f8e21b3d318e4b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controller: {fileID: 955629973}
 --- !u!4 &738136623
 Transform:
   m_ObjectHideFlags: 0
@@ -1972,6 +1973,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentStateName: 
+  previousStateName: 
+  hasAirJumped: 0
 --- !u!114 &955629974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2139,7 +2142,7 @@ MonoBehaviour:
   m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 0}
+  m_Follow: {fileID: 2071688889}
   m_Lens:
     FieldOfView: 40
     OrthographicSize: 2.5
@@ -2237,11 +2240,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1395705939}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14a07d14067a30f4f8e21b3d318e4b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controller: {fileID: 955629973}
 --- !u!1 &1672261362
 GameObject:
   m_ObjectHideFlags: 0
@@ -2697,11 +2701,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1800619032}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14a07d14067a30f4f8e21b3d318e4b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controller: {fileID: 955629973}
 --- !u!4 &1800619035
 Transform:
   m_ObjectHideFlags: 0
