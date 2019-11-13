@@ -13,6 +13,8 @@ public class JumpingState : PlayerState
 
     public override void Enter()
     {
+        base.Enter();
+
         if(controller.GetPreviousState() == AirborneState.INSTANCE) {
             hasAirJumped = controller.GetPreviousState().getHasAirJumped();
             jumpTime = controller.GetPreviousState().getJumpTime();
@@ -29,9 +31,9 @@ public class JumpingState : PlayerState
 
     public override void Update()
     {
-        HandleHorizontalInput();
+        base.Update();
 
-        if(Input.GetButtonDown("Jump")) {
+        if (Input.GetButtonDown("Jump")) {
             if(!hasAirJumped && Time.time >= jumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
                 hasAirJumped = true;
                 AirJump();
@@ -42,6 +44,7 @@ public class JumpingState : PlayerState
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }
+
     }
 
     public override void FixedUpdate() {
@@ -50,7 +53,7 @@ public class JumpingState : PlayerState
 
     public override void Exit()
     {
-
+        base.Exit();
     }
 
     internal void GroundJump()

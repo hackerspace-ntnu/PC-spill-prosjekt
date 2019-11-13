@@ -26,4 +26,8 @@ public class IdleState : WalkingState
     public override void FixedUpdate() {
         base.FixedUpdate();
     }
+
+    public override void Exit() {
+        base.Exit();
+    }
 }

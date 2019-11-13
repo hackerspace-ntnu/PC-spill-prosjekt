@@ -20,7 +20,6 @@ public abstract class PlayerState
     protected Vector2 targetVelocity; // for setting velocity in FixedUpdate()
 
     private bool grounded = false;
-    private bool runFixedUpdate = true;
     protected bool hasAirJumped = false;
 
     protected PlayerController controller;
@@ -28,7 +27,6 @@ public abstract class PlayerState
 
     public abstract string Name { get; }
     public bool Grounded { get => grounded; set => grounded = value; }
-    public bool RunFixedUpdate { get => runFixedUpdate; set => runFixedUpdate = value; }
 
     public virtual void Init(PlayerController controller)
     {
@@ -37,11 +35,11 @@ public abstract class PlayerState
         rigidBody.gravityScale = baseGravityScale;
     }
 
-    public virtual void Enter() {
-        RunFixedUpdate = true;
-    }
+    public virtual void Enter() {}
 
-    public virtual void Update() {}
+    public virtual void Update() {
+        HandleHorizontalInput();
+    }
 
     public virtual void FixedUpdate() {
         //rigidBody.AddForce(new Vector2(0, -rigidBody.velocity.y * rigidBody.mass * 2));
@@ -64,9 +62,7 @@ public abstract class PlayerState
         targetVelocity = Vector2.zero;
     }
 
-    public virtual void Exit() {
-        RunFixedUpdate = false;
-    }
+    public virtual void Exit() {}
 
     protected void HandleHorizontalInput()
     {

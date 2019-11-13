@@ -14,12 +14,13 @@ public class WalkingState : PlayerState
     protected WalkingState() {}
 
     public override void Enter() {
+        base.Enter();
         hasAirJumped = false;
     }
 
     public override void Update()
     {
-        HandleHorizontalInput();
+        base.Update();
 
         if (Input.GetButtonDown("Jump"))
         {
@@ -36,5 +37,7 @@ public class WalkingState : PlayerState
         base.FixedUpdate();
     }
 
-    public override void Exit() {}
+    public override void Exit() {
+        base.Exit();
+    }
 }

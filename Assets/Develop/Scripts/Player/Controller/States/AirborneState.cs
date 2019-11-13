@@ -10,6 +10,8 @@ public class AirborneState : PlayerState
 
     public override void Enter()
     {
+        base.Enter();
+
         Grounded = false;
 
         if(controller.GetPreviousState() == JumpingState.INSTANCE) {
@@ -22,7 +24,7 @@ public class AirborneState : PlayerState
 
     public override void Update()
     {
-        HandleHorizontalInput();
+        base.Update();
 
         if (Grounded) {
             controller.ChangeState(IdleState.INSTANCE);
@@ -34,6 +36,7 @@ public class AirborneState : PlayerState
                 controller.ChangeState(JumpingState.INSTANCE);
             }
         }
+
     }
 
     public override void FixedUpdate() {
@@ -42,6 +45,6 @@ public class AirborneState : PlayerState
 
     public override void Exit()
     {
-
+        base.Exit();
     }
 }
