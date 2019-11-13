@@ -10,21 +10,38 @@ public class AirborneState : PlayerState
 
     public override void Enter()
     {
-        throw new System.NotImplementedException();
+        Grounded = false;
+
+        if(controller.GetPreviousState() == JumpingState.INSTANCE) {
+            hasAirJumped = controller.GetPreviousState().getHasAirJumped();
+            jumpTime = controller.GetPreviousState().getJumpTime();
+        } else {
+            hasAirJumped = false;
+        }
     }
 
     public override void Update()
     {
+        HandleHorizontalInput();
 
+        if (Grounded) {
+            controller.ChangeState(IdleState.INSTANCE);
+        }
+
+        if (Input.GetButtonDown("Jump")) {
+            if (!hasAirJumped && Time.time >= jumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
+                hasAirJumped = true;
+                controller.ChangeState(JumpingState.INSTANCE);
+            }
+        }
     }
 
-    public override void FixedUpdate()
-    {
-
+    public override void FixedUpdate() {
+        base.FixedUpdate();
     }
 
     public override void Exit()
     {
-        throw new System.NotImplementedException();
+
     }
 }

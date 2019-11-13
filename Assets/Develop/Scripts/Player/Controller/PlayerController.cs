@@ -6,10 +6,16 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private PlayerState currentState;
+    private PlayerState previousState;
     [SerializeField] private string currentStateName;
+    [SerializeField] private string previousStateName;
+    [SerializeField] private bool hasAirJumped;
 
     public void ChangeState(PlayerState newState)
     {
+        previousState = currentState;
+        previousStateName = currentState.Name;
+
         currentState.Exit();
         currentState = newState;
         currentStateName = newState.Name;
@@ -20,6 +26,7 @@ public class PlayerController : MonoBehaviour
     {
         currentState = IdleState.INSTANCE;
         currentStateName = currentState.Name;
+        previousState = IdleState.INSTANCE;
     }
 
     void Start()
@@ -33,15 +40,24 @@ public class PlayerController : MonoBehaviour
         KnockbackState.INSTANCE.Init(this);
         WalkingState.INSTANCE.Init(this);
         WallClingingState.INSTANCE.Init(this);
+        ChangeState(IdleState.INSTANCE);
     }
 
     void Update()
     {
+        hasAirJumped = currentState.getHasAirJumped();
         currentState.Update();
     }
 
     void FixedUpdate()
     {
         currentState.FixedUpdate();
+    }
+
+    public PlayerState GetCurrentState() {
+        return currentState;
+    } 
+    public PlayerState GetPreviousState() {
+        return previousState;
     }
 }

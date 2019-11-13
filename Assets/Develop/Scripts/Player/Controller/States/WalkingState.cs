@@ -8,54 +8,32 @@ public class WalkingState : PlayerState
     public static readonly WalkingState INSTANCE = new WalkingState();
 
     protected float idleSpeedThreshold = 0.1f;
-    private float maxVelocityY = 12;
-    private float maxVelocityFix;
-
-    private bool isGrounded;
-    private float newGravityScale; // for setting velocity in FixedUpdate()
 
     public override string Name => "WALKING";
 
     protected WalkingState() {}
 
-    public override void Enter() {}
+    public override void Enter() {
+        hasAirJumped = false;
+    }
 
     public override void Update()
     {
         HandleHorizontalInput();
 
-        if (Input.GetKeyDown("Jump"))
+        if (Input.GetButtonDown("Jump"))
         {
             controller.ChangeState(JumpingState.INSTANCE);
         }
-        else if (rigidBody.velocity.magnitude < idleSpeedThreshold)
+        else if (rigidBody.velocity.magnitude < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
             controller.ChangeState(IdleState.INSTANCE);
+        } else if (rigidBody.velocity.y * flipGravityScale < 0.0f) {
+            controller.ChangeState(AirborneState.INSTANCE);
+        }
     }
 
-    public override void FixedUpdate()
-    {
-        rigidBody.AddForce(new Vector2(0, -rigidBody.velocity.y * rigidBody.mass * 2));
-        if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY || Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY)
-        {
-            maxVelocityFix = 0.8f;
-        }
-
-        else
-        {
-            maxVelocityFix = 1f;
-        }
-
-        // decreases horizontal speed in air while falling ( I think?)
-        if (!isGrounded && Math.Sign(targetVelocity.x) != Math.Sign(rigidBody.velocity.x))
-        {
-            targetVelocity.x *= 0.5f;
-        }
-
-        float newVelocityX = targetVelocity.x - rigidBody.velocity.x;
-        float newVelocityY = targetVelocity.y - rigidBody.velocity.y * (1 - maxVelocityFix);
-
-        rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
-        targetVelocity.y = 0;
+    public override void FixedUpdate() {
+        base.FixedUpdate();
     }
 
     public override void Exit() {}

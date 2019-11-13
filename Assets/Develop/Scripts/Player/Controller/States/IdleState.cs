@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,11 +11,19 @@ public class IdleState : WalkingState
 
     private IdleState() {}
 
+    public override void Enter() {
+        base.Enter();
+    }
+
     public override void Update()
     {
         base.Update();
 
-        if (rigidBody.velocity.magnitude >= idleSpeedThreshold)
+        if (Math.Abs(rigidBody.velocity.x) >= idleSpeedThreshold)
             controller.ChangeState(WalkingState.INSTANCE);
+    }
+
+    public override void FixedUpdate() {
+        base.FixedUpdate();
     }
 }

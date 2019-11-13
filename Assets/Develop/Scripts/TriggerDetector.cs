@@ -4,35 +4,36 @@ using UnityEngine;
 
 public class TriggerDetector : MonoBehaviour
 {
-
-    private PlayerModel model;
+    [SerializeField]
+    private PlayerController controller;
 
     // Use this for initialization
     void Start()
     {
-        model = GameObject.Find("Models").GetComponent<PlayerModel>();
+        
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.GetComponent<Collider2D>().tag == "Standard")
         {
-            if (this.gameObject.name == "Ground Sensor")
+            if (this.gameObject.name == "Ground Trigger")
             {
-                model.MoveState = MovementStat.STANDARD;
+                controller.GetCurrentState().Grounded = true;
+                /*model.MoveState = MovementStat.STANDARD;
                 model.PlayerInAirState = InAirState.ON_GROUND;
                 model.WallTrigger = 0;
-                model.IsGrounded = true;
+                model.IsGrounded = true;*/
             }
 
 
             else if (this.gameObject.name == "Left Sensor")
             {
-                model.WallTrigger = 1;
+                //model.WallTrigger = 1;
             }
             else
             {
-                model.WallTrigger = -1;
+                //model.WallTrigger = -1;
             }
         }
     }
@@ -41,11 +42,11 @@ public class TriggerDetector : MonoBehaviour
     {
         if ((this.gameObject.name == "Ground Sensor"))
         {
-            model.IsGrounded = false;
+            //model.IsGrounded = false;
         }
         else
         {
-            model.WallTrigger = 0;
+            //model.WallTrigger = 0;
         }
     }
 }
