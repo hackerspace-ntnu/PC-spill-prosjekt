@@ -19,7 +19,7 @@ public class TriggerDetector : MonoBehaviour
         {
             if (this.gameObject.name == "Ground Trigger")
             {
-                controller.GetCurrentState().Grounded = true;
+                controller.Grounded = true;
                 /*model.MoveState = MovementStat.STANDARD;
                 model.PlayerInAirState = InAirState.ON_GROUND;
                 model.WallTrigger = 0;

@@ -15,18 +15,14 @@ public class WalkingState : PlayerState
 
     public override void Enter() {
         base.Enter();
-        hasAirJumped = false;
+        controller.HasAirJumped = false;
     }
 
     public override void Update()
     {
         base.Update();
 
-        if (Input.GetButtonDown("Jump"))
-        {
-            controller.ChangeState(JumpingState.INSTANCE);
-        }
-        else if (Math.Abs(rigidBody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
+        if (Math.Abs(rigidBody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
             controller.ChangeState(IdleState.INSTANCE);
         } else if (rigidBody.velocity.y * flipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
@@ -39,5 +35,9 @@ public class WalkingState : PlayerState
 
     public override void Exit() {
         base.Exit();
+    }
+
+    public override void Jump() {
+        controller.ChangeState(JumpingState.INSTANCE);
     }
 }

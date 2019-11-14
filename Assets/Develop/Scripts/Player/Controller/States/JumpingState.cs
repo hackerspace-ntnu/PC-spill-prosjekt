@@ -9,18 +9,9 @@ public class JumpingState : PlayerState
 
     public override string Name => "JUMPING";
 
-    private float newGravityScale;
-
     public override void Enter()
     {
         base.Enter();
-
-        if(controller.GetPreviousState() == AirborneState.INSTANCE) {
-            hasAirJumped = controller.GetPreviousState().getHasAirJumped();
-            jumpTime = controller.GetPreviousState().getJumpTime();
-        } else {
-            hasAirJumped = false;
-        }
         
         if(controller.GetPreviousState() == AirborneState.INSTANCE) {
             AirJump();
@@ -33,16 +24,13 @@ public class JumpingState : PlayerState
     {
         base.Update();
 
-        if (Input.GetButtonDown("Jump")) {
-            if(!hasAirJumped && Time.time >= jumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
-                hasAirJumped = true;
-                AirJump();
-            }
-        }
-
         if (rigidBody.velocity.y * flipGravityScale < 0.0f)
         {
             controller.ChangeState(AirborneState.INSTANCE);
+        }
+
+        if (controller.Grounded) {
+            controller.ChangeState(IdleState.INSTANCE);
         }
 
     }
@@ -56,18 +44,22 @@ public class JumpingState : PlayerState
         base.Exit();
     }
 
+    public override void Jump() {
+        AirJump();
+    }
+
     internal void GroundJump()
     {
-        Grounded = false;
+        controller.Grounded = false;
 
-        targetVelocity.y = groundJumpSpeed * flipGravityScale;
-        jumpTime = Time.time;
+        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, groundJumpSpeed * flipGravityScale);
+        controller.JumpTime = Time.time;
     }
 
     internal void AirJump()
     {
-        hasAirJumped = true;
-        targetVelocity.y = (airJumpSpeed - rigidBody.velocity.y) * flipGravityScale;
-        jumpTime = Time.time;
+        controller.HasAirJumped = true;
+        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, (airJumpSpeed - rigidBody.velocity.y) * flipGravityScale);
+        controller.JumpTime = Time.time;
     }
 }

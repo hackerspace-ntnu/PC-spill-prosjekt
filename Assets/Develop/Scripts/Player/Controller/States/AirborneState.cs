@@ -12,29 +12,15 @@ public class AirborneState : PlayerState
     {
         base.Enter();
 
-        Grounded = false;
-
-        if(controller.GetPreviousState() == JumpingState.INSTANCE) {
-            hasAirJumped = controller.GetPreviousState().getHasAirJumped();
-            jumpTime = controller.GetPreviousState().getJumpTime();
-        } else {
-            hasAirJumped = false;
-        }
+       controller.Grounded = false;
     }
 
     public override void Update()
     {
         base.Update();
 
-        if (Grounded) {
+        if (controller.Grounded) {
             controller.ChangeState(IdleState.INSTANCE);
-        }
-
-        if (Input.GetButtonDown("Jump")) {
-            if (!hasAirJumped && Time.time >= jumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
-                hasAirJumped = true;
-                controller.ChangeState(JumpingState.INSTANCE);
-            }
         }
 
     }
@@ -46,5 +32,9 @@ public class AirborneState : PlayerState
     public override void Exit()
     {
         base.Exit();
+    }
+
+    public override void Jump() {
+        controller.ChangeState(JumpingState.INSTANCE);
     }
 }
