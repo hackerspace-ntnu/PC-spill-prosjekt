@@ -20,13 +20,14 @@ public class WalkingState : PlayerState
 
     public override void Update()
     {
-        base.Update();
 
         if (Math.Abs(rigidBody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
             controller.ChangeState(IdleState.INSTANCE);
         } else if (rigidBody.velocity.y * flipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
         }
+
+        base.Update();
     }
 
     public override void FixedUpdate() {
@@ -39,5 +40,9 @@ public class WalkingState : PlayerState
 
     public override void Jump() {
         controller.ChangeState(JumpingState.INSTANCE);
+    }
+
+    public override void Crouch() {
+        controller.ChangeState(CrouchingState.INSTANCE);
     }
 }

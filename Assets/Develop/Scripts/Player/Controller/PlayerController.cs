@@ -5,23 +5,20 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    protected const float MINIMUM_TIME_BEFORE_AIR_JUMP = 0.1f;
+    private const float MINIMUM_TIME_BEFORE_AIR_JUMP = 0.1f;
 
     private PlayerState currentState;
     private PlayerState previousState;
     [SerializeField] private string currentStateName;
     [SerializeField] private string previousStateName;
     [SerializeField] private bool hasAirJumped = false;
-
-    private bool grounded = false;
-    private float jumpTime;
-
-    private Vector2 targetVelocity; // for setting velocity in FixedUpdate()
+    [SerializeField] private bool canUncrouch = false;
 
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
-    public bool Grounded { get => grounded; set => grounded = value; }
-    public float JumpTime { get => jumpTime; set => jumpTime = value; }
-    public Vector2 TargetVelocity { get => targetVelocity; set => targetVelocity = value; }
+    public bool Grounded { get; set; } = false;
+    public bool CanUncrouch { get => canUncrouch; set => canUncrouch = value; }
+    public float JumpTime { get; set; }
+    public Vector2 TargetVelocity { get; set; }
 
     public void ChangeState(PlayerState newState)
     {
@@ -32,13 +29,6 @@ public class PlayerController : MonoBehaviour
         currentState = newState;
         currentStateName = newState.Name;
         newState.Enter();
-    }
-
-    void Awake()
-    {
-        currentState = IdleState.INSTANCE;
-        currentStateName = currentState.Name;
-        previousState = IdleState.INSTANCE;
     }
 
     void Start()
@@ -54,6 +44,7 @@ public class PlayerController : MonoBehaviour
         WallClingingState.INSTANCE.Init(this);
         //If new states are added, remember to init them here.
 
+        currentState = IdleState.INSTANCE;
         ChangeState(IdleState.INSTANCE);
     }
 
@@ -72,6 +63,8 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetButtonDown("Jump") && !hasAirJumped && Time.time >= JumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
             currentState.Jump();
+        } else if(Input.GetButtonDown("Crouch")) {
+            currentState.Crouch();
         }
     }
 

@@ -8,6 +8,9 @@ TagManager:
   - Torch
   - Familiar
   - Standard
+  - ColliderFullHeigth
+  - ColliderCrouch
+  - CeilingDetector
   layers:
   - Default
   - TransparentFX

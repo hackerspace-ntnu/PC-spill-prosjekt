@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,15 +18,21 @@ public class AirborneState : PlayerState
 
     public override void Update()
     {
-        base.Update();
 
         if (controller.Grounded) {
             controller.ChangeState(IdleState.INSTANCE);
         }
 
+        base.Update();
+
     }
 
     public override void FixedUpdate() {
+        // decreases horizontal acceleration in air while input in opposite direction of velocity
+        if (Math.Sign(controller.TargetVelocity.x) != Math.Sign(rigidBody.velocity.x)) {
+            controller.TargetVelocity = new Vector2(controller.TargetVelocity.x * 0.5f, controller.TargetVelocity.y);
+        }
+
         base.FixedUpdate();
     }
 

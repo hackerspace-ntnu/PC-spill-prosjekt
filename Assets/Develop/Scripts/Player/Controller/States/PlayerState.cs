@@ -7,7 +7,7 @@ public abstract class PlayerState
 {
 
     public float baseGravityScale = 5; // base gravity affecting the player
-    public float movementSpeed = 7;
+    public float movementSpeed = 5;  // Orig value: 7
     protected int flipGravityScale = 1;
     private float maxVelocityY = 12;
     private float maxVelocityFix;
@@ -44,11 +44,6 @@ public abstract class PlayerState
             maxVelocityFix = 1f;
         }
 
-        // decreases horizontal acceleration in air while input in opposite direction of velocity
-        if (!controller.Grounded && Math.Sign(controller.TargetVelocity.x) != Math.Sign(rigidBody.velocity.x)) {
-            controller.TargetVelocity = new Vector2 (controller.TargetVelocity.x * 0.5f, controller.TargetVelocity.y);
-        }
-
         float newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
         float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * (1 - maxVelocityFix);
 
@@ -80,4 +75,6 @@ public abstract class PlayerState
     }
 
     public virtual void Jump() { }
+
+    public virtual void Crouch() { }
 }
