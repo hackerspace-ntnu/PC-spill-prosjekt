@@ -272,6 +272,7 @@ GameObject:
   - component: {fileID: 468422923}
   - component: {fileID: 468422925}
   - component: {fileID: 468422926}
+  - component: {fileID: 468422927}
   m_Layer: 0
   m_Name: Global
   m_TagString: Untagged
@@ -319,9 +320,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b6dce4728ec3814abe52dd670d03feb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  glitchSlider: {fileID: 0}
-  glitchText: {fileID: 0}
   glitchMask: {fileID: 587486870}
+  glitchMeter: {fileID: 32507911}
+  globalScript: {fileID: 468422927}
 --- !u!114 &468422926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,6 +339,19 @@ MonoBehaviour:
   mainCam: {fileID: 519420031}
   glitchBg: {fileID: 1814279864}
   glitchCam: {fileID: 1345552737}
+--- !u!114 &468422927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 468422922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cac0b0184505d5e45b11b6ed4a4f1004, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  glitchActive: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -948,6 +962,7 @@ MonoBehaviour:
   ghostActive: 0
   spriteLoad: {fileID: 468422923}
   enemyMovement: {fileID: 1949316153}
+  globalScript: {fileID: 468422927}
   camScript: {fileID: 519420030}
   lagTimer: {fileID: 353439699}
   gObscuring: {fileID: 468422925}
