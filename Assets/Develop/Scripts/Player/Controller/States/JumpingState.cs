@@ -13,22 +13,19 @@ public class JumpingState : PlayerState
     {
         rigidBody.gravityScale = JUMPING_GRAVITY_SCALE;
         PlayerState prevInstance = controller.GetPreviousState();
-        hasAirJumped = false;
         //Since all other logic is tested in these states, this if/else is all we need
-        if (prevInstance == AirborneState.INSTANCE) {
+        if (prevInstance == AirborneState.INSTANCE && !controller.HasAirJumped) {
             AirJump();
         } else if (prevInstance == WallClingingState.INSTANCE) {
             WallJump();
-            jumpTime = WallClingingState.INSTANCE.getJumpTime();
         } else {
             GroundJump();
-            jumpTime = AirborneState.INSTANCE.getJumpTime();
         }
     }
 
     public override void Update()
     {
-        else if (wallTrigger != 0)
+        if (controller.WallTrigger != 0)
         {
             controller.ChangeState(WallClingingState.INSTANCE);
         }
@@ -80,8 +77,8 @@ public class JumpingState : PlayerState
     internal void WallJump()
     {
         if (Math.Abs(horizontalInput) >= 0.3)
-            targetVelocity = new Vector2(wallTrigger * dashSpeed * 1.5f, airJumpSpeed - rigidBody.velocity.y) * flipGravityScale * 10f;
+            controller.TargetVelocity = new Vector2(controller.WallTrigger * dashSpeed * 1.5f, airJumpSpeed - rigidBody.velocity.y) * flipGravityScale;
         else
-            targetVelocity = new Vector2(wallTrigger * movementSpeed * 1.5f, groundJumpSpeed - rigidBody.velocity.y) * flipGravityScale * 10f;
+            controller.TargetVelocity = new Vector2(controller.WallTrigger * movementSpeed * 1.5f, groundJumpSpeed - rigidBody.velocity.y) * flipGravityScale;
     }
 }

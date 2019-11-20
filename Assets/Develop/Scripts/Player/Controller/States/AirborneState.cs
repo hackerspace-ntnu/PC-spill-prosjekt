@@ -12,8 +12,6 @@ public class AirborneState : PlayerState
     public override void Enter()
     {
         base.Enter();
-
-       controller.Grounded = false;
     }
 
     public override void Update()
@@ -22,11 +20,12 @@ public class AirborneState : PlayerState
         if (controller.Grounded) {
             controller.ChangeState(IdleState.INSTANCE);
         }
-        else if (wallTrigger != 0)
-        base.Update();
-
+        else if (controller.WallTrigger != 0)
+        {
+            controller.ChangeState(WallClingingState.INSTANCE);
         }
-        else if (Input.GetButtonDown("Jump")) {
+
+        base.Update();
     }
 
     public override void FixedUpdate() {

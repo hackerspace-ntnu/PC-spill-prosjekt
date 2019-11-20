@@ -16,7 +16,6 @@ public abstract class PlayerState
     private float maxVelocityFix;
     protected float groundJumpSpeed = 13.5f;
     protected float airJumpSpeed = 11.5f;
-    protected int wallTrigger;
 
     protected float horizontalInput; // input from controller in x-axis
     
@@ -26,7 +25,6 @@ public abstract class PlayerState
     protected Rigidbody2D rigidBody;
 
     public abstract string Name { get; }
-    public int WallTrigger { get => wallTrigger; set => wallTrigger = value; }
 
     public virtual void Init(PlayerController controller)
     {
@@ -51,8 +49,7 @@ public abstract class PlayerState
         }
 
         float newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
-        float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * (1 - maxVelocityFix);
-        float newVelocityY = targetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
+        float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
 
         rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
         controller.TargetVelocity = Vector2.zero;

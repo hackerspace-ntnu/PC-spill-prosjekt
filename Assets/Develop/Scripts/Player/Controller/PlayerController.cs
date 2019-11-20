@@ -12,11 +12,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private string currentStateName;
     [SerializeField] private string previousStateName;
     [SerializeField] private bool hasAirJumped = false;
+    [SerializeField] private bool hasDashed = false;
     [SerializeField] private bool canUncrouch = false;
+    [SerializeField] private int wallTrigger = 0;
 
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
+    public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;
     public bool CanUncrouch { get => canUncrouch; set => canUncrouch = value; }
+    public int WallTrigger { get => wallTrigger; set => wallTrigger = value; }
     public float JumpTime { get; set; }
     public Vector2 TargetVelocity { get; set; }
 

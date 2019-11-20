@@ -21,12 +21,14 @@ public class WallClingingState : PlayerState
         if (rigidBody.velocity.y * flipGravityScale <= 0)
             rigidBody.gravityScale = WALL_SLIDE_GRAVITY_SCALE * flipGravityScale;
 
+        // if dashinput, Dash
+
         if (Input.GetButtonDown("Jump"))
         {
             //rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
-            jumpTime = Time.time;
-            hasDashed = false;
-            hasAirJumped = false;
+            controller.JumpTime= Time.time;
+            controller.HasDashed = false;
+            controller.HasAirJumped = false;
             controller.ChangeState(JumpingState.INSTANCE);
         }
         else
@@ -35,11 +37,11 @@ public class WallClingingState : PlayerState
            //maxVelocityY = 2f;
         }
 
-        if (Grounded)
+        if (controller.Grounded)
         {
             controller.ChangeState(IdleState.INSTANCE);
         }
-        else if (wallTrigger == 0)
+        else if (controller.WallTrigger == 0)
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }
