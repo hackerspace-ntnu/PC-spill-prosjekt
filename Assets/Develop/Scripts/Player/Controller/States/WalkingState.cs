@@ -15,6 +15,7 @@ public class WalkingState : PlayerState
 
     public override void Enter() {
         hasAirJumped = false;
+        hasDashed = false;
     }
 
     public override void Update()

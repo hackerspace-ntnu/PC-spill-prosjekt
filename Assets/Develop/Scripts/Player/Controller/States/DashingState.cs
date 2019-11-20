@@ -16,6 +16,10 @@ public class DashingState : PlayerState
     public override void Update()
     {
 
+        if (wallTrigger != 0)
+        {
+            controller.ChangeState(WallClingingState.INSTANCE);
+        }
     }
 
     public override void FixedUpdate()

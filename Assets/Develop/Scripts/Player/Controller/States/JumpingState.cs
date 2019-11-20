@@ -9,21 +9,20 @@ public class JumpingState : PlayerState
 
     public override string Name => "JUMPING";
 
-    private float newGravityScale;
-
     public override void Enter()
     {
-        if(controller.GetPreviousState() == AirborneState.INSTANCE) {
-            hasAirJumped = controller.GetPreviousState().getHasAirJumped();
-            jumpTime = controller.GetPreviousState().getJumpTime();
-        } else {
-            hasAirJumped = false;
-        }
-        
-        if(controller.GetPreviousState() == AirborneState.INSTANCE) {
+        rigidBody.gravityScale = JUMPING_GRAVITY_SCALE;
+        PlayerState prevInstance = controller.GetPreviousState();
+        hasAirJumped = false;
+        //Since all other logic is tested in these states, this if/else is all we need
+        if (prevInstance == AirborneState.INSTANCE) {
             AirJump();
+        } else if (prevInstance == WallClingingState.INSTANCE) {
+            WallJump();
+            jumpTime = WallClingingState.INSTANCE.getJumpTime();
         } else {
             GroundJump();
+            jumpTime = AirborneState.INSTANCE.getJumpTime();
         }
     }
 
@@ -33,12 +32,14 @@ public class JumpingState : PlayerState
 
         if(Input.GetButtonDown("Jump")) {
             if(!hasAirJumped && Time.time >= jumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
-                hasAirJumped = true;
                 AirJump();
             }
         }
-
-        if (rigidBody.velocity.y * flipGravityScale < 0.0f)
+        else if (wallTrigger != 0)
+        {
+            controller.ChangeState(WallClingingState.INSTANCE);
+        }
+        else if (rigidBody.velocity.y * flipGravityScale < 0.0f)
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }
@@ -50,7 +51,7 @@ public class JumpingState : PlayerState
 
     public override void Exit()
     {
-
+        rigidBody.gravityScale = baseGravityScale;
     }
 
     internal void GroundJump()
@@ -66,5 +67,13 @@ public class JumpingState : PlayerState
         hasAirJumped = true;
         targetVelocity.y = (airJumpSpeed - rigidBody.velocity.y) * flipGravityScale;
         jumpTime = Time.time;
+    }
+
+    internal void WallJump()
+    {
+        if (Math.Abs(horizontalInput) >= 0.3)
+            targetVelocity = new Vector2(wallTrigger * dashSpeed * 1.5f, airJumpSpeed - rigidBody.velocity.y) * flipGravityScale * 10f;
+        else
+            targetVelocity = new Vector2(wallTrigger * movementSpeed * 1.5f, groundJumpSpeed - rigidBody.velocity.y) * flipGravityScale * 10f;
     }
 }

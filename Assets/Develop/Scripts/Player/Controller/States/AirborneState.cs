@@ -27,8 +27,11 @@ public class AirborneState : PlayerState
         if (Grounded) {
             controller.ChangeState(IdleState.INSTANCE);
         }
-
-        if (Input.GetButtonDown("Jump")) {
+        else if (wallTrigger != 0)
+        {
+            controller.ChangeState(WallClingingState.INSTANCE);
+        }
+        else if (Input.GetButtonDown("Jump")) {
             if (!hasAirJumped && Time.time >= jumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
                 hasAirJumped = true;
                 controller.ChangeState(JumpingState.INSTANCE);

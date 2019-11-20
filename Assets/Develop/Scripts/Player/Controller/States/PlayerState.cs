@@ -6,15 +6,19 @@ using UnityEngine;
 public abstract class PlayerState
 {
     protected const float MINIMUM_TIME_BEFORE_AIR_JUMP = 0.1f;
+    protected const float JUMPING_GRAVITY_SCALE = 4f;
+    protected const float WALL_SLIDE_GRAVITY_SCALE = 1f;
 
     public float baseGravityScale = 5; // base gravity affecting the player
-    public float movementSpeed = 7;
+    public float movementSpeed = 6;
+    protected float dashSpeed = 12;
     protected int flipGravityScale = 1;
     private float maxVelocityY = 12;
     private float maxVelocityFix;
     protected float groundJumpSpeed = 13.5f;
     protected float airJumpSpeed = 11.5f;
     protected float jumpTime;
+    protected int wallTrigger;
 
     protected float horizontalInput; // input from controller in x-axis
     protected Vector2 targetVelocity; // for setting velocity in FixedUpdate()
@@ -22,6 +26,7 @@ public abstract class PlayerState
     private bool grounded = false;
     private bool runFixedUpdate = true;
     protected bool hasAirJumped = false;
+    protected bool hasDashed = false;
 
     protected PlayerController controller;
     protected Rigidbody2D rigidBody;
@@ -29,6 +34,7 @@ public abstract class PlayerState
     public abstract string Name { get; }
     public bool Grounded { get => grounded; set => grounded = value; }
     public bool RunFixedUpdate { get => runFixedUpdate; set => runFixedUpdate = value; }
+    public int WallTrigger { get => wallTrigger; set => wallTrigger = value; }
 
     public virtual void Init(PlayerController controller)
     {
@@ -47,9 +53,9 @@ public abstract class PlayerState
         //rigidBody.AddForce(new Vector2(0, -rigidBody.velocity.y * rigidBody.mass * 2));
         if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY || 
             Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY) {
-            maxVelocityFix = 0.8f;
+            maxVelocityFix = 0.2f;
         } else {
-            maxVelocityFix = 1f;
+            maxVelocityFix = 0f;
         }
 
         // decreases horizontal acceleration in air while input in opposite direction of velocity
@@ -58,10 +64,10 @@ public abstract class PlayerState
         }
 
         float newVelocityX = targetVelocity.x - rigidBody.velocity.x;
-        float newVelocityY = targetVelocity.y - rigidBody.velocity.y * (1 - maxVelocityFix);
+        float newVelocityY = targetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
 
         rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
-        targetVelocity = Vector2.zero;
+        targetVelocity.y = 0;
     }
 
     public virtual void Exit() {
