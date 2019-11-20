@@ -28,6 +28,27 @@ public class SuperbasicMovement : MonoBehaviour
         else if (Input.GetKey(KeyCode.D))
         {
             rb.AddForce(new Vector2(force, 0));
+        } else if (Input.GetKey(KeyCode.LeftArrow)) // Dash
+        {
+            StartCoroutine(Dash("left"));
+
+        } else if (Input.GetKey(KeyCode.RightArrow)) // Dash
+        {
+            StartCoroutine(Dash("right"));
         }
+    }
+    IEnumerator Dash(string dir)
+    {
+        this.gameObject.layer = 10; // makes it so that the player can go through secret walls
+        if(dir == "right")
+        {
+            rb.AddForce(new Vector2(force * 10, force));
+        } else
+        {
+            rb.AddForce(new Vector2(-force * 10, force));
+        }
+        yield return new WaitForSeconds(0.15f);
+        this.gameObject.layer = 8; // player can no longer go through secret walls
+        rb.velocity /= 10;
     }
 }

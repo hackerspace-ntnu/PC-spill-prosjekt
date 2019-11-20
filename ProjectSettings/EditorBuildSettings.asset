@@ -8,4 +8,13 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Develop/Scenes/Main Menu.unity
+    guid: 375e337d6a9214c4a9bede037e193352
+  - enabled: 1
+    path: Assets/Develop/Scenes/LagGlitch.unity
+    guid: a66cacecb0175054a9d9854da169079d
+  - enabled: 1
+    path: Assets/Develop/Scenes/AleksanderScene.unity
+    guid: a7a42cf876b93434aa971b08408a1c6d
   m_configObjects: {}
