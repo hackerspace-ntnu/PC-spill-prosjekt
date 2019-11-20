@@ -7,22 +7,29 @@ public class TriggerDetector : MonoBehaviour
     [SerializeField]
     private PlayerController controller;
 
+    private int CeilingCount = 0;   // Keep track of number of objects above player when crouching.
+
     // Use this for initialization
     void Start()
     {
         controller = transform.parent.GetComponent<PlayerController>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.GetComponent<Collider2D>().tag == "Standard" && this.gameObject.tag == "CeilingDetector") {
+            CeilingCount++;
+            controller.CanUncrouch = false;
+        }
+
+    }
+
     {
         if (collision.GetComponent<Collider2D>().tag == "Standard")
         {
             if (this.gameObject.name == "Ground Trigger")
             {
-                controller.GetCurrentState().Grounded = true;
+                controller.Grounded = true;
             }
-
-
             else if (this.gameObject.name == "Wall Trigger Left")
             {
                 controller.GetCurrentState().WallTrigger = 1;
@@ -35,9 +42,16 @@ public class TriggerDetector : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D col)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        if (this.gameObject.name == "Ground Trigger")
+        if(collision.GetComponent<Collider2D>().tag == "Standard" && this.gameObject.tag == "CeilingDetector") {
+            CeilingCount--;
+
+            if(CeilingCount <= 0) {
+                controller.CanUncrouch = true;
+            }
+        }
+
         {
             controller.GetCurrentState().Grounded = true;
         }

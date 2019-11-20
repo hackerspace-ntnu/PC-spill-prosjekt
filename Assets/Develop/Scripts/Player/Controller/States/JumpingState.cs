@@ -28,13 +28,6 @@ public class JumpingState : PlayerState
 
     public override void Update()
     {
-        HandleHorizontalInput();
-
-        if(Input.GetButtonDown("Jump")) {
-            if(!hasAirJumped && Time.time >= jumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
-                AirJump();
-            }
-        }
         else if (wallTrigger != 0)
         {
             controller.ChangeState(WallClingingState.INSTANCE);
@@ -43,9 +36,21 @@ public class JumpingState : PlayerState
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }
+
+        if (controller.Grounded) {
+            controller.ChangeState(IdleState.INSTANCE);
+        }
+
+        base.Update();
+
     }
 
     public override void FixedUpdate() {
+        // decreases horizontal acceleration in air while input in opposite direction of velocity
+        if (Math.Sign(controller.TargetVelocity.x) != Math.Sign(rigidBody.velocity.x)) {
+            controller.TargetVelocity = new Vector2(controller.TargetVelocity.x * 0.5f, controller.TargetVelocity.y);
+        }
+
         base.FixedUpdate();
     }
 
@@ -53,20 +58,23 @@ public class JumpingState : PlayerState
     {
         rigidBody.gravityScale = baseGravityScale;
     }
+    public override void Jump() {
+        AirJump();
+    }
 
     internal void GroundJump()
     {
-        Grounded = false;
+        controller.Grounded = false;
 
-        targetVelocity.y = groundJumpSpeed * flipGravityScale;
-        jumpTime = Time.time;
+        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, groundJumpSpeed * flipGravityScale);
+        controller.JumpTime = Time.time;
     }
 
     internal void AirJump()
     {
-        hasAirJumped = true;
-        targetVelocity.y = (airJumpSpeed - rigidBody.velocity.y) * flipGravityScale;
-        jumpTime = Time.time;
+        controller.HasAirJumped = true;
+        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, (airJumpSpeed - rigidBody.velocity.y) * flipGravityScale);
+        controller.JumpTime = Time.time;
     }
 
     internal void WallJump()

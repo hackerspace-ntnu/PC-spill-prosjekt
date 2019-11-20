@@ -14,28 +14,35 @@ public class WalkingState : PlayerState
     protected WalkingState() {}
 
     public override void Enter() {
-        hasAirJumped = false;
-        hasDashed = false;
+        base.Enter();
+        controller.HasAirJumped = false;
     }
 
     public override void Update()
     {
-        HandleHorizontalInput();
 
-        if (Input.GetButtonDown("Jump"))
-        {
-            controller.ChangeState(JumpingState.INSTANCE);
-        }
-        else if (Math.Abs(rigidBody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
+        if (Math.Abs(rigidBody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
             controller.ChangeState(IdleState.INSTANCE);
         } else if (rigidBody.velocity.y * flipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
         }
+
+        base.Update();
     }
 
     public override void FixedUpdate() {
         base.FixedUpdate();
     }
 
-    public override void Exit() {}
+    public override void Exit() {
+        base.Exit();
+    }
+
+    public override void Jump() {
+        controller.ChangeState(JumpingState.INSTANCE);
+    }
+
+    public override void Crouch() {
+        controller.ChangeState(CrouchingState.INSTANCE);
+    }
 }
