@@ -40,18 +40,16 @@ public class SpitController : MonoBehaviour
         firstFrame = false;
     }
 
-    // Detect collisions
+    // Handle collisions with different objects
     private void OnTriggerEnter2D(Collider2D col)
     {
-        // Handle player damage / knockback
+        // Handle player damage / knockback / glitchmeter
         if (col.tag == "Player")
         {
             print("Hit Player!");
         }
 
-        /* HANDLES ROOM COLLISIOINS
-         * Spawns in different pools of accid depending on if
-        */
+        // HANDLES ROOM COLLISIOINS. SPAWNS ACID POOLS
         
         // Handle ground collision
         else if (col.tag == "Ground") 

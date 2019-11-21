@@ -4,13 +4,22 @@ using UnityEngine;
 
 public class BossSpit : MonoBehaviour
 {
-    public GameObject spitPref;
+    public GameObject spitPref; 
     public Transform spawnPos;
-
-    public float smallSpitSpeed = 1000.0f;
+    public Transform player;
+    [Space(10)]
+    public float chargeUp = 1f;
+    public float bigSpitAmmount = 3f;
+    public float bigSpitSize = 2f;
     public float bigSpitSpeed = 1500.0f;
+    public float waitAfterBig = 0.5f;
+    [Space(10)]
+    public float smallSpitAmmount = 3f;
+    public float smallSpitSize = 1f;
+    public float smallSpitSpeed = 1000.0f;
+    public float angleVariationDeg = 20f;
+    public float waitAfterSmall = 0.15f;
 
-    public float angleVariationDeg = 20;
 
     // Update is called once per frame
     void Update()
@@ -21,62 +30,62 @@ public class BossSpit : MonoBehaviour
         }
     }
 
+
+    // This is an IEnumerator that spawns spits glitch acid with intervals
     IEnumerator EasySpit()
     {
-        /* This is a timed event where the boss first shoots a large spit, then three smaller spits in slightly different angles. 
-         * 
-         * 
-         * 
-        */
+        // Variables for local calculations
+        float smallSpits = smallSpitAmmount;
+        float bigSpits = bigSpitAmmount;
+        float angleVariationRad = Mathf.Deg2Rad * angleVariationDeg;
+        Vector2 target;
+        float side;
+        float targetAngle;
+        float randomAngle;
+        Vector2 newTarget;
 
-        // This should be player later
-        Vector2 target = (Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position)).normalized * 20;
+        // Charging up
+        yield return new WaitForSeconds(chargeUp);
 
-        float side = 1;
-        if (target.x <= 0)
+        // Big spits are shot towards the player. Shoots a set ammount of projectiles towards player with a set size and speed, and on a set interval.
+        while (bigSpits > 0)
         {
-            side *= -1;
+            // Calculates the target
+            target = ((Vector2)player.position - (Vector2)transform.position).normalized * 20;
+
+            // Spawns the projectile
+            SpawnSpitBullet(
+                bigSpitSize,
+                bigSpitSpeed,
+                target);
+            // Wait
+            yield return new WaitForSeconds(waitAfterBig);
+
+            bigSpits -= 1;
         }
 
-        // Calculations for new target to hit, via angle variation and random angle difference
-        float targetAngle = Mathf.Atan(target.y / target.x);
-        float angleVariationRad = Mathf.Deg2Rad * angleVariationDeg;
-        float randomAngle = Random.Range(-angleVariationRad, angleVariationRad);
-        Vector2 newTarget = new Vector2(Mathf.Cos(targetAngle + randomAngle) * 20 * side, Mathf.Sin(targetAngle + randomAngle) * 20 * side);
+        // Small spits have a new target that is the player target with a random new angle variation, otherwise works the same as the big projetile, 
+        // but with its own variables.
+        while (smallSpits > 0)
+        {
+            // Calculates the new target
+            target = ((Vector2)player.position - (Vector2)transform.position).normalized * 20;
+            if (target.x <= 0) side = -1;
+            else side = 1;
+            targetAngle = Mathf.Atan(target.y / target.x);
+            randomAngle = Random.Range(-angleVariationRad, angleVariationRad);
+            newTarget = new Vector2(Mathf.Cos(targetAngle + randomAngle) * 20 * side, Mathf.Sin(targetAngle + randomAngle) * 20 * side);
 
-        SpawnSpitBullet(
-            2.0f, 
-            bigSpitSpeed,
-            // This should be the player
-            target);
-        yield return new WaitForSeconds(0.5f);
+            // Spawns the projectile
+            SpawnSpitBullet(
+                smallSpitSize,
+                smallSpitSpeed,
+                newTarget);
+            // Wait
+            yield return new WaitForSeconds(waitAfterSmall);
 
-        SpawnSpitBullet(
-            1.0f,
-            smallSpitSpeed,
-            // This should be player + angle
-            newTarget);
-        yield return new WaitForSeconds(0.15f);
-
-        randomAngle = Random.Range(-angleVariationRad, angleVariationRad);
-        newTarget = new Vector2(Mathf.Cos(targetAngle + randomAngle) * 20 * side, Mathf.Sin(targetAngle + randomAngle) * 20 * side);
-
-        SpawnSpitBullet(
-            1.0f, 
-            smallSpitSpeed,
-            // This should be player + angle
-            newTarget);
-        yield return new WaitForSeconds(0.15f);
-
-        randomAngle = Random.Range(-angleVariationRad, angleVariationRad);
-        newTarget = new Vector2(Mathf.Cos(targetAngle + randomAngle) * 20 * side, Mathf.Sin(targetAngle + randomAngle) * 20 * side);
-
-        SpawnSpitBullet(
-            1.0f, 
-            smallSpitSpeed,
-            // This should be player + angle
-            newTarget);
-        yield return null;
+            smallSpits -= 1;
+        }
     }
 
     void SpawnSpitBullet(float scale, float speed, Vector2 target)

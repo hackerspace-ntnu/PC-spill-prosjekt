@@ -219,7 +219,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &114568825
 GameObject:
@@ -420,6 +420,7 @@ GameObject:
   - component: {fileID: 371681416}
   - component: {fileID: 371681415}
   - component: {fileID: 371681411}
+  - component: {fileID: 371681417}
   m_Layer: 0
   m_Name: boss_dummy
   m_TagString: Boss
@@ -442,9 +443,17 @@ MonoBehaviour:
   spitPref: {fileID: 4125516658142558423, guid: cd3b0ccb63930b24a8f18582c15d1672,
     type: 3}
   spawnPos: {fileID: 371681414}
-  smallSpitSpeed: 1000
+  player: {fileID: 2134826530}
+  chargeUp: 1
+  bigSpitAmmount: 3
+  bigSpitSize: 2
   bigSpitSpeed: 1500
+  waitAfterBig: 0.5
+  smallSpitAmmount: 3
+  smallSpitSize: 1
+  smallSpitSpeed: 1000
   angleVariationDeg: 20
+  waitAfterSmall: 0.15
 --- !u!61 &371681412
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -458,18 +467,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.25, y: 1.5}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
-    border: {x: 0.099999994, y: 0.099999994, z: 0.39999998, w: 0.29999998}
-    pivot: {x: 0.54545456, y: 0.029411765}
-    oldSize: {x: 2.2, y: 3.4}
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
     newSize: {x: 2.2, y: 3.4}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.7, y: 3}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!212 &371681413
 SpriteRenderer:
@@ -508,7 +517,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: 21300000, guid: c4a9b1660e07ba54da079a8ac9f9e68c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 16ce62a614c63de449aeaf218e3e0c3b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -531,7 +540,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &371681415
 MonoBehaviour:
@@ -561,6 +570,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 405db8c0b99d4ff44965561e32fb926f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &371681417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371681410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30eccc7685cf6bf4ba9811b68e80c26b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathLength: 5
+  timeSteps: 20
+  numberOfCheckpoints: 20
 --- !u!1 &821845856
 GameObject:
   m_ObjectHideFlags: 0
@@ -1151,7 +1175,7 @@ Transform:
   m_LocalScale: {x: 3, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1804507940
 BoxCollider2D:
@@ -1630,5 +1654,5 @@ Transform:
   m_LocalScale: {x: 3, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
