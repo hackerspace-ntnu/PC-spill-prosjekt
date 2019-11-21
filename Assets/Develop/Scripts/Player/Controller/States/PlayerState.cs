@@ -9,7 +9,7 @@ public abstract class PlayerState
     protected const float WALL_SLIDE_GRAVITY_SCALE = 1f;
 
     public float baseGravityScale = 5; // base gravity affecting the player
-    public float movementSpeed = 5;  // Orig value: 7
+    public float movementSpeed = 6;  // Orig value: 7
     protected float dashSpeed = 12;
     protected int flipGravityScale = 1;
     private float maxVelocityY = 12;
@@ -40,6 +40,7 @@ public abstract class PlayerState
     }
 
     public virtual void FixedUpdate() {
+        float newVelocityX;
 
         if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY || 
             Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY) {
@@ -48,7 +49,14 @@ public abstract class PlayerState
             maxVelocityFix = 0f;
         }
 
-        float newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
+        if (controller.Grounded || Math.Sign(horizontalInput) == Math.Sign(rigidBody.velocity.x) )
+        {
+            newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
+        }
+        else
+        {
+            newVelocityX = controller.TargetVelocity.x;
+        }
         float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
 
         rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
