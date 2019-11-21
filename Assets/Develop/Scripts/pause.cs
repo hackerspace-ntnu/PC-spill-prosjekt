@@ -30,7 +30,7 @@ public class pause : MonoBehaviour {
 
     private void pauseGame()
     {
-        if (GetComponent<crouchReplacer>().isCrouching)
+        if (GetComponent<PlayerController>().GetCurrentState() == CrouchingState.INSTANCE)
         {
             GetComponent<wallClip>().clip = true;
         }

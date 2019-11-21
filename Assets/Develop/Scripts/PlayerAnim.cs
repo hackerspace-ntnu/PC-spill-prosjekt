@@ -6,8 +6,6 @@ public class PlayerAnim : MonoBehaviour {
 
     private Animator anim;
     private Rigidbody2D body;
-    private PlayerModel playerMovement;
-    private HorizontalDirectionController horizontalDirectionController;
     private SpriteRenderer spriteRenderer;
     private Vector2 rigidBodyVelocity;
 
@@ -21,7 +19,7 @@ public class PlayerAnim : MonoBehaviour {
 
     private void Start()
     {
-        horizontalDirectionController = GameObject.Find("Controllers").GetComponent<HorizontalDirectionController>();
+        /*horizontalDirectionController = GameObject.Find("Controllers").GetComponent<HorizontalDirectionController>();
         anim = GetComponent<Animator>();
         playerMovement = GameObject.Find("Models").GetComponent<PlayerModel>();
         spriteRenderer = GameObject.Find("View").GetComponent<SpriteRenderer>();
@@ -29,12 +27,12 @@ public class PlayerAnim : MonoBehaviour {
         if (spriteRenderer.flipX)
             playerMovement.SpriteDirection = -1;
         else
-            playerMovement.SpriteDirection = 1;
+            playerMovement.SpriteDirection = 1;*/
     }
 
     private void Update()
     {
-        isGrounded = playerMovement.IsGrounded;
+        /*isGrounded = playerMovement.IsGrounded;
         moveHorizontal = horizontalDirectionController.LastInput;
         wallTrigger = playerMovement.WallTrigger;
         playerState = (int)playerMovement.MoveState;
@@ -50,7 +48,7 @@ public class PlayerAnim : MonoBehaviour {
             anim.SetBool("wallHit", true);
             anim.SetBool("isJumping", false);
             anim.SetBool("isDashing", false);
-            */
+            
 
             anim.SetBool("isDashing", true);
             anim.SetBool("isRunning", false);
@@ -102,7 +100,7 @@ public class PlayerAnim : MonoBehaviour {
             /*
             anim.SetBool("isFalling", true);
             anim.SetBool("isJumping", false);
-            */
+            
             anim.SetBool("isDashing", true);
             anim.SetBool("isRunning", false);
             anim.SetBool("isJumping", false);
@@ -130,5 +128,6 @@ public class PlayerAnim : MonoBehaviour {
         {
             anim.SetBool("isRunning", false);
         }
+        */
     }
 }
