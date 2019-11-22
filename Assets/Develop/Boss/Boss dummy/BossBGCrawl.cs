@@ -23,6 +23,12 @@ public class BossBGCrawl : MonoBehaviour
     private Vector2 startDirection;
     private List<List<Vector2>> mission;
 
+    private BossController bc;
+
+    private void Start()
+    {
+        bc = GetComponent<BossController>();
+    }
 
     // Update runs after the awake-initialization. A counter counts us through the path and updates positions and rotations. 
     // Lists are used to not overload the update with too many tasks at the same time. Might cause lag on the frame the state
@@ -288,6 +294,6 @@ public class BossBGCrawl : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        
+        bc.updateState(this);
     }
 }

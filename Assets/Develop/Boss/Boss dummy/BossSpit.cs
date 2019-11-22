@@ -20,7 +20,27 @@ public class BossSpit : MonoBehaviour
     public float angleVariationDeg = 20f;
     public float waitAfterSmall = 0.15f;
 
+    private BossController bc;
 
+    private void OnEnable()
+    {
+        StartCoroutine(EasySpit());
+    }
+
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+        bc.updateState(this);
+    }
+
+
+    private void Start()
+    {
+        bc = GetComponent<BossController>();
+    }
+
+    /*
     // Update is called once per frame
     void Update()
     {
@@ -29,7 +49,7 @@ public class BossSpit : MonoBehaviour
             StartCoroutine(EasySpit());
         }
     }
-
+    */
 
     // This is an IEnumerator that spawns spits glitch acid with intervals
     IEnumerator EasySpit()
@@ -86,6 +106,9 @@ public class BossSpit : MonoBehaviour
 
             smallSpits -= 1;
         }
+
+        // If we end up here we find a new state for the bossController
+        enabled = false;
     }
 
     void SpawnSpitBullet(float scale, float speed, Vector2 target)

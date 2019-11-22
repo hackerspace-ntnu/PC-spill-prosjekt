@@ -421,6 +421,8 @@ GameObject:
   - component: {fileID: 371681415}
   - component: {fileID: 371681411}
   - component: {fileID: 371681417}
+  - component: {fileID: 371681418}
+  - component: {fileID: 371681419}
   m_Layer: 0
   m_Name: boss_dummy
   m_TagString: Boss
@@ -435,7 +437,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 371681410}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 046d78f7c35ee8145b871d8c02a63709, type: 3}
   m_Name: 
@@ -549,7 +551,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 371681410}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f136ca1aabc980c42aa144d9520497c8, type: 3}
   m_Name: 
@@ -570,6 +572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 405db8c0b99d4ff44965561e32fb926f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overrideState: 0
 --- !u!114 &371681417
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -585,6 +588,31 @@ MonoBehaviour:
   pathLength: 5
   timeSteps: 20
   numberOfCheckpoints: 20
+--- !u!114 &371681418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371681410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3458970e7248b77449de779e28bb1d17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &371681419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371681410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be0c3be7dec43846b7b5ced0afa43eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
 --- !u!1 &821845856
 GameObject:
   m_ObjectHideFlags: 0
