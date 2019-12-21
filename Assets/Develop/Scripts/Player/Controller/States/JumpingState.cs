@@ -11,6 +11,7 @@ public class JumpingState : PlayerState
 
     public override void Enter()
     {
+        controller.Animator.SetBool("Jump", true);
         rigidBody.gravityScale = JUMPING_GRAVITY_SCALE;
         PlayerState prevInstance = controller.GetPreviousState();
         //Since all other logic is tested in these states, this if/else is all we need
@@ -53,6 +54,7 @@ public class JumpingState : PlayerState
 
     public override void Exit()
     {
+        controller.Animator.SetBool("Jump", false);
         rigidBody.gravityScale = baseGravityScale;
     }
     public override void Jump() {

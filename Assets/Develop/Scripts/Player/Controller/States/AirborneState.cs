@@ -12,6 +12,7 @@ public class AirborneState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        controller.Animator.SetBool("Airborne", true);
     }
 
     public override void Update()
@@ -40,6 +41,7 @@ public class AirborneState : PlayerState
     public override void Exit()
     {
         base.Exit();
+        controller.Animator.SetBool("Airborne", false);
     }
 
     public override void Jump() {

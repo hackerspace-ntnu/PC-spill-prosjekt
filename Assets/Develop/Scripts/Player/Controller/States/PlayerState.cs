@@ -81,4 +81,8 @@ public abstract class PlayerState
     public virtual void Jump() { }
 
     public virtual void Crouch() { }
+
+    public float GetXVelocity() {
+        return rigidBody.velocity.x;
+    }
 }

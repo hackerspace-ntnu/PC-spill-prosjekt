@@ -16,6 +16,8 @@ public class WalkingState : PlayerState
     public override void Enter() {
         base.Enter();
         controller.HasAirJumped = false;
+        controller.Animator.SetBool("Run", true);
+        
     }
 
     public override void Update()
@@ -36,6 +38,7 @@ public class WalkingState : PlayerState
 
     public override void Exit() {
         base.Exit();
+        controller.Animator.SetBool("Run", false);
     }
 
     public override void Jump() {

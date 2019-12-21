@@ -4,4 +4,4 @@ using UnityEngine;
 
 public class GlobalEnums : MonoBehaviour{}
 
-public enum Direction { LEFT, RIGHT }
+public enum DIRECTION { LEFT, RIGHT }
