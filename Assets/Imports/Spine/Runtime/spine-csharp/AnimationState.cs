@@ -1,31 +1,30 @@
 /******************************************************************************
- * Spine Runtimes Software License v2.5
+ * Spine Runtimes License Agreement
+ * Last updated May 1, 2019. Replaces all prior versions.
  *
- * Copyright (c) 2013-2016, Esoteric Software
- * All rights reserved.
+ * Copyright (c) 2013-2019, Esoteric Software LLC
  *
- * You are granted a perpetual, non-exclusive, non-sublicensable, and
- * non-transferable license to use, install, execute, and perform the Spine
- * Runtimes software and derivative works solely for personal or internal
- * use. Without the written permission of Esoteric Software (see Section 2 of
- * the Spine Software License Agreement), you may not (a) modify, translate,
- * adapt, or develop new applications using the Spine Runtimes or otherwise
- * create derivative works or improvements of the Spine Runtimes or (b) remove,
- * delete, alter, or obscure any trademarks or any copyright, trademark, patent,
- * or other intellectual property or proprietary rights notices on or in the
- * Software, including any copy thereof. Redistributions in binary or source
- * form must include this license and terms.
+ * Integration of the Spine Runtimes into software or otherwise creating
+ * derivative works of the Spine Runtimes is permitted under the terms and
+ * conditions of Section 2 of the Spine Editor License Agreement:
+ * http://esotericsoftware.com/spine-editor-license
  *
- * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL ESOTERIC SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, BUSINESS INTERRUPTION, OR LOSS OF
- * USE, DATA, OR PROFITS) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
- * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * Otherwise, it is permitted to integrate the Spine Runtimes into software
+ * or otherwise create derivative works of the Spine Runtimes (collectively,
+ * "Products"), provided that each user of the Products must obtain their own
+ * Spine Editor license and redistribution of the Products in any form must
+ * include this license and copyright notice.
+ *
+ * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE LLC "AS IS" AND ANY EXPRESS
+ * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
+ * NO EVENT SHALL ESOTERIC SOFTWARE LLC BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, BUSINESS
+ * INTERRUPTION, OR LOSS OF USE, DATA, OR PROFITS) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
 using System;
@@ -67,12 +66,17 @@ namespace Spine {
 		/// (which affects B and C). Without using D to mix out, A would be applied fully until mixing completes, then snap into
 		/// place.
 		internal const int HoldMix = 3;
+		/// 1) An attachment timeline in a subsequent track entry sets the attachment for the same slot as this attachment
+		/// timeline.<para />
+		/// Result: This attachment timeline will not use MixDirection.out, which would otherwise show the setup mode attachment (or
+		/// none if not visible in setup mode). This allows deform timelines to be applied for the subsequent entry to mix from, rather
+		/// than mixing from the setup pose.
+		internal const int NotLast = 4;
 
 		protected AnimationStateData data;
 		private readonly ExposedList<TrackEntry> tracks = new ExposedList<TrackEntry>();
 		private readonly ExposedList<Event> events = new ExposedList<Event>();
-
-		// difference to libgdx reference: delegates are used for event callbacks instead of 'Array<AnimationStateListener> listeners'.
+		// difference to libgdx reference: delegates are used for event callbacks instead of 'final SnapshotArray<AnimationStateListener> listeners'.
 		internal void OnStart (TrackEntry entry) { if (Start != null) Start(entry); }
 		internal void OnInterrupt (TrackEntry entry) { if (Interrupt != null) Interrupt(entry); }
 		internal void OnEnd (TrackEntry entry) { if (End != null) End(entry); }
@@ -80,12 +84,12 @@ namespace Spine {
 		internal void OnComplete (TrackEntry entry) { if (Complete != null) Complete(entry); }
 		internal void OnEvent (TrackEntry entry, Event e) { if (Event != null) Event(entry, e); }
 
-		public delegate void TrackEntryDelegate(TrackEntry trackEntry);
+		public delegate void TrackEntryDelegate (TrackEntry trackEntry);
 		public event TrackEntryDelegate Start, Interrupt, End, Dispose, Complete;
 
-		public delegate void TrackEntryEventDelegate(TrackEntry trackEntry, Event e);
+		public delegate void TrackEntryEventDelegate (TrackEntry trackEntry, Event e);
 		public event TrackEntryEventDelegate Event;
-
+		// end of difference
 		private readonly EventQueue queue; // Initialized by constructor.
 		private readonly HashSet<int> propertyIDs = new HashSet<int>();
 		private bool animationsChanged;
@@ -93,7 +97,7 @@ namespace Spine {
 
 		private readonly Pool<TrackEntry> trackEntryPool = new Pool<TrackEntry>();
 
-		public AnimationState(AnimationStateData data) {
+		public AnimationState (AnimationStateData data) {
 			if (data == null) throw new ArgumentNullException("data", "data cannot be null.");
 			this.data = data;
 			this.queue = new EventQueue(
@@ -131,7 +135,7 @@ namespace Spine {
 					float nextTime = current.trackLast - next.delay;
 					if (nextTime >= 0) {
 						next.delay = 0;
-						next.trackTime = current.timeScale == 0 ? 0 : (nextTime / current.timeScale + delta) * next.timeScale;
+						next.trackTime += current.timeScale == 0 ? 0 : (nextTime / current.timeScale + delta) * next.timeScale;
 						current.trackTime += currentDelta;
 						SetCurrent(i, next, true);
 						while (next.mixingFrom != null) {
@@ -228,17 +232,17 @@ namespace Spine {
 				} else {
 					var timelineMode = current.timelineMode.Items;
 
-					bool firstFrame = current.timelinesRotation.Count == 0;
-					if (firstFrame) current.timelinesRotation.EnsureCapacity(timelines.Count << 1);
+					bool firstFrame = current.timelinesRotation.Count != timelineCount << 1;
+					if (firstFrame) current.timelinesRotation.Resize(timelines.Count << 1);
 					var timelinesRotation = current.timelinesRotation.Items;
 
 					for (int ii = 0; ii < timelineCount; ii++) {
 						Timeline timeline = timelinesItems[ii];
-						MixBlend timelineBlend = timelineMode[ii] == AnimationState.Subsequent ? blend : MixBlend.Setup;
+						MixBlend timelineBlend = (timelineMode[ii] & AnimationState.NotLast - 1) == AnimationState.Subsequent ? blend : MixBlend.Setup;
 						var rotateTimeline = timeline as RotateTimeline;
 						if (rotateTimeline != null)
-							ApplyRotateTimeline(rotateTimeline, skeleton, animationTime, mix, timelineBlend, timelinesRotation, ii << 1,
-												firstFrame);
+							ApplyRotateTimeline(rotateTimeline, skeleton, animationTime, mix, timelineBlend, timelinesRotation,
+												ii << 1, firstFrame);
 						else
 							timeline.Apply(skeleton, animationLast, animationTime, events, mix, timelineBlend, MixDirection.In);
 					}
@@ -282,7 +286,7 @@ namespace Spine {
 				var timelineMode = from.timelineMode.Items;
 				var timelineHoldMix = from.timelineHoldMix.Items;
 
-				bool firstFrame = from.timelinesRotation.Count == 0;
+				bool firstFrame = from.timelinesRotation.Count != timelineCount << 1;
 				if (firstFrame)	from.timelinesRotation.Resize(timelines.Count << 1); // from.timelinesRotation.setSize
 				var timelinesRotation = from.timelinesRotation.Items;
 
@@ -292,11 +296,14 @@ namespace Spine {
 					MixDirection direction = MixDirection.Out;
 					MixBlend timelineBlend;
 					float alpha;
-					switch (timelineMode[i]) {
+					switch (timelineMode[i] & AnimationState.NotLast - 1) {
 						case AnimationState.Subsequent:
-							if (!attachments && timeline is AttachmentTimeline) continue;
-							if (!drawOrder && timeline is DrawOrderTimeline) continue;
 							timelineBlend = blend;
+							if (!attachments && timeline is AttachmentTimeline) {
+								if ((timelineMode[i] & AnimationState.NotLast) == AnimationState.NotLast) continue;
+								timelineBlend = MixBlend.Setup;
+							}
+							if (!drawOrder && timeline is DrawOrderTimeline) continue;
 							alpha = alphaMix;
 							break;
 						case AnimationState.First:
@@ -317,12 +324,12 @@ namespace Spine {
 
 					var rotateTimeline = timeline as RotateTimeline;
 					if (rotateTimeline != null) {
-						ApplyRotateTimeline(rotateTimeline, skeleton, animationTime, alpha, timelineBlend, timelinesRotation, i << 1,
-											firstFrame);
+						ApplyRotateTimeline(rotateTimeline, skeleton, animationTime, alpha, timelineBlend, timelinesRotation,
+											i << 1, firstFrame);
 					} else {
 						if (timelineBlend == MixBlend.Setup) {
 							if (timeline is AttachmentTimeline) {
-								if (attachments) direction = MixDirection.In;
+								if (attachments || (timelineMode[i] & AnimationState.NotLast) == AnimationState.NotLast) direction = MixDirection.In;
 							} else if (timeline is DrawOrderTimeline) {
 								if (drawOrder) {
 									direction = MixDirection.In;
@@ -343,18 +350,20 @@ namespace Spine {
 			return mix;
 		}
 
-		static private void ApplyRotateTimeline (RotateTimeline rotateTimeline, Skeleton skeleton, float time, float alpha, MixBlend blend,
+		static private void ApplyRotateTimeline (RotateTimeline timeline, Skeleton skeleton, float time, float alpha, MixBlend blend,
 			float[] timelinesRotation, int i, bool firstFrame) {
 
 			if (firstFrame) timelinesRotation[i] = 0;
 
 			if (alpha == 1) {
-				rotateTimeline.Apply(skeleton, 0, time, null, 1, blend, MixDirection.In);
+				timeline.Apply(skeleton, 0, time, null, 1, blend, MixDirection.In);
 				return;
 			}
 
-			Bone bone = skeleton.bones.Items[rotateTimeline.boneIndex];
-			float[] frames = rotateTimeline.frames;
+			Bone bone = skeleton.bones.Items[timeline.boneIndex];
+			if (!bone.active) return;
+
+			float[] frames = timeline.frames;
 			float r1, r2;
 			if (time < frames[0]) { // Time is before first frame.
 				switch (blend) {
@@ -377,7 +386,7 @@ namespace Spine {
 					int frame = Animation.BinarySearch(frames, time, RotateTimeline.ENTRIES);
 					float prevRotation = frames[frame + RotateTimeline.PREV_ROTATION];
 					float frameTime = frames[frame];
-					float percent = rotateTimeline.GetCurvePercent((frame >> 1) - 1,
+					float percent = timeline.GetCurvePercent((frame >> 1) - 1,
 						1 - (time - frameTime) / (frames[frame + RotateTimeline.PREV_TIME] - frameTime));
 
 					r2 = frames[frame + RotateTimeline.ROTATION] - prevRotation;
@@ -716,25 +725,34 @@ namespace Spine {
 		private void AnimationsChanged () {
 			animationsChanged = false;
 
+			// Process in the order that animations are applied.
 			propertyIDs.Clear();
 
 			var tracksItems = tracks.Items;
 			for (int i = 0, n = tracks.Count; i < n; i++) {
 				TrackEntry entry = tracksItems[i];
 				if (entry == null) continue;
-				// Move to last entry, then iterate in reverse (the order animations are applied).
-				while (entry.mixingFrom != null)
+				while (entry.mixingFrom != null) // Move to last entry, then iterate in reverse.
 					entry = entry.mixingFrom;
 
 				do {
-					if (entry.mixingTo == null || entry.mixBlend != MixBlend.Add) SetTimelineModes(entry);
+					if (entry.mixingTo == null || entry.mixBlend != MixBlend.Add) ComputeHold(entry);
 					entry = entry.mixingTo;
 				} while (entry != null);
+			}
 
+			// Process in the reverse order that animations are applied.
+			propertyIDs.Clear();
+			for (int i = tracks.Count - 1; i >= 0; i--) {
+				TrackEntry entry = tracksItems[i];
+				while (entry != null) {
+					ComputeNotLast(entry);
+					entry = entry.mixingFrom;
+				}
 			}
 		}
 
-		private void SetTimelineModes (TrackEntry entry) {
+		private void ComputeHold (TrackEntry entry) {
 			TrackEntry to = entry.mixingTo;
 			var timelines = entry.animation.timelines.Items;
 			int timelinesCount = entry.animation.timelines.Count;
@@ -753,14 +771,16 @@ namespace Spine {
 
 			// outer:
 			for (int i = 0; i < timelinesCount; i++) {
-				int id = timelines[i].PropertyId;
+				Timeline timeline = timelines[i];
+				int id = timeline.PropertyId;
 				if (!propertyIDs.Add(id))
 					timelineMode[i] = AnimationState.Subsequent;
-				else if (to == null || !HasTimeline(to, id))
+				else if (to == null || timeline is AttachmentTimeline || timeline is DrawOrderTimeline
+						|| timeline is EventTimeline || !to.animation.HasTimeline(id)) {
 					timelineMode[i] = AnimationState.First;
-				else {
+				} else {
 					for (TrackEntry next = to.mixingTo; next != null; next = next.mixingTo) {
-						if (HasTimeline(next, id)) continue;
+						if (next.animation.HasTimeline(id)) continue;
 						if (next.mixDuration > 0) {
 							timelineMode[i] = AnimationState.HoldMix;
 							timelineHoldMix[i] = next;
@@ -774,11 +794,18 @@ namespace Spine {
 			}
 		}
 
-		static bool HasTimeline (TrackEntry entry, int id) {
+		private void ComputeNotLast (TrackEntry entry) {
 			var timelines = entry.animation.timelines.Items;
-			for (int i = 0, n = entry.animation.timelines.Count; i < n; i++)
-				if (timelines[i].PropertyId == id) return true;
-			return false;
+			int timelinesCount = entry.animation.timelines.Count;
+			int[] timelineMode = entry.timelineMode.Items;
+			var propertyIDs = this.propertyIDs;
+
+			for (int i = 0; i < timelinesCount; i++) {
+				if (timelines[i] is AttachmentTimeline) {
+					AttachmentTimeline timeline = (AttachmentTimeline)timelines[i];
+					if (!propertyIDs.Add(timeline.slotIndex)) timelineMode[i] |= AnimationState.NotLast;
+				}
+			}
 		}
 
 		/// <returns>The track entry for the animation currently playing on the track, or null if no animation is currently playing.</returns>

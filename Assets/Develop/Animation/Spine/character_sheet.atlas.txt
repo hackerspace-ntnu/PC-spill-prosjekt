@@ -1,0 +1,125 @@
+
+character_sheet.png
+size: 1980,951
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+back_foot
+  rotate: false
+  xy: 1601, 39
+  size: 172, 99
+  orig: 176, 103
+  offset: 2, 2
+  index: -1
+back_forearm
+  rotate: true
+  xy: 1690, 296
+  size: 110, 268
+  orig: 113, 270
+  offset: 1, 1
+  index: -1
+back_hand
+  rotate: true
+  xy: 1775, 51
+  size: 87, 141
+  orig: 89, 143
+  offset: 1, 1
+  index: -1
+back_shin
+  rotate: true
+  xy: 1690, 538
+  size: 162, 283
+  orig: 165, 286
+  offset: 1, 1
+  index: -1
+back_thigh
+  rotate: false
+  xy: 1077, 5
+  size: 201, 328
+  orig: 252, 330
+  offset: 2, 1
+  index: -1
+back_upper_arm
+  rotate: false
+  xy: 1454, 359
+  size: 234, 341
+  orig: 265, 356
+  offset: 30, 14
+  index: -1
+eye_happy
+  rotate: true
+  xy: 1921, 740
+  size: 209, 45
+  orig: 211, 86
+  offset: 1, 1
+  index: -1
+eye_neutral
+  rotate: false
+  xy: 1496, 264
+  size: 178, 93
+  orig: 181, 100
+  offset: 1, 2
+  index: -1
+front_foot
+  rotate: false
+  xy: 1496, 167
+  size: 173, 95
+  orig: 176, 98
+  offset: 2, 1
+  index: -1
+front_forearm
+  rotate: true
+  xy: 1690, 408
+  size: 128, 277
+  orig: 132, 283
+  offset: 1, 2
+  index: -1
+front_hand
+  rotate: false
+  xy: 1496, 2
+  size: 103, 136
+  orig: 106, 140
+  offset: 1, 2
+  index: -1
+front_shin
+  rotate: true
+  xy: 1676, 140
+  size: 154, 302
+  orig: 158, 305
+  offset: 2, 2
+  index: -1
+front_tigh
+  rotate: false
+  xy: 1280, 6
+  size: 214, 327
+  orig: 217, 330
+  offset: 1, 2
+  index: -1
+front_upper_arm
+  rotate: false
+  xy: 853, 4
+  size: 222, 329
+  orig: 226, 332
+  offset: 2, 2
+  index: -1
+head
+  rotate: true
+  xy: 853, 335
+  size: 614, 599
+  orig: 617, 602
+  offset: 1, 1
+  index: -1
+neck
+  rotate: false
+  xy: 1496, 702
+  size: 423, 247
+  orig: 427, 250
+  offset: 2, 2
+  index: -1
+torso
+  rotate: false
+  xy: 2, 22
+  size: 849, 927
+  orig: 853, 931
+  offset: 2, 2
+  index: -1
