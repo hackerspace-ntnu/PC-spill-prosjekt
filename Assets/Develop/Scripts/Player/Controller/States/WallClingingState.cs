@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,6 @@ public class WallClingingState : PlayerState
     public static readonly WallClingingState INSTANCE = new WallClingingState();
 
     public override string Name => "WALL_CLINGING";
-    private int wallJumpDirection;
 
     public override void Enter()
     {
@@ -18,8 +18,14 @@ public class WallClingingState : PlayerState
     {
         HandleHorizontalInput();
 
-        if (rigidBody.velocity.y * flipGravityScale <= 0)
-            rigidBody.gravityScale = WALL_SLIDE_GRAVITY_SCALE * flipGravityScale;
+        if (Math.Sign(horizontalInput) == -controller.WallTrigger)
+        {
+            maxVelocityY = wallSlideMaxVelocityY;
+        }
+        else
+        {
+            maxVelocityY = baseMaxVelocityY;
+        }
 
         // if dashinput, Dash
 
@@ -49,11 +55,12 @@ public class WallClingingState : PlayerState
 
     public override void FixedUpdate()
     {
-
+        base.FixedUpdate();
     }
 
     public override void Exit()
     {
-
+        rigidBody.gravityScale = baseGravityScale;
+        maxVelocityY = baseMaxVelocityY;
     }
 }

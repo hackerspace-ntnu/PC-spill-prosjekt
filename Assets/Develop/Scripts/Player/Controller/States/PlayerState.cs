@@ -6,16 +6,17 @@ using UnityEngine;
 public abstract class PlayerState
 {
     protected const float JUMPING_GRAVITY_SCALE = 4f;
-    protected const float WALL_SLIDE_GRAVITY_SCALE = 1f;
 
     public float baseGravityScale = 5; // base gravity affecting the player
     public float movementSpeed = 6;  // Orig value: 7
     protected float dashSpeed = 12;
     protected int flipGravityScale = 1;
-    private float maxVelocityY = 12;
-    private float maxVelocityFix;
-    protected float groundJumpSpeed = 13.5f;
-    protected float airJumpSpeed = 11.5f;
+    protected float baseMaxVelocityY = 12;
+    protected float wallSlideMaxVelocityY = 2;
+    protected float maxVelocityY;
+    protected float maxVelocityFix;
+    protected float groundJumpSpeed = 13f;
+    protected float airJumpSpeed = 10f;
 
     protected float horizontalInput; // input from controller in x-axis
     
@@ -31,6 +32,7 @@ public abstract class PlayerState
         this.controller = controller;
         rigidBody = controller.GetComponent<Rigidbody2D>();
         rigidBody.gravityScale = baseGravityScale;
+        maxVelocityY = baseMaxVelocityY;
     }
 
     public virtual void Enter() {}
@@ -40,8 +42,6 @@ public abstract class PlayerState
     }
 
     public virtual void FixedUpdate() {
-        float newVelocityX;
-
         if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY || 
             Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY) {
             maxVelocityFix = 0.2f;
@@ -49,14 +49,7 @@ public abstract class PlayerState
             maxVelocityFix = 0f;
         }
 
-        if (controller.Grounded || Math.Sign(horizontalInput) == Math.Sign(rigidBody.velocity.x) )
-        {
-            newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
-        }
-        else
-        {
-            newVelocityX = controller.TargetVelocity.x;
-        }
+        float newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
         float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
 
         rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
@@ -89,4 +82,9 @@ public abstract class PlayerState
     public virtual void Jump() { }
 
     public virtual void Crouch() { }
+
+    public virtual float getHorizontalInput()
+    {
+        return horizontalInput;
+    }
 }
