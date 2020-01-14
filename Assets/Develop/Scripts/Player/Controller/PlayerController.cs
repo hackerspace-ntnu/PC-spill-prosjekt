@@ -85,7 +85,9 @@ public class PlayerController : MonoBehaviour
 
     void HandleInput() {
 
-        if(Input.GetButtonDown("Jump") && !hasAirJumped && Time.time >= JumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
+        if (Input.GetButtonDown("Dash") && !hasDashed) {
+            currentState.Dash();
+        } else if(Input.GetButtonDown("Jump") && !hasAirJumped && Time.time >= JumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
             currentState.Jump();
         } else if(Input.GetButtonDown("Crouch")) {
             currentState.Crouch();

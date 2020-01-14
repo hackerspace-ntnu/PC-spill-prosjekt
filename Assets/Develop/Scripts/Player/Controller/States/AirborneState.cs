@@ -66,4 +66,12 @@ public class AirborneState : PlayerState
     public override void Jump() {
         controller.ChangeState(JumpingState.INSTANCE);
     }
+
+    public override void Dash()
+    {
+        if (!controller.HasDashed)
+        {
+            controller.ChangeState(DashingState.INSTANCE);
+        }
+    }
 }

@@ -84,10 +84,12 @@ public abstract class PlayerState
 
     public virtual void Crouch() { }
 
+    public virtual void Dash() { }
+
     public float GetXVelocity() {
         return rigidBody.velocity.x;
     }
-    public virtual float getHorizontalInput()
+    public float getHorizontalInput()
     {
         return horizontalInput;
     }

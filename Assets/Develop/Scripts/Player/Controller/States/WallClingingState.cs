@@ -65,4 +65,12 @@ public class WallClingingState : PlayerState
         rigidBody.gravityScale = baseGravityScale;
         maxVelocityY = baseMaxVelocityY;
     }
+
+    public override void Dash()
+    {
+        if (!controller.HasDashed)
+        {
+            controller.ChangeState(DashingState.INSTANCE);
+        }
+    }
 }

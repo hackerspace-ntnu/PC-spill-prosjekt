@@ -106,5 +106,14 @@ public class JumpingState : PlayerState
             controller.TargetVelocity = new Vector2(controller.WallTrigger * dashSpeed * 1.5f * 2, airJumpSpeed - rigidBody.velocity.y) * flipGravityScale * 1.2f;
         else
             controller.TargetVelocity = new Vector2(controller.WallTrigger * movementSpeed * 1.5f, groundJumpSpeed - rigidBody.velocity.y) * flipGravityScale * 1.1f;
+        controller.HasDashed = false;
+    }
+
+    public override void Dash()
+    {
+        if (!controller.HasDashed)
+        {
+            controller.ChangeState(DashingState.INSTANCE);
+        }
     }
 }

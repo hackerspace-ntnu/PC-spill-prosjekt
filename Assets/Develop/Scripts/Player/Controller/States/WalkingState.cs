@@ -16,6 +16,7 @@ public class WalkingState : PlayerState
     public override void Enter() {
         base.Enter();
         controller.HasAirJumped = false;
+        controller.HasDashed = false;
         controller.Animator.SetBool("Run", true);
         
     }
@@ -48,5 +49,10 @@ public class WalkingState : PlayerState
 
     public override void Crouch() {
         controller.ChangeState(CrouchingState.INSTANCE);
+    }
+
+    public override void Dash()
+    {
+        controller.ChangeState(DashingState.INSTANCE);
     }
 }
