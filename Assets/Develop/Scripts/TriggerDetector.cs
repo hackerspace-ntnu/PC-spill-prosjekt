@@ -57,7 +57,7 @@ public class TriggerDetector : MonoBehaviour
         }
         else
         {
-            controller.WallTrigger = 0; //Must set this globally, not just for the current state
+            controller.WallTrigger = 0;
         }
     }
 }

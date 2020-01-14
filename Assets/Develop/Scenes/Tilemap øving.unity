@@ -2232,6 +2232,7 @@ MonoBehaviour:
   canUncrouch: 0
   wallTrigger: 0
   animator: {fileID: 266106638}
+  spriteDirection: 0
   skeletonMecanism: {fileID: 266106639}
 --- !u!114 &955629974
 MonoBehaviour:
@@ -2271,7 +2272,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 955629972}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2d8b18502ee0724aa744cf0a2f949e9, type: 3}
   m_Name: 
