@@ -37,6 +37,7 @@ public abstract class PlayerState
 
     public virtual void Update() {
         HandleHorizontalInput();
+        controller.Animator.SetFloat("Hinput", Mathf.Abs(horizontalInput));
     }
 
     public virtual void FixedUpdate() {

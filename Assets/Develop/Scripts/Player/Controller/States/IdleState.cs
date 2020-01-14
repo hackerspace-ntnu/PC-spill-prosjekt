@@ -12,7 +12,7 @@ public class IdleState : WalkingState
     private IdleState() {}
 
     public override void Enter() {
-        base.Enter();
+        controller.HasAirJumped = false;
         controller.Animator.SetBool("Run", false);
         controller.Animator.SetBool("Idle", true);
     }

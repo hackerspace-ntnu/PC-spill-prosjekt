@@ -22,6 +22,7 @@ public class WalkingState : PlayerState
 
     public override void Update()
     {
+        base.Update();
 
         if (Math.Abs(rigidBody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
             controller.ChangeState(IdleState.INSTANCE);
@@ -29,7 +30,7 @@ public class WalkingState : PlayerState
             controller.ChangeState(AirborneState.INSTANCE);
         }
 
-        base.Update();
+        Debug.Log(rigidBody.velocity.x);
     }
 
     public override void FixedUpdate() {

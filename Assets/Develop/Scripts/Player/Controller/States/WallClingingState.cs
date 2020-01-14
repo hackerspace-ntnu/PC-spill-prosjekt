@@ -12,6 +12,7 @@ public class WallClingingState : PlayerState
     public override void Enter()
     {
         HandleHorizontalInput();
+        controller.Animator.SetBool("WallCling", true);
     }
 
     public override void Update()
@@ -54,6 +55,6 @@ public class WallClingingState : PlayerState
 
     public override void Exit()
     {
-
+        controller.Animator.SetBool("WallCling", false);
     }
 }
