@@ -7,6 +7,8 @@ public class JumpingState : PlayerState
 {
     public static readonly JumpingState INSTANCE = new JumpingState();
 
+    private float wallJumpTime;
+
     public override string Name => "JUMPING";
 
     public override void Enter()
@@ -14,7 +16,8 @@ public class JumpingState : PlayerState
         controller.Animator.SetBool("Jump", true);
         rigidBody.gravityScale = JUMPING_GRAVITY_SCALE;
         PlayerState prevInstance = controller.GetPreviousState();
-        //Since all other logic is tested in these states, this if/else is all we need
+
+        //Since all other logic is tested in these states, this logic is all we need
         if (prevInstance == AirborneState.INSTANCE) {
             AirJump();
             Debug.Log("AirJumping");
@@ -29,7 +32,7 @@ public class JumpingState : PlayerState
 
     public override void Update()
     {
-        if (controller.WallTrigger != 0)
+        if (controller.WallTrigger != 0 && Time.time - wallJumpTime > 0.1f)
         {
             controller.ChangeState(WallClingingState.INSTANCE);
         }
@@ -42,7 +45,8 @@ public class JumpingState : PlayerState
             controller.ChangeState(IdleState.INSTANCE);
         }
 
-        base.Update();
+        if (Time.time - wallJumpTime > 0.05f)
+            base.Update();
     }
 
     public override void FixedUpdate() {
@@ -99,12 +103,12 @@ public class JumpingState : PlayerState
     {
         // The input to differentiate between the kinds of wallJump is too tight
         if (Math.Abs(horizontalInput) >= 0.8f)
-            controller.TargetVelocity = new Vector2(controller.WallTrigger * dashSpeed * 1.5f * 2, airJumpSpeed) * flipGravityScale * 1.2f;
+            controller.TargetVelocity = new Vector2(controller.WallTrigger * dashSpeed * 2f, airJumpSpeed) * flipGravityScale * 1.2f;
         else
             controller.TargetVelocity = new Vector2(controller.WallTrigger * movementSpeed * 1.5f, groundJumpSpeed) * flipGravityScale * 1.1f;
         controller.HasDashed = false;
         controller.HasAirJumped = false;
-        controller.JumpTime = Time.time;
+        wallJumpTime = Time.time;
     }
 
     public override void Dash()

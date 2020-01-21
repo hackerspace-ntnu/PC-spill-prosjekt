@@ -19,6 +19,15 @@ public class WallClingingState : PlayerState
     {
         HandleHorizontalInput();
 
+        if (Input.GetButtonDown("Jump"))
+        {
+            //rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            controller.JumpTime = Time.time;
+            controller.HasDashed = false;
+            controller.HasAirJumped = false;
+            controller.ChangeState(JumpingState.INSTANCE);
+        }
+
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)
         {
             maxVelocityY = wallSlideMaxVelocityY;
@@ -50,10 +59,11 @@ public class WallClingingState : PlayerState
         maxVelocityY = baseMaxVelocityY;
     }
 
+    /* Why the fuck doesn't this work?
     public override void Jump()
     {
         controller.ChangeState(JumpingState.INSTANCE);
-    }
+    }*/
 
     public override void Dash()
     {
