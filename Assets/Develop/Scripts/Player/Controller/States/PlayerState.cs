@@ -11,7 +11,7 @@ public abstract class PlayerState
     public float movementSpeed = 6;  // Orig value: 7
     protected float dashSpeed = 12;
     protected int flipGravityScale = 1;
-    protected float baseMaxVelocityY = 12;
+    protected float baseMaxVelocityY = 8;
     protected float wallSlideMaxVelocityY = 2;
     protected float maxVelocityY;
     protected float maxVelocityFix;
@@ -54,7 +54,6 @@ public abstract class PlayerState
         float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
 
         rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
-        controller.TargetVelocity = Vector2.zero;
     }
 
     public virtual void Exit() {}

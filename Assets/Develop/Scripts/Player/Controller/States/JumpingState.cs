@@ -15,7 +15,7 @@ public class JumpingState : PlayerState
         rigidBody.gravityScale = JUMPING_GRAVITY_SCALE;
         PlayerState prevInstance = controller.GetPreviousState();
         //Since all other logic is tested in these states, this if/else is all we need
-        if (prevInstance == AirborneState.INSTANCE && !controller.HasAirJumped) {
+        if (prevInstance == AirborneState.INSTANCE) {
             AirJump();
             Debug.Log("AirJumping");
         } else if (prevInstance == WallClingingState.INSTANCE) {
@@ -33,7 +33,7 @@ public class JumpingState : PlayerState
         {
             controller.ChangeState(WallClingingState.INSTANCE);
         }
-        else if (rigidBody.velocity.y * flipGravityScale < 0.0f)
+        else if (rigidBody.velocity.y * flipGravityScale < 0.0f && controller.TargetVelocity.y == 0)
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }
@@ -46,17 +46,8 @@ public class JumpingState : PlayerState
     }
 
     public override void FixedUpdate() {
-        if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY ||
-            Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY)
-        {
-            maxVelocityFix = 0.2f;
-        }
-        else
-        {
-            maxVelocityFix = 0f;
-        }
-
         float newVelocityX;
+
         // decreases horizontal acceleration in air while input in opposite direction of velocity
         if (Math.Sign(controller.TargetVelocity.x) != Math.Sign(rigidBody.velocity.x))
         {
@@ -67,10 +58,15 @@ public class JumpingState : PlayerState
             newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
         }
 
-        float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
+
+        float newVelocityY = 0f;  /* maxVelocityFix*/;
+        if (controller.TargetVelocity.y != 0)
+        {
+            newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y;
+        }
 
         rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
-        controller.TargetVelocity = Vector2.zero;
+        controller.TargetVelocity = new Vector2(newVelocityX, 0);
     }
 
     public override void Exit()
@@ -95,7 +91,7 @@ public class JumpingState : PlayerState
     internal void AirJump()
     {
         controller.HasAirJumped = true;
-        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, (airJumpSpeed - rigidBody.velocity.y) * flipGravityScale);
+        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, airJumpSpeed * flipGravityScale);
         controller.JumpTime = Time.time;
     }
 
@@ -103,10 +99,12 @@ public class JumpingState : PlayerState
     {
         // The input to differentiate between the kinds of wallJump is too tight
         if (Math.Abs(horizontalInput) >= 0.8f)
-            controller.TargetVelocity = new Vector2(controller.WallTrigger * dashSpeed * 1.5f * 2, airJumpSpeed - rigidBody.velocity.y) * flipGravityScale * 1.2f;
+            controller.TargetVelocity = new Vector2(controller.WallTrigger * dashSpeed * 1.5f * 2, airJumpSpeed) * flipGravityScale * 1.2f;
         else
-            controller.TargetVelocity = new Vector2(controller.WallTrigger * movementSpeed * 1.5f, groundJumpSpeed - rigidBody.velocity.y) * flipGravityScale * 1.1f;
+            controller.TargetVelocity = new Vector2(controller.WallTrigger * movementSpeed * 1.5f, groundJumpSpeed) * flipGravityScale * 1.1f;
         controller.HasDashed = false;
+        controller.HasAirJumped = false;
+        controller.JumpTime = Time.time;
     }
 
     public override void Dash()

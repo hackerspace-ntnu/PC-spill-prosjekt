@@ -33,7 +33,7 @@ public class AirborneState : PlayerState
         if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY ||
             Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY)
         {
-            maxVelocityFix = 0.2f;
+            maxVelocityFix = 0.02f;
         }
         else
         {
@@ -51,10 +51,10 @@ public class AirborneState : PlayerState
             newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
         }
 
-        float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
+        float newVelocityY = - rigidBody.velocity.y * maxVelocityFix;
 
         rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
-        controller.TargetVelocity = Vector2.zero;
+        controller.TargetVelocity = new Vector2(newVelocityX, 0);
     }
 
     public override void Exit()
@@ -64,7 +64,8 @@ public class AirborneState : PlayerState
     }
 
     public override void Jump() {
-        controller.ChangeState(JumpingState.INSTANCE);
+        if (!controller.HasAirJumped)
+            controller.ChangeState(JumpingState.INSTANCE);
     }
 
     public override void Dash()

@@ -433,7 +433,7 @@ Transform:
   m_GameObject: {fileID: 266106637}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.15, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 1}
   m_Children: []
   m_Father: {fileID: 2071688889}
   m_RootOrder: 0
@@ -2232,7 +2232,6 @@ MonoBehaviour:
   canUncrouch: 0
   wallTrigger: 0
   animator: {fileID: 266106638}
-  spriteDirection: 0
   skeletonMecanism: {fileID: 266106639}
 --- !u!114 &955629974
 MonoBehaviour:
