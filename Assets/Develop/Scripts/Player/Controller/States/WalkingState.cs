@@ -53,6 +53,7 @@ public class WalkingState : PlayerState
 
     public override void Dash()
     {
-        controller.ChangeState(DashingState.INSTANCE);
+        if (Time.time - controller.DashTime > 0.4f)
+            controller.ChangeState(DashingState.INSTANCE);
     }
 }

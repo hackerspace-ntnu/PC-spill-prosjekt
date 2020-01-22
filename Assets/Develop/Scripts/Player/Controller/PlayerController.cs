@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     public bool CanUncrouch { get => canUncrouch; set => canUncrouch = value; }
     public int WallTrigger { get => wallTrigger; set => wallTrigger = value; }
     public float JumpTime { get; set; }
+    public float DashTime { get; set; }
     public Vector2 TargetVelocity { get; set; }
     public Animator Animator { get => animator; }
     public SkeletonMecanim SkeletonMecanism { get => skeletonMecanism; }

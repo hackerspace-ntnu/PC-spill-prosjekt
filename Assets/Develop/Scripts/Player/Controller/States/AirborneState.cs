@@ -61,6 +61,7 @@ public class AirborneState : PlayerState
     {
         base.Exit();
         controller.Animator.SetBool("Airborne", false);
+        controller.DashTime = 0f;
     }
 
     public override void Jump() {

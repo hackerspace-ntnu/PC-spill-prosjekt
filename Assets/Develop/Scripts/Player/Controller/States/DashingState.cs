@@ -8,13 +8,12 @@ public class DashingState : PlayerState
 
     public override string Name => "DASHING";
 
-    private float dashTime;
     private float dashDuration = 0.2f;
 
     public override void Enter()
     {
         controller.HasDashed = true;
-        dashTime = Time.time;
+        controller.DashTime = Time.time;
 
         controller.TargetVelocity = new Vector2((int)controller.Dir * dashSpeed * flipGravityScale, 0);
         rigidBody.gravityScale = 0;
@@ -25,7 +24,7 @@ public class DashingState : PlayerState
         if (controller.WallTrigger != 0)
             controller.ChangeState(WallClingingState.INSTANCE);
 
-        else if (Time.time - dashTime >= dashDuration)
+        else if (Time.time - controller.DashTime >= dashDuration)
         {
             if (controller.Grounded)
                 controller.ChangeState(IdleState.INSTANCE);
