@@ -43,8 +43,8 @@ public abstract class PlayerState
     }
 
     public virtual void FixedUpdate() {
-        if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY || 
-            Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY) {
+        if (flipGravityScale == 1 && rigidBody.velocity.y <= -maxVelocityY || 
+            flipGravityScale == -1 && rigidBody.velocity.y >= maxVelocityY) {
             maxVelocityFix = 0.2f;
         } else {
             maxVelocityFix = 0f;

@@ -20,19 +20,16 @@ public class JumpingState : PlayerState
         //Since all other logic is tested in these states, this logic is all we need
         if (prevInstance == AirborneState.INSTANCE) {
             AirJump();
-            Debug.Log("AirJumping");
         } else if (prevInstance == WallClingingState.INSTANCE) {
             WallJump();
-            Debug.Log("WallJumping");
         } else {
             GroundJump();
-            Debug.Log("GroundJumping");
         }
     }
 
     public override void Update()
     {
-        if (controller.WallTrigger != 0 && Time.time - wallJumpTime > 0.1f)
+        if (controller.WallTrigger != 0 && Time.time - controller.JumpTime > 0.1f)
         {
             controller.ChangeState(WallClingingState.INSTANCE);
         }
@@ -63,7 +60,7 @@ public class JumpingState : PlayerState
         }
 
 
-        float newVelocityY = 0f;  /* maxVelocityFix*/;
+        float newVelocityY = 0f;
         if (controller.TargetVelocity.y != 0)
         {
             newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y;
@@ -90,13 +87,18 @@ public class JumpingState : PlayerState
 
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, groundJumpSpeed * flipGravityScale);
         controller.JumpTime = Time.time;
+        Debug.Log("GroundJumping");
     }
 
     internal void AirJump()
     {
-        controller.HasAirJumped = true;
-        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, airJumpSpeed * flipGravityScale);
-        controller.JumpTime = Time.time;
+        if (Time.time - controller.JumpTime > 0.2f)
+        {
+            controller.HasAirJumped = true;
+            controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, airJumpSpeed * flipGravityScale);
+            controller.JumpTime = Time.time;
+            Debug.Log("AirJumping");
+        }
     }
 
     internal void WallJump()
@@ -109,6 +111,8 @@ public class JumpingState : PlayerState
         controller.HasDashed = false;
         controller.HasAirJumped = false;
         wallJumpTime = Time.time;
+        controller.JumpTime = Time.time;
+        Debug.Log("WallJumping");
     }
 
     public override void Dash()
