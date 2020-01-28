@@ -78,7 +78,10 @@ public class JumpingState : PlayerState
 
     public override void Jump()
     {
-        AirJump();
+        if (Time.time - controller.JumpTime > 0.2f)
+            AirJump();
+        else
+            controller.JumpButtonPressTime = Time.time;
     }
 
     internal void GroundJump()
@@ -92,13 +95,10 @@ public class JumpingState : PlayerState
 
     internal void AirJump()
     {
-        if (Time.time - controller.JumpTime > 0.2f)
-        {
-            controller.HasAirJumped = true;
-            controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, airJumpSpeed * flipGravityScale);
-            controller.JumpTime = Time.time;
-            Debug.Log("AirJumping");
-        }
+        controller.HasAirJumped = true;
+        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, airJumpSpeed * flipGravityScale);
+        controller.JumpTime = Time.time;
+        Debug.Log("AirJumping");
     }
 
     internal void WallJump()

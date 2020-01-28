@@ -21,7 +21,6 @@ public class TriggerDetector : MonoBehaviour
         {
 
             if (this.gameObject.tag == "CeilingDetector") {
-                CeilingCount++;
                 controller.CanUncrouch = false;
             }
 
@@ -44,11 +43,7 @@ public class TriggerDetector : MonoBehaviour
     {
 
         if (collision.GetComponent<Collider2D>().tag == "Standard" && this.gameObject.tag == "CeilingDetector") {
-            CeilingCount--;
-
-            if (CeilingCount <= 0) {
-                controller.CanUncrouch = true;
-            }
+            controller.CanUncrouch = true;
         }
 
         if (this.gameObject.name == "Ground Trigger")

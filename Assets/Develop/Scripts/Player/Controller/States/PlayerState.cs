@@ -54,6 +54,7 @@ public abstract class PlayerState
         float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
 
         rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
+        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, 0);
     }
 
     public virtual void Exit() {}

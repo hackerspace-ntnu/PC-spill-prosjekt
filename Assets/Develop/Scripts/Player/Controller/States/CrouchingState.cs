@@ -52,7 +52,7 @@ public class CrouchingState : PlayerState
             controller.ChangeState(IdleState.INSTANCE);
         }
 
-        if (rigidBody.velocity.y * flipGravityScale < -0.1f) {
+        if (rigidBody.velocity.y * flipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
         }
 
@@ -77,8 +77,11 @@ public class CrouchingState : PlayerState
     }
 
     public override void Jump() {
-        if(controller.CanUncrouch) {
+        if (controller.CanUncrouch) {
             controller.ChangeState(JumpingState.INSTANCE);
+        }
+        else {
+            controller.JumpButtonPressTime = Time.time;
         }
     }
 }

@@ -19,12 +19,12 @@ public class WallClingingState : PlayerState
     {
         HandleHorizontalInput();
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") || Time.time - controller.JumpButtonPressTime < 0.2f)
         {
             //rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
-            controller.JumpTime = Time.time;
-            controller.HasDashed = false;
-            controller.HasAirJumped = false;
+            //controller.JumpTime = Time.time;
+            //controller.HasDashed = false;
+            //controller.HasAirJumped = false;
             controller.ChangeState(JumpingState.INSTANCE);
         }
 
@@ -55,7 +55,6 @@ public class WallClingingState : PlayerState
     public override void Exit()
     {
         controller.Animator.SetBool("WallCling", false);
-        rigidBody.gravityScale = baseGravityScale;
         maxVelocityY = baseMaxVelocityY;
     }
 
