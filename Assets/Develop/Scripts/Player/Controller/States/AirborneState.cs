@@ -30,8 +30,8 @@ public class AirborneState : PlayerState
     }
 
     public override void FixedUpdate() {
-        if (flipGravityScale == 1 && rigidBody.velocity.y <= -maxVelocityY ||
-            flipGravityScale == -1 && rigidBody.velocity.y >= maxVelocityY)
+        if (controller.FlipGravityScale == 1 && rigidBody.velocity.y <= -maxVelocityY ||
+            controller.FlipGravityScale == -1 && rigidBody.velocity.y >= maxVelocityY)
         {
             maxVelocityFix = 0.02f;
         }

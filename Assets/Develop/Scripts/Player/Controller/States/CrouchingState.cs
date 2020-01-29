@@ -52,7 +52,7 @@ public class CrouchingState : PlayerState
             controller.ChangeState(IdleState.INSTANCE);
         }
 
-        if (rigidBody.velocity.y * flipGravityScale < 0.0f) {
+        if (rigidBody.velocity.y * controller.FlipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
         }
 

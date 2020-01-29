@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool hasAirJumped = false;
     [SerializeField] private bool hasDashed = false;
     [SerializeField] private bool canUncrouch = false;
+    [SerializeField] private int flipGravityScale = 1;
     [SerializeField] private int wallTrigger = 0;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanism;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;
     public bool CanUncrouch { get => canUncrouch; set => canUncrouch = value; }
+    public int FlipGravityScale { get => flipGravityScale; set => flipGravityScale = value; }
     public int WallTrigger { get => wallTrigger; set => wallTrigger = value; }
     public float JumpTime { get; set; }
     public float JumpButtonPressTime { get; set; }
@@ -101,5 +103,10 @@ public class PlayerController : MonoBehaviour
     } 
     public PlayerState GetPreviousState() {
         return previousState;
+    }
+    public void ChangeFlipGravity()
+    {
+        flipGravityScale *= -1;
+        currentState.UpdateGravity();
     }
 }

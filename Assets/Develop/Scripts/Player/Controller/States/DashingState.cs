@@ -15,7 +15,7 @@ public class DashingState : PlayerState
         controller.HasDashed = true;
         controller.DashTime = Time.time;
 
-        controller.TargetVelocity = new Vector2((int)controller.Dir * dashSpeed * flipGravityScale, 0);
+        controller.TargetVelocity = new Vector2((int)controller.Dir * dashSpeed * controller.FlipGravityScale, 0);
         rigidBody.gravityScale = 0;
     }
 
@@ -43,6 +43,6 @@ public class DashingState : PlayerState
 
     public override void Exit()
     {
-        rigidBody.gravityScale = baseGravityScale * flipGravityScale;
+        rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
     }
 }
