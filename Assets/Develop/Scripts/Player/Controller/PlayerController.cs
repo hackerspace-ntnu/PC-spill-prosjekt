@@ -23,13 +23,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SkeletonMecanim skeletonMecanism;
     [SerializeField] private int maxHealth;
     [SerializeField] private float invunerabilityTime;
-
-
-    private int currentHealth;
+    [SerializeField] private int currentHealth;
+    [SerializeField] private float knockbackDuration;
+    [SerializeField] private bool knockedBack;
     private bool invunerable = false;
 
+    public bool KnockedBack { get => knockedBack; set => knockedBack = value; }
     public bool Invunerable { get => invunerable; set => invunerable = value; }
-
+    public float KnockBackDuration { get => knockbackDuration; set => knockbackDuration = value; }
     public float InvunerabilityTime { get => invunerabilityTime; set => invunerabilityTime = value; }
     public int CurrentHealth { get => currentHealth; set => currentHealth = value;}
     public int MaxHealth { get => maxHealth; set => maxHealth = value; }
@@ -63,7 +64,7 @@ public class PlayerController : MonoBehaviour
         GrapplingState.INSTANCE.Init(this);
         IdleState.INSTANCE.Init(this);
         JumpingState.INSTANCE.Init(this);
-        KnockbackState.INSTANCE.Init(this);
+        KnockedBackState.INSTANCE.Init(this);
         WalkingState.INSTANCE.Init(this);
         WallClingingState.INSTANCE.Init(this);
         //If new states are added, remember to init them here.
@@ -78,7 +79,10 @@ public class PlayerController : MonoBehaviour
     {
         HandleInput();
         currentState.Update();
+        if (!KnockedBack)
+        {
 
+        }
         float velocity = currentState.GetXVelocity();
         if(velocity < -0.01f) {
             Dir = DIRECTION.LEFT;

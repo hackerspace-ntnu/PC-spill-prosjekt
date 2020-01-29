@@ -11,7 +11,7 @@ public class DamageBoxController : MonoBehaviour
     private bool givesKnockBack;
 
     [SerializeField]
-    private float force;
+    private Vector2 knockBackVelocity;
 
     [SerializeField]
     private int damage;
@@ -28,11 +28,20 @@ public class DamageBoxController : MonoBehaviour
     {
         
     }
-    private void OnTriggerEnter2D(Collision2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if(collision.collider.tag == "ColliderFullHeight" || collision.collider.tag == "ColliderCrouch")
+        print(collision.tag);
+        if(collision.tag == "ColliderFullHeigth" || collision.tag == "ColliderCrouch")
         {
-            collision.collider.GetComponentInParent<HealthController>().TakeDamage(damage);
+           
+            collision.GetComponentInParent<HealthController>().TakeDamage(damage);
+            if (givesKnockBack)
+            {
+                PlayerController controller = collision.GetComponentInParent<PlayerController>();
+                float dir = Mathf.Sign(collision.transform.position.x - transform.position.x);
+                controller.GetComponent<Rigidbody2D>().velocity = knockBackVelocity * new Vector2(dir, 1);
+                controller.ChangeState(KnockedBackState.INSTANCE);
+            }
         }
     }
 }

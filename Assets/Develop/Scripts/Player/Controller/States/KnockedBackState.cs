@@ -8,13 +8,16 @@ public class KnockedBackState : PlayerState
 
     public static readonly KnockedBackState INSTANCE = new KnockedBackState();
 
+
+    private float TimeOfEnter;
     public override string Name => "KNOCKED_BACK";
+    
 
     public override void Enter()
     {
         base.Enter();
+        TimeOfEnter = Time.time;
         controller.HasAirJumped = true;
-
     }
     public override void Update()
     {
@@ -22,12 +25,22 @@ public class KnockedBackState : PlayerState
     }
     public override void FixedUpdate()
     {
-        base.FixedUpdate();
+        //base.FixedUpdate();
+        if(TimeOfEnter + controller.KnockBackDuration < Time.time)
+        {
+            if(controller.Grounded)
+            {
+                controller.ChangeState(IdleState.INSTANCE);
+            }
+            else
+            {
+                controller.ChangeState(AirborneState.INSTANCE);
+            }
+        }
     }
 
     public override void Exit()
     {
         base.Exit();
-
     }
 }
