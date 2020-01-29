@@ -21,7 +21,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int wallTrigger = 0;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanism;
+    [SerializeField] private int maxHealth;
+    [SerializeField] private float invunerabilityTime;
 
+
+    private int currentHealth;
+    private bool invunerable = false;
+
+    public bool Invunerable { get => invunerable; set => invunerable = value; }
+
+    public float InvunerabilityTime { get => invunerabilityTime; set => invunerabilityTime = value; }
+    public int CurrentHealth { get => currentHealth; set => currentHealth = value;}
+    public int MaxHealth { get => maxHealth; set => maxHealth = value; }
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;

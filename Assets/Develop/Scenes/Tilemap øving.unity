@@ -2206,6 +2206,7 @@ GameObject:
   - component: {fileID: 955629976}
   - component: {fileID: 955629974}
   - component: {fileID: 955629975}
+  - component: {fileID: 955629977}
   m_Layer: 8
   m_Name: Sprite Player
   m_TagString: Player
@@ -2232,8 +2233,9 @@ MonoBehaviour:
   canUncrouch: 0
   wallTrigger: 0
   animator: {fileID: 266106638}
-  spriteDirection: 0
   skeletonMecanism: {fileID: 266106639}
+  maxHealth: 3
+  invunerabilityTime: 0.5
 --- !u!114 &955629974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2275,6 +2277,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2d8b18502ee0724aa744cf0a2f949e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &955629977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955629972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4acd7896260d01044bdfd43da4b87a6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!50 &955629979
