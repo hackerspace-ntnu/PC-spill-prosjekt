@@ -70,6 +70,8 @@ public abstract class PlayerState
 
     public virtual void Dash() { }
 
+    public virtual void ToggleGlitch() { }
+
     public virtual void UpdateGravity()
     {
         rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;

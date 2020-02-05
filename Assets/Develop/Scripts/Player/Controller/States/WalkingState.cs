@@ -31,7 +31,7 @@ public class WalkingState : PlayerState
             controller.ChangeState(AirborneState.INSTANCE);
         } 
 
-        Debug.Log(rigidBody.velocity.x);
+        //Debug.Log(rigidBody.velocity.x);
     }
 
     public override void FixedUpdate() {
@@ -53,7 +53,12 @@ public class WalkingState : PlayerState
 
     public override void Dash()
     {
-        if (Time.time - controller.DashTime > 0.4f)
-            controller.ChangeState(DashingState.INSTANCE);
+        if (Time.time - controller.DashTime > 0.4f) {
+            if (controller.GlitchActive) {
+                controller.ChangeState(GlitchDashingState.INSTANCE);
+            } else {
+                controller.ChangeState(DashingState.INSTANCE);
+            }
+        }
     }
 }

@@ -84,4 +84,19 @@ public class CrouchingState : PlayerState
             controller.JumpButtonPressTime = Time.time;
         }
     }
+
+    public override void Dash()
+    {
+        if (controller.CanUncrouch)
+        {
+            if (controller.GlitchActive)
+            {
+                controller.ChangeState(GlitchDashingState.INSTANCE);
+            }
+            else
+            {
+                controller.ChangeState(DashingState.INSTANCE);
+            }
+        }
+    }
 }

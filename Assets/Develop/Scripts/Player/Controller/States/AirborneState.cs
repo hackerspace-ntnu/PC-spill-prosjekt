@@ -23,7 +23,14 @@ public class AirborneState : PlayerState
         }
         else if (controller.WallTrigger != 0)
         {
-            controller.ChangeState(WallClingingState.INSTANCE);
+            if (controller.GlitchActive)
+            {
+                controller.ChangeState(GlitchWallClingingState.INSTANCE);
+            }
+            else
+            {
+                controller.ChangeState(WallClingingState.INSTANCE);
+            }
         }
 
         base.Update();
@@ -71,8 +78,15 @@ public class AirborneState : PlayerState
             controller.JumpButtonPressTime = Time.time;
     }
 
-    public override void Dash() {
-        if (!controller.HasDashed)
+    public override void Dash()
+    {
+        if (controller.GlitchActive)
+        {
+            controller.ChangeState(GlitchDashingState.INSTANCE);
+        }
+        else
+        {
             controller.ChangeState(DashingState.INSTANCE);
+        }
     }
 }
