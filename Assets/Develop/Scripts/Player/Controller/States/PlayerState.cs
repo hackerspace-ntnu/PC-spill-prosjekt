@@ -84,6 +84,7 @@ public abstract class PlayerState
 
     public virtual void Crouch() { }
 
+    public virtual void OnCollisionEnter2D(Collision2D collision) { }
     public float GetXVelocity() {
         return rigidBody.velocity.x;
     }

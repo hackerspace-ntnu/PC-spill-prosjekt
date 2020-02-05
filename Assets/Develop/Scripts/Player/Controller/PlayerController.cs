@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int currentHealth;
     [SerializeField] private float knockbackDuration;
     [SerializeField] private bool knockedBack;
+    [SerializeField] private PhysicsMaterial2D bouncyMaterial;
+    [SerializeField] private Collider2D bodyCollider;
     private bool invunerable = false;
 
     public bool KnockedBack { get => knockedBack; set => knockedBack = value; }
@@ -44,7 +46,8 @@ public class PlayerController : MonoBehaviour
     public Animator Animator { get => animator; }
     public SkeletonMecanim SkeletonMecanism { get => skeletonMecanism; }
     public DIRECTION Dir { get => dir; set => dir = value; }
-
+    public PhysicsMaterial2D BouncyMaterial { get => bouncyMaterial; }
+    public Collider2D BodyCollider { get => bodyCollider; }
     public void ChangeState(PlayerState newState)
     {
         previousState = currentState;
@@ -97,7 +100,10 @@ public class PlayerController : MonoBehaviour
     {
         currentState.FixedUpdate();
     }
-
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        currentState.OnCollisionEnter2D(collision);
+    }
     void HandleInput() {
 
         if(Input.GetButtonDown("Jump") && !hasAirJumped && Time.time >= JumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {

@@ -14,6 +14,9 @@ public class DamageBoxController : MonoBehaviour
     private Vector2 knockBackVelocity;
 
     [SerializeField]
+    private float knockBackDuration = 0f;
+
+    [SerializeField]
     private int damage;
 
     Collider2D damageBoxCollider;
@@ -33,11 +36,11 @@ public class DamageBoxController : MonoBehaviour
         print(collision.tag);
         if(collision.tag == "ColliderFullHeigth" || collision.tag == "ColliderCrouch")
         {
-           
+            PlayerController controller = collision.GetComponentInParent<PlayerController>();
             collision.GetComponentInParent<HealthController>().TakeDamage(damage);
-            if (givesKnockBack)
+            if (givesKnockBack && !controller.KnockedBack)
             {
-                PlayerController controller = collision.GetComponentInParent<PlayerController>();
+                controller.KnockBackDuration = knockBackDuration;
                 float dir = Mathf.Sign(collision.transform.position.x - transform.position.x);
                 controller.GetComponent<Rigidbody2D>().velocity = knockBackVelocity * new Vector2(dir, 1);
                 controller.ChangeState(KnockedBackState.INSTANCE);
