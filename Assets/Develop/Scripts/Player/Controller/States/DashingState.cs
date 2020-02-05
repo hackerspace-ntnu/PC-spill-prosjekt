@@ -17,6 +17,7 @@ public class DashingState : PlayerState
 
         controller.TargetVelocity = new Vector2((int)controller.Dir * dashSpeed * controller.FlipGravityScale, 0);
         rigidBody.gravityScale = 0;
+        controller.Animator.SetBool("Dash", true);
     }
 
     public override void Update()
@@ -44,5 +45,6 @@ public class DashingState : PlayerState
     public override void Exit()
     {
         rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
+        controller.Animator.SetBool("Dash", false);
     }
 }

@@ -43,6 +43,8 @@ public class CrouchingState : PlayerState
 
         colliderFullHeight.SetActive(false);
         controller.CanUncrouch = true;
+
+        controller.Animator.SetBool("Crouch", true);
     }
 
     public override void Update()
@@ -74,6 +76,8 @@ public class CrouchingState : PlayerState
 
         colliderCrouch.SetActive(false);
         crouchCeilingDetector.SetActive(false);
+
+        controller.Animator.SetBool("Crouch", false);
     }
 
     public override void Jump() {
