@@ -36,9 +36,13 @@ public abstract class PlayerState
 
     public virtual void Enter() {}
 
-    public virtual void Update() {
+    public virtual void Update()
+    {
         HandleHorizontalInput();
         controller.Animator.SetFloat("Hinput", Mathf.Abs(horizontalInput));
+
+        if (Input.GetButtonDown("Grapple"))
+            GrapplingState.INSTANCE.FireGrapplingHook();
     }
 
     public virtual void FixedUpdate() {
@@ -56,6 +60,8 @@ public abstract class PlayerState
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, 0);
     }
 
+    public virtual void OnTriggerEnter2D(Collider2D collider) {}
+
     public virtual void Exit() {}
 
     protected void HandleHorizontalInput()
@@ -69,6 +75,11 @@ public abstract class PlayerState
     public virtual void Crouch() { }
 
     public virtual void Dash() { }
+
+    public void OnGrapplingHookHit()
+    {
+        controller.ChangeState(GrapplingState.INSTANCE);
+    }
 
     public virtual void ToggleGlitch() { }
 

@@ -1,11 +1,9 @@
 fileFormatVersion: 2
-guid: 424900bd88b059e46b37923a44c18d06
+guid: 592861d9b7784704bbe88bffdfbb4f62
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - grapplingHook: {fileID: 1022005785054402, guid: 7ee82a784020bbb418ba9e56eebfe37d,
-      type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
