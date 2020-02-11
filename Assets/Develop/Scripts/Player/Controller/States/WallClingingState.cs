@@ -19,6 +19,13 @@ public class WallClingingState : PlayerState
     {
         HandleHorizontalInput();
 
+
+        if (controller.WallTrigger == 1) {
+            controller.SkeletonMecanism.skeleton.ScaleX = 1;
+        } else {
+            controller.SkeletonMecanism.skeleton.ScaleX = -1;
+        }
+
         if (Input.GetButtonDown("Jump") || Time.time - controller.JumpButtonPressTime < 0.2f)
         {
             //rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;

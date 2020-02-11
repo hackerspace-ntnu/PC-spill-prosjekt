@@ -31,7 +31,7 @@ public class WalkingState : PlayerState
             controller.ChangeState(AirborneState.INSTANCE);
         } 
 
-        Debug.Log(rigidBody.velocity.x);
+        //Debug.Log(rigidBody.velocity.x);
     }
 
     public override void FixedUpdate() {

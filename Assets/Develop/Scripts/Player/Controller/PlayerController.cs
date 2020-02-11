@@ -7,6 +7,7 @@ using Spine.Unity;
 public class PlayerController : MonoBehaviour
 {
     private const float MINIMUM_TIME_BEFORE_AIR_JUMP = 0.1f;
+    private const float MOVE_TRESHOLD = 0.01f;
 
     private PlayerState currentState;
     private PlayerState previousState;
@@ -73,10 +74,10 @@ public class PlayerController : MonoBehaviour
         currentState.Update();
 
         float velocity = currentState.GetXVelocity();
-        if(velocity < -0.01f) {
+        if(velocity < -MOVE_TRESHOLD) {
             Dir = DIRECTION.LEFT;
             skeletonMecanism.skeleton.ScaleX = -1;
-        } else if (velocity > 0.01f) {
+        } else if (velocity > MOVE_TRESHOLD) {
             Dir = DIRECTION.RIGHT;
             skeletonMecanism.skeleton.ScaleX = 1;
         }
