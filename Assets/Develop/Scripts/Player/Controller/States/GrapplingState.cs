@@ -42,7 +42,11 @@ public class GrapplingState : PlayerState
 
     public override void Update()
     {
-
+        if (Input.GetButtonDown("Jump"))
+        {
+            firedHook.Destroy();
+            controller.ChangeState(JumpingState.INSTANCE);
+        }
     }
 
     public override void FixedUpdate()

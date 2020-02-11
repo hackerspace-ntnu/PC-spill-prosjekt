@@ -14,6 +14,11 @@ public class GrapplingHook : MonoBehaviour
     private Vector3 direction;
     private bool stopped = false;
 
+    public void Destroy()
+    {
+        Destroy(gameObject);
+    }
+
     void Start()
     {
         direction = VectorUtils.GetDirectionToVector(playerController.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -32,9 +37,7 @@ public class GrapplingHook : MonoBehaviour
         {
             Stop();
             grapplingState.OnGrapplingHookStopped();
-            // Place the hook in the final position:
-            Vector3 directionFromController = VectorUtils.GetDirectionToVector(playerPos, transform.position);
-            transform.position = VectorUtils.ExtendVectorInDirection(playerPos, directionFromController, maxFiringLength);
+            Destroy();
         }
     }
 
