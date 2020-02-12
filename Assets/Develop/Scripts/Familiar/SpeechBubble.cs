@@ -10,12 +10,12 @@ public class SpeechBubble : MonoBehaviour {
     public Text bubbleText;
 
     private RectTransform textboxPanel;
-    private Direction direction;
+    private DIRECTION direction;
 
     // Use this for initialization
     void Start () {
         panel.SetActive(false);
-        direction = Direction.RIGHT;
+        direction = DIRECTION.RIGHT;
         textboxPanel = panel.GetComponent<RectTransform>();
 	}
 	
@@ -26,7 +26,7 @@ public class SpeechBubble : MonoBehaviour {
 
 
     // Flip side of speechBubble if directions are different.
-    public void Flip(Direction dir) {
+    public void Flip(DIRECTION dir) {
         if(dir != direction) {
             textboxPanel.anchoredPosition = new Vector2(textboxPanel.anchoredPosition.x * -1.0f, textboxPanel.anchoredPosition.y);
             direction = dir;

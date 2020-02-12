@@ -12,7 +12,10 @@ public class IdleState : WalkingState
     private IdleState() {}
 
     public override void Enter() {
-        base.Enter();
+        controller.HasAirJumped = false;
+        controller.HasDashed = false;
+        //controller.Animator.SetBool("Run", false);
+        controller.Animator.SetBool("Idle", true);
     }
 
     public override void Update()
@@ -29,5 +32,6 @@ public class IdleState : WalkingState
 
     public override void Exit() {
         base.Exit();
+        controller.Animator.SetBool("Idle", false);
     }
 }

@@ -43,16 +43,18 @@ public class CrouchingState : PlayerState
 
         colliderFullHeight.SetActive(false);
         controller.CanUncrouch = true;
+
+        controller.Animator.SetBool("Crouch", true);
+
     }
 
     public override void Update()
     {
-
         if (!Input.GetButton("Crouch") && controller.CanUncrouch) {
             controller.ChangeState(IdleState.INSTANCE);
         }
 
-        if (rigidBody.velocity.y * flipGravityScale < -0.1f) {
+        if (rigidBody.velocity.y * controller.FlipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
         }
 
@@ -77,8 +79,31 @@ public class CrouchingState : PlayerState
     }
 
     public override void Jump() {
-        if(controller.CanUncrouch) {
+        if (controller.CanUncrouch) {
             controller.ChangeState(JumpingState.INSTANCE);
         }
+        else {
+            controller.JumpButtonPressTime = Time.time;
+        }
+    }
+
+    public override void Dash()
+    {
+        if (controller.CanUncrouch)
+        {
+            if (controller.GlitchActive)
+            {
+                controller.ChangeState(GlitchDashingState.INSTANCE);
+            }
+            else
+            {
+                controller.ChangeState(DashingState.INSTANCE);
+            }
+        }
+    }
+
+    public override void ToggleGlitch()
+    {
+        controller.ChangeState(GlitchCrouchingState.INSTANCE);
     }
 }

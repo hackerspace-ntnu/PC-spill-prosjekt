@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,34 +8,29 @@ public class WallClingingState : PlayerState
     public static readonly WallClingingState INSTANCE = new WallClingingState();
 
     public override string Name => "WALL_CLINGING";
-    private int wallJumpDirection;
 
     public override void Enter()
     {
-        HandleHorizontalInput();
+        if (Time.time - controller.JumpButtonPressTime < 0.2f)
+        {
+            controller.ChangeState(JumpingState.INSTANCE);
+            return;
+        }
+        controller.Animator.SetBool("WallCling", true);
+
     }
 
     public override void Update()
     {
         HandleHorizontalInput();
 
-        if (rigidBody.velocity.y * flipGravityScale <= 0)
-            rigidBody.gravityScale = WALL_SLIDE_GRAVITY_SCALE * flipGravityScale;
-
-        // if dashinput, Dash
-
-        if (Input.GetButtonDown("Jump"))
+        if (Math.Sign(horizontalInput) == -controller.WallTrigger)
         {
-            //rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
-            controller.JumpTime= Time.time;
-            controller.HasDashed = false;
-            controller.HasAirJumped = false;
-            controller.ChangeState(JumpingState.INSTANCE);
+            maxVelocityY = wallSlideMaxVelocityY;
         }
         else
         {
-            //rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
-           //maxVelocityY = 2f;
+            maxVelocityY = baseMaxVelocityY;
         }
 
         if (controller.Grounded)
@@ -49,11 +45,30 @@ public class WallClingingState : PlayerState
 
     public override void FixedUpdate()
     {
-
+        base.FixedUpdate();
     }
 
     public override void Exit()
     {
+        controller.Animator.SetBool("WallCling", false);
+        maxVelocityY = baseMaxVelocityY;
+    }
 
+    public override void Jump()
+    {
+        controller.ChangeState(JumpingState.INSTANCE);
+    }
+
+    public override void Dash()
+    {
+        if (!controller.HasDashed)
+        {
+            controller.ChangeState(DashingState.INSTANCE);
+        }
+    }
+
+    public override void ToggleGlitch()
+    {
+        controller.ChangeState(GlitchWallClingingState.INSTANCE);
     }
 }

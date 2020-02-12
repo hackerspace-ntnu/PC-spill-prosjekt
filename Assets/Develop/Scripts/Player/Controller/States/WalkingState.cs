@@ -16,18 +16,22 @@ public class WalkingState : PlayerState
     public override void Enter() {
         base.Enter();
         controller.HasAirJumped = false;
+        controller.HasDashed = false;
+        controller.Animator.SetBool("Run", true);
+        
     }
 
     public override void Update()
     {
+        base.Update();
 
         if (Math.Abs(rigidBody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
             controller.ChangeState(IdleState.INSTANCE);
-        } else if (rigidBody.velocity.y * flipGravityScale < 0.0f) {
+        } else if (!controller.Grounded || rigidBody.velocity.y * controller.FlipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
-        }
+        } 
 
-        base.Update();
+        //Debug.Log(rigidBody.velocity.x);
     }
 
     public override void FixedUpdate() {
@@ -36,6 +40,7 @@ public class WalkingState : PlayerState
 
     public override void Exit() {
         base.Exit();
+        controller.Animator.SetBool("Run", false);
     }
 
     public override void Jump() {
@@ -43,6 +48,24 @@ public class WalkingState : PlayerState
     }
 
     public override void Crouch() {
-        controller.ChangeState(CrouchingState.INSTANCE);
+        if (controller.GlitchActive)
+        {
+            controller.ChangeState(GlitchCrouchingState.INSTANCE);
+        }
+        else
+        {
+            controller.ChangeState(CrouchingState.INSTANCE);
+        }
+    }
+
+    public override void Dash()
+    {
+        if (Time.time - controller.DashTime > 0.4f) {
+            if (controller.GlitchActive) {
+                controller.ChangeState(GlitchDashingState.INSTANCE);
+            } else {
+                controller.ChangeState(DashingState.INSTANCE);
+            }
+        }
     }
 }

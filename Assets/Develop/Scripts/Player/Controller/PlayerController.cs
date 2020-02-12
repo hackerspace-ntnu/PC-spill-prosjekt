@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Spine.Unity;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -9,20 +10,35 @@ public class PlayerController : MonoBehaviour
 
     private PlayerState currentState;
     private PlayerState previousState;
+
+    private DIRECTION dir;
+
     [SerializeField] private string currentStateName;
     [SerializeField] private string previousStateName;
     [SerializeField] private bool hasAirJumped = false;
     [SerializeField] private bool hasDashed = false;
     [SerializeField] private bool canUncrouch = false;
+    [SerializeField] private bool glitchActive = false;
+    [SerializeField] private int flipGravityScale = 1;
     [SerializeField] private int wallTrigger = 0;
+    [SerializeField] private Animator animator;
+    [SerializeField] private SkeletonMecanim skeletonMecanism;
+    
 
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;
     public bool CanUncrouch { get => canUncrouch; set => canUncrouch = value; }
+    public bool GlitchActive { get => glitchActive; set => glitchActive = value; }
+    public int FlipGravityScale { get => flipGravityScale; set => flipGravityScale = value; }
     public int WallTrigger { get => wallTrigger; set => wallTrigger = value; }
     public float JumpTime { get; set; }
+    public float JumpButtonPressTime { get; set; }
+    public float DashTime { get; set; }
     public Vector2 TargetVelocity { get; set; }
+    public Animator Animator { get => animator; }
+    public SkeletonMecanim SkeletonMecanism { get => skeletonMecanism; }
+    public DIRECTION Dir { get => dir; set => dir = value; }
 
     public void ChangeState(PlayerState newState)
     {
@@ -40,6 +56,9 @@ public class PlayerController : MonoBehaviour
         AirborneState.INSTANCE.Init(this);
         CrouchingState.INSTANCE.Init(this);
         DashingState.INSTANCE.Init(this);
+        GlitchCrouchingState.INSTANCE.Init(this);
+        GlitchDashingState.INSTANCE.Init(this);
+        GlitchWallClingingState.INSTANCE.Init(this);
         GrapplingState.INSTANCE.Init(this);
         IdleState.INSTANCE.Init(this);
         JumpingState.INSTANCE.Init(this);
@@ -50,12 +69,23 @@ public class PlayerController : MonoBehaviour
 
         currentState = IdleState.INSTANCE;
         ChangeState(IdleState.INSTANCE);
+
+        Dir = DIRECTION.RIGHT;
     }
 
     void Update()
     {
         HandleInput();
         currentState.Update();
+
+        float velocity = currentState.GetXVelocity();
+        if(velocity * FlipGravityScale < -0.01f) {
+            Dir = DIRECTION.LEFT;
+            skeletonMecanism.skeleton.ScaleX = -1;
+        } else if (velocity * FlipGravityScale > 0.01f) {
+            Dir = DIRECTION.RIGHT;
+            skeletonMecanism.skeleton.ScaleX = 1;
+        }
     }
 
     void FixedUpdate()
@@ -65,9 +95,17 @@ public class PlayerController : MonoBehaviour
 
     void HandleInput() {
 
-        if(Input.GetButtonDown("Jump") && !hasAirJumped && Time.time >= JumpTime + MINIMUM_TIME_BEFORE_AIR_JUMP) {
+        if (Input.GetButtonDown("GlitchToggle"))
+        {
+            glitchActive = !glitchActive;
+            currentState.ToggleGlitch();
+        }
+
+        if (Input.GetButtonDown("Dash") && !hasDashed) {
+            currentState.Dash();
+        } else if(Input.GetButtonDown("Jump")) {
             currentState.Jump();
-        } else if(Input.GetButtonDown("Crouch")) {
+        } else if(Input.GetButton("Crouch")) {
             currentState.Crouch();
         }
     }
@@ -77,5 +115,10 @@ public class PlayerController : MonoBehaviour
     } 
     public PlayerState GetPreviousState() {
         return previousState;
+    }
+    public void ChangeFlipGravity()
+    {
+        flipGravityScale *= -1;
+        currentState.UpdateGravity();
     }
 }
