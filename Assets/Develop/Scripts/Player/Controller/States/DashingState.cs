@@ -53,4 +53,19 @@ public class DashingState : PlayerState
     {
         rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
     }
+
+    public override void Crouch()
+    {
+        if (controller.Grounded)
+        {
+            if (controller.GlitchActive)
+            {
+                controller.ChangeState(GlitchCrouchingState.INSTANCE);
+            }
+            else
+            {
+                controller.ChangeState(CrouchingState.INSTANCE);
+            }
+        }
+    }
 }

@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviour
         AirborneState.INSTANCE.Init(this);
         CrouchingState.INSTANCE.Init(this);
         DashingState.INSTANCE.Init(this);
+        GlitchCrouchingState.INSTANCE.Init(this);
         GlitchDashingState.INSTANCE.Init(this);
         GlitchWallClingingState.INSTANCE.Init(this);
         GrapplingState.INSTANCE.Init(this);

@@ -85,7 +85,7 @@ public class JumpingState : PlayerState
 
     public override void Jump()
     {
-        if (!controller.HasAirJumped && Time.time - controller.JumpTime > 0.2f)
+        if (!controller.HasAirJumped && controller.GlitchActive) // && Time.time - controller.JumpTime > 0.2f)
             AirJump();
         else
             controller.JumpButtonPressTime = Time.time;

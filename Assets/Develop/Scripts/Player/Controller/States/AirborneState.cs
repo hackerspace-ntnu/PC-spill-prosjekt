@@ -72,7 +72,7 @@ public class AirborneState : PlayerState
     }
 
     public override void Jump() {
-        if (!controller.HasAirJumped)
+        if (!controller.HasAirJumped && controller.GlitchActive)
             controller.ChangeState(JumpingState.INSTANCE);
         else
             controller.JumpButtonPressTime = Time.time;

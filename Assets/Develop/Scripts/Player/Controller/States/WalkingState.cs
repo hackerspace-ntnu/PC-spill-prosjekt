@@ -48,7 +48,14 @@ public class WalkingState : PlayerState
     }
 
     public override void Crouch() {
-        controller.ChangeState(CrouchingState.INSTANCE);
+        if (controller.GlitchActive)
+        {
+            controller.ChangeState(GlitchCrouchingState.INSTANCE);
+        }
+        else
+        {
+            controller.ChangeState(CrouchingState.INSTANCE);
+        }
     }
 
     public override void Dash()
