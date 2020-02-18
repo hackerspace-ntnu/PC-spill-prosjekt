@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WallClingingState : PlayerState
+public class GlitchWallClingingState : WallClingingState
 {
-    public static readonly WallClingingState INSTANCE = new WallClingingState();
+    public new static readonly GlitchWallClingingState INSTANCE = new GlitchWallClingingState();
 
-    public override string Name => "WALL_CLINGING";
+    public override string Name => "GLITCH_WALL_CLINGING";
 
     public override void Enter()
     {
@@ -16,8 +16,7 @@ public class WallClingingState : PlayerState
             controller.ChangeState(JumpingState.INSTANCE);
             return;
         }
-        controller.Animator.SetBool("WallCling", true);
-
+        controller.Animator.SetBool("GlitchWallCling", true);
     }
 
     public override void Update()
@@ -26,11 +25,11 @@ public class WallClingingState : PlayerState
 
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)
         {
-            maxVelocityY = wallSlideMaxVelocityY;
+            rigidBody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }
         else
         {
-            maxVelocityY = baseMaxVelocityY;
+            rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
         if (controller.Grounded)
@@ -51,7 +50,7 @@ public class WallClingingState : PlayerState
     public override void Exit()
     {
         controller.Animator.SetBool("WallCling", false);
-        maxVelocityY = baseMaxVelocityY;
+        rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     public override void Jump()
@@ -69,6 +68,6 @@ public class WallClingingState : PlayerState
 
     public override void ToggleGlitch()
     {
-        controller.ChangeState(GlitchWallClingingState.INSTANCE);
+        controller.ChangeState(WallClingingState.INSTANCE);
     }
 }

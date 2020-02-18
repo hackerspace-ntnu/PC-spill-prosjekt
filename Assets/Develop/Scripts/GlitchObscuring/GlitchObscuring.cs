@@ -9,16 +9,45 @@ public class GlitchObscuring : MonoBehaviour
     public GameObject glitchMask;
     public Transform glitchMeter;
     public GlobalScript globalScript;
-    float sliderValue;
-    float maskSpawnRate;
 
-    // Start is called before the first frame update
+    float maskSpawnRate; // increase to increase glitch-effect
+    float sliderValue;
+    float timer = 0; // mask spawn counter
+    float spawnUpperLimit = 10; // decrease to increase glitch-effect
+
     private void Start()
     {
         sliderValue = 0;
-        maskSpawnRate = 20;
+        maskSpawnRate = 15;
         StartCoroutine(ReduceGlitchmeter());
+        StartCoroutine(MaskTimer());
     }
+
+    public IEnumerator MaskTimer()
+    {
+        float diff = 1.0f;
+        while(true)
+        {
+            yield return new WaitForSeconds(diff/maskSpawnRate);
+            if(sliderValue > 0)
+            {
+                timer += diff;
+                print("Timer: " + timer);
+            }
+            if (timer > spawnUpperLimit)
+            {
+                SpawnCircle();
+                timer = 0;
+            }
+        }
+    }
+    public void setSpawnUpperLimit(float sliderValue)
+    {
+        // low slider value = high spawn upper limit
+        float inverseSliderValue = 100 - sliderValue;
+        this.spawnUpperLimit = inverseSliderValue / maskSpawnRate;
+    }
+    
 
 
     public void ChangeGlitchValue(int val)
@@ -26,66 +55,30 @@ public class GlitchObscuring : MonoBehaviour
         sliderValue += val;
         if (sliderValue > 100)
             sliderValue = 100;
-        UpdateGlitchmeter();
+        setSpawnUpperLimit(sliderValue);
     }
-    public void UpdateGlitchmeter()
-    {
-        StopAllCoroutines();
-        //glitchText.text = Mathf.Round(sliderValue).ToString() + "%";
-        maskSpawnRate = 1000 / (sliderValue + 1);
-        //Debug.Log("slidervalue: " + sliderValue);
-        //Debug.Log("Maskspawnrate: " + maskSpawnRate);
-        glitchMeter.localScale = new Vector3(0.4f*(sliderValue/100), 0.05f, 1f);
-        StartCoroutine(SpawnGlitchMasks());
-        StartCoroutine(ReduceGlitchmeter());
-
-    }
+   
     public IEnumerator ReduceGlitchmeter() // Reduces glitch meter value every 0.4 seconds if no glitch is active and slidervalue is above 0
     {
+        int sliderReductionRate = 5; // how fast the slider goes down
         while(true)
         {
             yield return new WaitForSeconds(0.4f);
-            if (sliderValue == 1)
-                sliderValue = 0;
-
-            if (sliderValue > 0 && !globalScript.glitchActive)
+            if (sliderValue <= 4)
             {
-                sliderValue-=5;
+                sliderValue = 0; // set slider value to 0
+                timer = 0; // reset timer
+            }
+
+            if (sliderValue > 0 && !globalScript.glitchActive) // if the slider value is above 0 and a glitch is not being used
+            {
+                sliderValue-= sliderReductionRate;
                 Debug.Log(sliderValue);
-                UpdateGlitchmeter();
             }
                 
         }
     }
-    public IEnumerator SpawnGlitchMasks()
-    {
-        int iMax=0;
-        if (maskSpawnRate < 10)
-            iMax = 13;
-        else if (maskSpawnRate < 15)
-            iMax = 10; // 0-15
-        else if (maskSpawnRate < 20)
-            iMax = 8; // 15-30
-        else if (maskSpawnRate < 30)
-            iMax = 5; // 30-40
-        else if (maskSpawnRate < 80)
-            iMax = 3;
-        else if (maskSpawnRate < 140)
-            iMax = 2;
-        else
-            iMax = 1;
-        Debug.Log("maskSpawnrate: " + maskSpawnRate + ", iMax = " + iMax);
-        // if the mask spawn rate is low enough to "bother" spawning glitch masks
-        while(maskSpawnRate < 100)
-        {
-            // Spawn iMax masking objects and wait (adjustable)
-            for(int i = 0; i<iMax; i++)
-            {
-                SpawnCircle();
-            }
-            yield return new WaitForSeconds(maskSpawnRate);
-        }
-    }
+    
     private void SpawnCircle() // Spawn masking circle (was previously a circle, and thus the function name is SpawnCircle)
     {
         GameObject circle = Instantiate(glitchMask);
