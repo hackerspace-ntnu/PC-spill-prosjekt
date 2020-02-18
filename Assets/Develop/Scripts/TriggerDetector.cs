@@ -4,48 +4,60 @@ using UnityEngine;
 
 public class TriggerDetector : MonoBehaviour
 {
+    [SerializeField]
+    private PlayerController controller;
 
-    private PlayerModel model;
+    private int CeilingCount = 0;   // Keep track of number of objects above player when crouching.
 
     // Use this for initialization
     void Start()
     {
-        model = GameObject.Find("Models").GetComponent<PlayerModel>();
+        controller = transform.parent.GetComponent<PlayerController>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.GetComponent<Collider2D>().tag == "Standard")
         {
-            if (this.gameObject.name == "Ground Sensor")
-            {
-                model.MoveState = MovementStat.STANDARD;
-                model.PlayerInAirState = InAirState.ON_GROUND;
-                model.WallTrigger = 0;
-                model.IsGrounded = true;
+
+            if (this.gameObject.tag == "CeilingDetector") {
+                CeilingCount++;
+                controller.CanUncrouch = false;
             }
 
-
-            else if (this.gameObject.name == "Left Sensor")
+            if (this.gameObject.name == "Ground Trigger")
             {
-                model.WallTrigger = 1;
+                controller.Grounded = true;
+            }
+            else if (this.gameObject.name == "Wall Trigger Left")
+            {
+                controller.WallTrigger = 1;
             }
             else
             {
-                model.WallTrigger = -1;
+                controller.WallTrigger = -1;
             }
         }
     }
 
-    private void OnTriggerExit2D(Collider2D col)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        if ((this.gameObject.name == "Ground Sensor"))
+
+        if (collision.GetComponent<Collider2D>().tag == "Standard" && this.gameObject.tag == "CeilingDetector") {
+            CeilingCount--;
+
+            if (CeilingCount <= 0) {
+                controller.CanUncrouch = true;
+            }
+        }
+
+        if (this.gameObject.name == "Ground Trigger")
         {
-            model.IsGrounded = false;
+            controller.Grounded = false;
         }
         else
         {
-            model.WallTrigger = 0;
+            controller.WallTrigger = 0;
         }
     }
 }
