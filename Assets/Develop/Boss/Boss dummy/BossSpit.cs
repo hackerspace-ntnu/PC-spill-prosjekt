@@ -27,11 +27,21 @@ public class BossSpit : MonoBehaviour
         StartCoroutine(EasySpit());
     }
 
+    /// <summary>
+    /// Must be separate from OnDisable, as this script might be disabled from override state.
+    /// </summary>
+    public void Disable()
+    {
+        bc.updateState(this);
+        enabled = false;
+    }
 
+    /// <summary>
+    /// Must stop all Coroutines
+    /// </summary>
     private void OnDisable()
     {
         StopAllCoroutines();
-        bc.updateState(this);
     }
 
 
@@ -108,7 +118,7 @@ public class BossSpit : MonoBehaviour
         }
 
         // If we end up here we find a new state for the bossController
-        enabled = false;
+        Disable();
     }
 
     void SpawnSpitBullet(float scale, float speed, Vector2 target)

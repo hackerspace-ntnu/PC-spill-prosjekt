@@ -6,6 +6,8 @@ public class BossHealth : MonoBehaviour
 {
     public int health = 100;
 
+    
+
     private BossController bc;
 
     // Start is called before the first frame update

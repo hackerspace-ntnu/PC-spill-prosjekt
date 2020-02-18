@@ -13,6 +13,8 @@ public class BossController : MonoBehaviour
     private MonoBehaviour activeState;
     public bool overrideState = false;
 
+    public int bossMode = 1;
+
     private void Awake()
     {
         // Play boss cutscene or something
@@ -21,7 +23,6 @@ public class BossController : MonoBehaviour
     void Start()
     {
         // Set boss state to it's starting state, potencially an attack
-
         bossJump = GetComponent<BossJump>();
         bossSpit = GetComponent<BossSpit>();
         bossBGCrawl = GetComponent<BossBGCrawl>();
@@ -43,29 +44,43 @@ public class BossController : MonoBehaviour
 
     public void updateState(MonoBehaviour requestor)
     {
-        if (overrideState) 
+        if (overrideState)
         {
             if (requestor == bossHealth)
             {
-                print(1);
+                print("Override State");
                 activeState.enabled = false;
-                updateActiveState(bossDamage);
                 overrideState = false;
             }
         }
-        else
-        {
-            if (requestor == bossSpit)
+
+        else {
+            switch (bossMode)
             {
-                updateActiveState(bossBGCrawl);
-            }
-            else if (requestor == bossBGCrawl)
-            {
-                updateActiveState(bossSpit);
-            }
-            else if (requestor == bossDamage)
-            {
-                updateActiveState(bossBGCrawl);
+                case 1:
+                    if (requestor == bossSpit)
+                    {
+                        updateActiveState(bossBGCrawl);
+                    }
+                    else if (requestor == bossBGCrawl)
+                    {
+                        updateActiveState(bossSpit);
+                    }
+                    else if (requestor == bossDamage)
+                    {
+                        updateActiveState(bossBGCrawl);
+                    }
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    print("Death");
+                    break;
+                default:
+                    print("Should not be here");
+                    break;
             }
         }
     }
@@ -73,6 +88,6 @@ public class BossController : MonoBehaviour
     private void updateActiveState(MonoBehaviour newState)
     {
         activeState = newState;
-        newState.enabled = true;
+        activeState.enabled = true;
     }
 }

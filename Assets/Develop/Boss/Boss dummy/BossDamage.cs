@@ -21,10 +21,16 @@ public class BossDamage : MonoBehaviour
         
     }
 
+    public void Disable()
+    {
+        bc.updateState(this);
+        enabled = false;
+    }
+
     private void OnDisable()
     {
         StopAllCoroutines();
-        bc.updateState(this);
+
     }
 
     private void OnEnable()

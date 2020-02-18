@@ -40,7 +40,7 @@ public class BossBGCrawl : MonoBehaviour
         count++;
         if (count == positions.Count)
         {
-            GetComponent<BossBGCrawl>().enabled = false;
+            Disable();
         }
     }
 
@@ -288,12 +288,19 @@ public class BossBGCrawl : MonoBehaviour
         count = 0;
     }
 
-
+    /// <summary>
+    /// Must be separate from OnDisable, as this script might be disabled from override state.
+    /// </summary>
+    public void Disable()
+    {
+        bc.updateState(this);
+        enabled = false;
+    }
     /// <summary>
     /// Sends a message to the state machine that this state has ended
     /// </summary>
     private void OnDisable()
     {
-        bc.updateState(this);
+        
     }
 }
