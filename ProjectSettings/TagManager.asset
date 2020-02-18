@@ -11,6 +11,10 @@ TagManager:
   - ColliderFullHeigth
   - ColliderCrouch
   - CeilingDetector
+  - Boss
+  - Wall
+  - Ground
+  - Roof
   layers:
   - Default
   - TransparentFX
