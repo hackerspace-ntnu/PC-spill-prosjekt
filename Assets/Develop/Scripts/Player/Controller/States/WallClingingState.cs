@@ -24,6 +24,13 @@ public class WallClingingState : PlayerState
     {
         HandleHorizontalInput();
 
+
+        if (controller.WallTrigger == 1) {
+            controller.SkeletonMecanism.skeleton.ScaleX = 1;
+        } else {
+            controller.SkeletonMecanism.skeleton.ScaleX = -1;
+        }
+
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)
         {
             maxVelocityY = wallSlideMaxVelocityY;
