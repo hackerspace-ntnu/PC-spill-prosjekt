@@ -45,7 +45,10 @@ public class CrouchingState : PlayerState
         controller.CanUncrouch = true;
 
         controller.Animator.SetBool("Crouch", true);
+<<<<<<< HEAD
+=======
 
+>>>>>>> Develop
     }
 
     public override void Update()

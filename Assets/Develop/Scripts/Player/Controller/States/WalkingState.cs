@@ -48,12 +48,24 @@ public class WalkingState : PlayerState
     }
 
     public override void Crouch() {
-        controller.ChangeState(CrouchingState.INSTANCE);
+        if (controller.GlitchActive)
+        {
+            controller.ChangeState(GlitchCrouchingState.INSTANCE);
+        }
+        else
+        {
+            controller.ChangeState(CrouchingState.INSTANCE);
+        }
     }
 
     public override void Dash()
     {
-        if (Time.time - controller.DashTime > 0.4f)
-            controller.ChangeState(DashingState.INSTANCE);
+        if (Time.time - controller.DashTime > 0.4f) {
+            if (controller.GlitchActive) {
+                controller.ChangeState(GlitchDashingState.INSTANCE);
+            } else {
+                controller.ChangeState(DashingState.INSTANCE);
+            }
+        }
     }
 }

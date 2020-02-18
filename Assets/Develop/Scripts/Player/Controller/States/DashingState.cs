@@ -8,7 +8,7 @@ public class DashingState : PlayerState
 
     public override string Name => "DASHING";
 
-    private float dashDuration = 0.2f;
+    protected float dashDuration = 0.2f;
 
     public override void Enter()
     {
@@ -23,8 +23,16 @@ public class DashingState : PlayerState
     public override void Update()
     {
         if (controller.WallTrigger != 0)
-            controller.ChangeState(WallClingingState.INSTANCE);
-
+        {
+            if (controller.GlitchActive)
+            {
+                controller.ChangeState(GlitchWallClingingState.INSTANCE);
+            }
+            else
+            {
+                controller.ChangeState(WallClingingState.INSTANCE);
+            }
+        }
         else if (Time.time - controller.DashTime >= dashDuration)
         {
             if (controller.Grounded)
@@ -46,5 +54,20 @@ public class DashingState : PlayerState
     {
         rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
         controller.Animator.SetBool("Dash", false);
+    }
+
+    public override void Crouch()
+    {
+        if (controller.Grounded)
+        {
+            if (controller.GlitchActive)
+            {
+                controller.ChangeState(GlitchCrouchingState.INSTANCE);
+            }
+            else
+            {
+                controller.ChangeState(CrouchingState.INSTANCE);
+            }
+        }
     }
 }

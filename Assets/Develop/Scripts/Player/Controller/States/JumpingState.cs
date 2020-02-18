@@ -20,7 +20,7 @@ public class JumpingState : PlayerState
         //Since all other logic is tested in these states, this logic is all we need
         if (prevInstance == AirborneState.INSTANCE) {
             AirJump();
-        } else if (prevInstance == WallClingingState.INSTANCE) {
+        } else if (prevInstance == WallClingingState.INSTANCE || prevInstance == GlitchWallClingingState.INSTANCE) {
             WallJump();
         } else {
             GroundJump();
@@ -29,9 +29,16 @@ public class JumpingState : PlayerState
 
     public override void Update()
     {
-        if (controller.WallTrigger != 0 && Time.time - controller.JumpTime > 0.1f)
+        if (controller.WallTrigger != 0 && Time.time - controller.JumpTime > 0.2f)
         {
-            controller.ChangeState(WallClingingState.INSTANCE);
+            if (controller.GlitchActive)
+            {
+                controller.ChangeState(GlitchWallClingingState.INSTANCE);
+            }
+            else
+            {
+                controller.ChangeState(WallClingingState.INSTANCE);
+            }
         }
         else if (rigidBody.velocity.y * controller.FlipGravityScale < 0.0f && controller.TargetVelocity.y == 0)
         {
@@ -78,7 +85,7 @@ public class JumpingState : PlayerState
 
     public override void Jump()
     {
-        if (Time.time - controller.JumpTime > 0.2f)
+        if (!controller.HasAirJumped && controller.GlitchActive) // && Time.time - controller.JumpTime > 0.2f)
             AirJump();
         else
             controller.JumpButtonPressTime = Time.time;
@@ -117,7 +124,11 @@ public class JumpingState : PlayerState
 
     public override void Dash()
     {
-        if (!controller.HasDashed)
+        if (controller.GlitchActive)
+        {
+            controller.ChangeState(GlitchDashingState.INSTANCE);
+        }
+        else
         {
             controller.ChangeState(DashingState.INSTANCE);
         }

@@ -24,6 +24,7 @@ public class WallClingingState : PlayerState
     {
         HandleHorizontalInput();
 
+<<<<<<< HEAD
 
         if (controller.WallTrigger == 1) {
             controller.SkeletonMecanism.skeleton.ScaleX = 1;
@@ -31,6 +32,17 @@ public class WallClingingState : PlayerState
             controller.SkeletonMecanism.skeleton.ScaleX = -1;
         }
 
+        if (Input.GetButtonDown("Jump") || Time.time - controller.JumpButtonPressTime < 0.2f)
+        {
+            //rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            //controller.JumpTime = Time.time;
+            //controller.HasDashed = false;
+            //controller.HasAirJumped = false;
+            controller.ChangeState(JumpingState.INSTANCE);
+        }
+
+=======
+>>>>>>> Develop
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)
         {
             maxVelocityY = wallSlideMaxVelocityY;
