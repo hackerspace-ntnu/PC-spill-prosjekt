@@ -24,7 +24,10 @@ public class FamiliarTwitchController : MonoBehaviour
 
         // Set random twitch movment when familiar is close to player position.
         if (objToFollow.tag == "Player" && pRBody.velocity.magnitude < twitchTolerance) {
-            transform.localPosition = new Vector3(Random.Range(-twitchFactor, twitchFactor), Random.Range(-twitchFactor, twitchFactor));
+            
+            if(objToFollow.GetComponent<Rigidbody2D>().velocity.magnitude < 0.01f) {
+                transform.localPosition = new Vector3(Random.Range(-twitchFactor, twitchFactor), Random.Range(-twitchFactor, twitchFactor));
+            }
         } else {
             transform.localPosition = new Vector3(0.0f, 0.0f);
         }

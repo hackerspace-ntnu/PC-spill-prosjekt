@@ -11,6 +11,7 @@ TagManager:
   - ColliderFullHeigth
   - ColliderCrouch
   - CeilingDetector
+  - Skeleton
   layers:
   - Default
   - TransparentFX
