@@ -68,9 +68,7 @@ public abstract class PlayerState
 
     public virtual void Crouch() { }
 
-<<<<<<< HEAD
     public virtual void OnCollisionEnter2D(Collision2D collision) { }
-=======
     public virtual void Dash() { }
 
     public virtual void ToggleGlitch() { }
@@ -80,7 +78,6 @@ public abstract class PlayerState
         rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
     }
 
->>>>>>> develop
     public float GetXVelocity() {
         return rigidBody.velocity.x;
     }
