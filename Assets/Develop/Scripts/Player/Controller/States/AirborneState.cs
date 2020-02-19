@@ -23,17 +23,24 @@ public class AirborneState : PlayerState
         }
         else if (controller.WallTrigger != 0)
         {
-            controller.ChangeState(WallClingingState.INSTANCE);
+            if (controller.GlitchActive)
+            {
+                controller.ChangeState(GlitchWallClingingState.INSTANCE);
+            }
+            else
+            {
+                controller.ChangeState(WallClingingState.INSTANCE);
+            }
         }
 
         base.Update();
     }
 
     public override void FixedUpdate() {
-        if (Math.Sign(rigidBody.gravityScale) == 1 && rigidBody.velocity.y <= -maxVelocityY ||
-            Math.Sign(rigidBody.gravityScale) == -1 && rigidBody.velocity.y >= maxVelocityY)
+        if (controller.FlipGravityScale == 1 && rigidBody.velocity.y <= -maxVelocityY ||
+            controller.FlipGravityScale == -1 && rigidBody.velocity.y >= maxVelocityY)
         {
-            maxVelocityFix = 0.2f;
+            maxVelocityFix = 0.02f;
         }
         else
         {
@@ -51,19 +58,35 @@ public class AirborneState : PlayerState
             newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
         }
 
-        float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
+        float newVelocityY = - rigidBody.velocity.y * maxVelocityFix;
 
         rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
-        controller.TargetVelocity = Vector2.zero;
+        //controller.TargetVelocity = new Vector2(newVelocityX, 0);
     }
 
     public override void Exit()
     {
         base.Exit();
         controller.Animator.SetBool("Airborne", false);
+        controller.DashTime = 0f;
     }
 
     public override void Jump() {
-        controller.ChangeState(JumpingState.INSTANCE);
+        if (!controller.HasAirJumped && controller.GlitchActive)
+            controller.ChangeState(JumpingState.INSTANCE);
+        else
+            controller.JumpButtonPressTime = Time.time;
+    }
+
+    public override void Dash()
+    {
+        if (controller.GlitchActive)
+        {
+            controller.ChangeState(GlitchDashingState.INSTANCE);
+        }
+        else
+        {
+            controller.ChangeState(DashingState.INSTANCE);
+        }
     }
 }

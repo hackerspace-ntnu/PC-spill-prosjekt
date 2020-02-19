@@ -11,13 +11,25 @@ public class WallClingingState : PlayerState
 
     public override void Enter()
     {
-        HandleHorizontalInput();
+        if (Time.time - controller.JumpButtonPressTime < 0.2f)
+        {
+            controller.ChangeState(JumpingState.INSTANCE);
+            return;
+        }
         controller.Animator.SetBool("WallCling", true);
+
     }
 
     public override void Update()
     {
         HandleHorizontalInput();
+
+
+        if (controller.WallTrigger == 1) {
+            controller.SkeletonMecanism.skeleton.ScaleX = 1;
+        } else {
+            controller.SkeletonMecanism.skeleton.ScaleX = -1;
+        }
 
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)
         {
@@ -26,22 +38,6 @@ public class WallClingingState : PlayerState
         else
         {
             maxVelocityY = baseMaxVelocityY;
-        }
-
-        // if dashinput, Dash
-
-        if (Input.GetButtonDown("Jump"))
-        {
-            //rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
-            controller.JumpTime= Time.time;
-            controller.HasDashed = false;
-            controller.HasAirJumped = false;
-            controller.ChangeState(JumpingState.INSTANCE);
-        }
-        else
-        {
-            //rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
-           //maxVelocityY = 2f;
         }
 
         if (controller.Grounded)
@@ -62,7 +58,24 @@ public class WallClingingState : PlayerState
     public override void Exit()
     {
         controller.Animator.SetBool("WallCling", false);
-        rigidBody.gravityScale = baseGravityScale;
         maxVelocityY = baseMaxVelocityY;
+    }
+
+    public override void Jump()
+    {
+        controller.ChangeState(JumpingState.INSTANCE);
+    }
+
+    public override void Dash()
+    {
+        if (!controller.HasDashed)
+        {
+            controller.ChangeState(DashingState.INSTANCE);
+        }
+    }
+
+    public override void ToggleGlitch()
+    {
+        controller.ChangeState(GlitchWallClingingState.INSTANCE);
     }
 }
