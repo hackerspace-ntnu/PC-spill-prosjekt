@@ -58,7 +58,7 @@ public class HealthBarController : MonoBehaviour
     {
         if (health > currentHealth)
         {
-            for (int i = 0; i < health; i++)
+            for (int i = currentHealth; i < health; i++)
             {
                 hearts[i].sprite = fullHeart;
             }
