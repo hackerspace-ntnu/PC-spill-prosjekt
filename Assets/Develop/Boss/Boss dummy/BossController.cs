@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BossController : MonoBehaviour
 {
-    private BossJump bossJump;
+    private BossLick bossLick;
     private BossSpit bossSpit;
     private BossBGCrawl bossBGCrawl;
     private BossDamage bossDamage;
@@ -23,7 +23,7 @@ public class BossController : MonoBehaviour
     void Start()
     {
         // Set boss state to it's starting state, potencially an attack
-        bossJump = GetComponent<BossJump>();
+        bossLick = GetComponent<BossLick>();
         bossSpit = GetComponent<BossSpit>();
         bossBGCrawl = GetComponent<BossBGCrawl>();
         bossDamage = GetComponent<BossDamage>();
@@ -37,7 +37,7 @@ public class BossController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
-            bossJump.enabled = true;
+            bossLick.enabled = true;
         }
     }
 
@@ -64,8 +64,15 @@ public class BossController : MonoBehaviour
                     }
                     else if (requestor == bossBGCrawl)
                     {
+                        updateActiveState(bossLick);
+                    }
+                    else if (requestor == bossLick)
+                    {
                         updateActiveState(bossSpit);
                     }
+
+
+
                     else if (requestor == bossDamage)
                     {
                         updateActiveState(bossBGCrawl);
