@@ -42,6 +42,7 @@ public class BossHealth : MonoBehaviour
         {
             // Berzerk mode
             print("Rough");
+            // Activate BossTranform
         }
         else if (health < 66)
         {
