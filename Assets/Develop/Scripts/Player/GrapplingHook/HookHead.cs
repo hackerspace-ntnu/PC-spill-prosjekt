@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class HookHead : MonoBehaviour
 {
+    private const int COLLIDERS_LAYER = 10;
+    private const int COLLIDERS_ONLY_MASK = 1 << COLLIDERS_LAYER;
+
     public GrapplingState grapplingState;
     public PlayerController playerController;
 
