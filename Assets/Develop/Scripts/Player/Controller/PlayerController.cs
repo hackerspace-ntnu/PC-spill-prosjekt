@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 using Spine.Unity;
 
