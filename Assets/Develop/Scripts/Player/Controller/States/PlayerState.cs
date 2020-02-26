@@ -5,10 +5,12 @@ using UnityEngine;
 
 public abstract class PlayerState
 {
+    public abstract string Name { get; }
+
     protected const float JUMPING_GRAVITY_SCALE = 4f;
 
     public float baseGravityScale = 5; // base gravity affecting the player
-    public float movementSpeed = 6;  // Orig value: 7
+    public float movementSpeed = 6; // Orig value: 7
     protected float dashSpeed = 12;
     protected float baseMaxVelocityY = 8;
     protected float wallSlideMaxVelocityY = 2;
@@ -18,13 +20,11 @@ public abstract class PlayerState
     protected float airJumpSpeed = 10f;
 
     protected float horizontalInput; // input from controller in x-axis
-    
+
     protected bool hasDashed = false;
 
     protected PlayerController controller;
     protected Rigidbody2D rigidbody;
-
-    public abstract string Name { get; }
 
     public virtual void Init(PlayerController controller)
     {
@@ -50,11 +50,15 @@ public abstract class PlayerState
             GrapplingState.INSTANCE.FireGrapplingHook();
     }
 
-    public virtual void FixedUpdate() {
-        if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY || 
-            controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY) {
+    public virtual void FixedUpdate()
+    {
+        if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY
+            || controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY)
+        {
             maxVelocityFix = 0.2f;
-        } else {
+        }
+        else
+        {
             maxVelocityFix = 0f;
         }
 
@@ -75,25 +79,26 @@ public abstract class PlayerState
         controller.TargetVelocity = new Vector2(horizontalInput * movementSpeed * controller.FlipGravityScale, controller.TargetVelocity.y);
     }
 
-    public virtual void Jump() { }
+    public virtual void Jump() {}
 
-    public virtual void Crouch() { }
+    public virtual void Crouch() {}
 
-    public virtual void Dash() { }
+    public virtual void Dash() {}
 
     public void OnGrapplingHookHit()
     {
         controller.ChangeState(GrapplingState.INSTANCE);
     }
 
-    public virtual void ToggleGlitch() { }
+    public virtual void ToggleGlitch() {}
 
     public virtual void UpdateGravity()
     {
         rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
     }
 
-    public float GetXVelocity() {
+    public float GetXVelocity()
+    {
         return rigidbody.velocity.x;
     }
 }

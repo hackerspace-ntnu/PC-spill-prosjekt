@@ -7,57 +7,55 @@ public class WalkingState : PlayerState
 {
     public static readonly WalkingState INSTANCE = new WalkingState();
 
-    protected float idleSpeedThreshold = 0.1f;
-
     public override string Name => "WALKING";
+
+    protected float idleSpeedThreshold = 0.1f;
 
     protected WalkingState() {}
 
-    public override void Enter() {
+    public override void Enter()
+    {
         controller.HasAirJumped = false;
         controller.HasDashed = false;
         controller.Animator.SetBool("Run", true);
-        
     }
 
     public override void Update()
     {
         base.Update();
 
-        if (Math.Abs(rigidbody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
+        if (Math.Abs(rigidbody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE)
             controller.ChangeState(IdleState.INSTANCE);
-        } else if (!controller.Grounded || rigidbody.velocity.y * controller.FlipGravityScale < 0.0f) {
+        else if (!controller.Grounded || rigidbody.velocity.y * controller.FlipGravityScale < 0.0f)
             controller.ChangeState(AirborneState.INSTANCE);
-        } 
     }
 
-    public override void Exit() {
+    public override void Exit()
+    {
         controller.Animator.SetBool("Run", false);
     }
 
-    public override void Jump() {
+    public override void Jump()
+    {
         controller.ChangeState(JumpingState.INSTANCE);
     }
 
-    public override void Crouch() {
+    public override void Crouch()
+    {
         if (controller.GlitchActive)
-        {
             controller.ChangeState(GlitchCrouchingState.INSTANCE);
-        }
         else
-        {
             controller.ChangeState(CrouchingState.INSTANCE);
-        }
     }
 
     public override void Dash()
     {
-        if (Time.time - controller.DashTime > 0.4f) {
-            if (controller.GlitchActive) {
+        if (Time.time - controller.DashTime > 0.4f)
+        {
+            if (controller.GlitchActive)
                 controller.ChangeState(GlitchDashingState.INSTANCE);
-            } else {
+            else
                 controller.ChangeState(DashingState.INSTANCE);
-            }
         }
     }
 }

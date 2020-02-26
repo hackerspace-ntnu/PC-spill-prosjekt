@@ -20,32 +20,26 @@ public class AirborneState : PlayerState
     {
         base.Update();
 
-        if (controller.Grounded) {
+        if (controller.Grounded)
             controller.ChangeState(IdleState.INSTANCE);
-        }
         else if (controller.WallTrigger != 0)
         {
             if (controller.GlitchActive)
-            {
                 controller.ChangeState(GlitchWallClingingState.INSTANCE);
-            }
             else
-            {
                 controller.ChangeState(WallClingingState.INSTANCE);
-            }
         }
     }
 
-    public override void FixedUpdate() {
-        if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY ||
-            controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY)
+    public override void FixedUpdate()
+    {
+        if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY
+            || controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY)
         {
             maxVelocityFix = 0.02f;
         }
         else
-        {
             maxVelocityFix = 0f;
-        }
 
         float newVelocityX;
         // decreases horizontal acceleration in air while input in opposite direction of velocity
@@ -70,7 +64,8 @@ public class AirborneState : PlayerState
         controller.DashTime = 0f;
     }
 
-    public override void Jump() {
+    public override void Jump()
+    {
         if (!controller.HasAirJumped && controller.GlitchActive)
             controller.ChangeState(JumpingState.INSTANCE);
         else
@@ -80,12 +75,8 @@ public class AirborneState : PlayerState
     public override void Dash()
     {
         if (controller.GlitchActive)
-        {
             controller.ChangeState(GlitchDashingState.INSTANCE);
-        }
         else
-        {
             controller.ChangeState(DashingState.INSTANCE);
-        }
     }
 }

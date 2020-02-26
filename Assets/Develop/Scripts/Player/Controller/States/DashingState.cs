@@ -29,13 +29,9 @@ public class DashingState : PlayerState
         if (controller.WallTrigger != 0)
         {
             if (controller.GlitchActive)
-            {
                 controller.ChangeState(GlitchWallClingingState.INSTANCE);
-            }
             else
-            {
                 controller.ChangeState(WallClingingState.INSTANCE);
-            }
         }
         else if (Time.time - controller.DashTime >= dashDuration)
         {
@@ -65,13 +61,9 @@ public class DashingState : PlayerState
         if (controller.Grounded)
         {
             if (controller.GlitchActive)
-            {
                 controller.ChangeState(GlitchCrouchingState.INSTANCE);
-            }
             else
-            {
                 controller.ChangeState(CrouchingState.INSTANCE);
-            }
         }
     }
 }

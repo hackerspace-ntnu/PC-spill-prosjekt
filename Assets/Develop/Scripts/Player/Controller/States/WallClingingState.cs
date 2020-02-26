@@ -18,38 +18,28 @@ public class WallClingingState : PlayerState
             controller.ChangeState(JumpingState.INSTANCE);
             return;
         }
-        controller.Animator.SetBool("WallCling", true);
 
+        controller.Animator.SetBool("WallCling", true);
     }
 
     public override void Update()
     {
         base.Update();
 
-
-        if (controller.WallTrigger == 1) {
+        if (controller.WallTrigger == 1)
             controller.SkeletonMecanim.skeleton.ScaleX = 1;
-        } else {
+        else
             controller.SkeletonMecanim.skeleton.ScaleX = -1;
-        }
 
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)
-        {
             maxVelocityY = wallSlideMaxVelocityY;
-        }
         else
-        {
             maxVelocityY = baseMaxVelocityY;
-        }
 
         if (controller.Grounded)
-        {
             controller.ChangeState(IdleState.INSTANCE);
-        }
         else if (controller.WallTrigger == 0)
-        {
             controller.ChangeState(AirborneState.INSTANCE);
-        }
     }
 
     public override void Exit()
@@ -66,9 +56,7 @@ public class WallClingingState : PlayerState
     public override void Dash()
     {
         if (!controller.HasDashed)
-        {
             controller.ChangeState(DashingState.INSTANCE);
-        }
     }
 
     public override void ToggleGlitch()

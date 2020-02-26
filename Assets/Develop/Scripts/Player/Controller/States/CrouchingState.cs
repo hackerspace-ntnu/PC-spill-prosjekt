@@ -6,10 +6,10 @@ public class CrouchingState : PlayerState
 {
     public static readonly CrouchingState INSTANCE = new CrouchingState();
 
+    public override string Name => "CROUCHING";
+
     private const float CROUCH_HEIGHT_RATIO = 0.5f;
     private const float CROUCH_SPEED = 0.5f;
-
-    public override string Name => "CROUCHING";
 
     protected virtual string AnimatorParameterName => "Crouch";
 
@@ -26,11 +26,13 @@ public class CrouchingState : PlayerState
 
     protected CrouchingState() {}
 
-    public override void Init(PlayerController controller) {
+    public override void Init(PlayerController controller)
+    {
         base.Init(controller);
 
         crouchCeilingDetector = controller.transform.Find("CrouchCeilingDetector").gameObject;
-        if (!crouchCeilingDetector) {
+        if (!crouchCeilingDetector)
+        {
             Debug.LogError("CROUCHING STATE: Crouch Ceiling Check is empty");
         }
 
@@ -66,18 +68,15 @@ public class CrouchingState : PlayerState
     {
         base.Update();
 
-        if (!Input.GetButton("Crouch") && controller.CanUncrouch) {
+        if (!Input.GetButton("Crouch") && controller.CanUncrouch)
             controller.ChangeState(IdleState.INSTANCE);
-        }
 
-        if (rigidbody.velocity.y * controller.FlipGravityScale < 0.0f) {
+        if (rigidbody.velocity.y * controller.FlipGravityScale < 0.0f)
             controller.ChangeState(AirborneState.INSTANCE);
-        }
     }
 
     public override void FixedUpdate()
     {
-
         // Set movement speed to crouch speed.
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x * CROUCH_SPEED, controller.TargetVelocity.y);
 
@@ -94,13 +93,12 @@ public class CrouchingState : PlayerState
         controller.Animator.SetBool(animatorParameterId, false);
     }
 
-    public override void Jump() {
-        if (controller.CanUncrouch) {
+    public override void Jump()
+    {
+        if (controller.CanUncrouch)
             controller.ChangeState(JumpingState.INSTANCE);
-        }
-        else {
+        else
             controller.JumpButtonPressTime = Time.time;
-        }
     }
 
     public override void Dash()
@@ -108,13 +106,9 @@ public class CrouchingState : PlayerState
         if (controller.CanUncrouch)
         {
             if (controller.GlitchActive)
-            {
                 controller.ChangeState(GlitchDashingState.INSTANCE);
-            }
             else
-            {
                 controller.ChangeState(DashingState.INSTANCE);
-            }
         }
     }
 

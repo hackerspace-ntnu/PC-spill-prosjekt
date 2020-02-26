@@ -14,7 +14,8 @@ public class GlitchCrouchingState : CrouchingState
 
     private GlitchCrouchingState() {}
 
-    public override void Init(PlayerController controller) {
+    public override void Init(PlayerController controller)
+    {
         base.Init(controller);
 
         controller.TargetVelocity = rigidbody.velocity;

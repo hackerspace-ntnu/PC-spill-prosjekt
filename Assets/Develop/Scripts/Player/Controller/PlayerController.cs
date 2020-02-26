@@ -24,7 +24,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
     
-
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;
@@ -36,8 +35,8 @@ public class PlayerController : MonoBehaviour
     public float JumpButtonPressTime { get; set; }
     public float DashTime { get; set; }
     public Vector2 TargetVelocity { get; set; }
-    public Animator Animator { get => animator; }
-    public SkeletonMecanim SkeletonMecanim { get => skeletonMecanim; }
+    public Animator Animator => animator;
+    public SkeletonMecanim SkeletonMecanim => skeletonMecanim;
     public Direction Dir { get; set; }
 
     public GameObject grapplingHookPrefab;
@@ -82,10 +81,13 @@ public class PlayerController : MonoBehaviour
         currentState.Update();
 
         float velocity = currentState.GetXVelocity();
-	        if(velocity < -MOVE_TRESHOLD) {
+        if(velocity < -MOVE_TRESHOLD)
+        {
             Dir = Direction.LEFT;
             skeletonMecanim.skeleton.ScaleX = -1 * flipGravityScale;
-        } else if (velocity > MOVE_TRESHOLD) {
+        }
+        else if (velocity > MOVE_TRESHOLD)
+        {
             Dir = Direction.RIGHT;
             skeletonMecanim.skeleton.ScaleX = 1 * flipGravityScale;
         }
@@ -101,7 +103,8 @@ public class PlayerController : MonoBehaviour
         currentState.OnTriggerEnter2D(collider);
     }
 
-    void HandleInput() {
+    void HandleInput()
+    {
 
         if (Input.GetButtonDown("GlitchToggle"))
         {
@@ -109,19 +112,21 @@ public class PlayerController : MonoBehaviour
             currentState.ToggleGlitch();
         }
 
-        if (Input.GetButtonDown("Dash") && !hasDashed) {
+        if (Input.GetButtonDown("Dash") && !hasDashed)
             currentState.Dash();
-        } else if(Input.GetButtonDown("Jump")) {
+        else if(Input.GetButtonDown("Jump"))
             currentState.Jump();
-        } else if(Input.GetButton("Crouch")) {
+        else if(Input.GetButton("Crouch"))
             currentState.Crouch();
-        }
     }
 
-    public PlayerState GetCurrentState() {
+    public PlayerState GetCurrentState()
+    {
         return currentState;
-    } 
-    public PlayerState GetPreviousState() {
+    }
+
+    public PlayerState GetPreviousState()
+    {
         return previousState;
     }
 
