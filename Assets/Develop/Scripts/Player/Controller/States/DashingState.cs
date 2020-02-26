@@ -36,7 +36,17 @@ public class DashingState : PlayerState
         else if (Time.time - controller.DashTime >= dashDuration)
         {
             if (controller.Grounded)
-                controller.ChangeState(IdleState.INSTANCE);
+            {
+                HandleHorizontalInput();
+                if (System.Math.Abs(horizontalInput) > 0)
+                {
+                    controller.ChangeState(WalkingState.INSTANCE);
+                }
+                else
+                {
+                    controller.ChangeState(IdleState.INSTANCE);
+                }
+            }
             else
                 controller.ChangeState(AirborneState.INSTANCE);
         }
@@ -58,7 +68,7 @@ public class DashingState : PlayerState
 
     public override void Crouch()
     {
-        if (controller.Grounded)
+        if (controller.Grounded && Time.time - controller.DashTime > 0.1f)
         {
             if (controller.GlitchActive)
                 controller.ChangeState(GlitchCrouchingState.INSTANCE);

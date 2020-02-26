@@ -14,6 +14,7 @@ public class AirborneState : PlayerState
     public override void Enter()
     {
         controller.Animator.SetBool("Airborne", true);
+        Debug.Log("nanai");
     }
 
     public override void Update()
@@ -62,6 +63,7 @@ public class AirborneState : PlayerState
     {
         controller.Animator.SetBool("Airborne", false);
         controller.DashTime = 0f;
+        Debug.Log("Yeet");
     }
 
     public override void Jump()

@@ -51,6 +51,9 @@ public class PlayerController : MonoBehaviour
         currentState = newState;
         currentStateName = newState.Name;
         newState.Enter();
+
+        Debug.Log(currentStateName);
+        Debug.Log(this.GetComponent<Rigidbody2D>().constraints);
     }
 
     void Start()

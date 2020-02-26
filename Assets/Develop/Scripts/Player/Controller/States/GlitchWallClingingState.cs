@@ -46,7 +46,7 @@ public class GlitchWallClingingState : WallClingingState
 
     public override void Exit()
     {
-        controller.Animator.SetBool("WallCling", false);
+        controller.Animator.SetBool("GlitchWallCling", false);
         rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 

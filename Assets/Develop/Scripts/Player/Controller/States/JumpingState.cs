@@ -20,7 +20,7 @@ public class JumpingState : PlayerState
         PlayerState prevInstance = controller.GetPreviousState();
 
         //Since all other logic is tested in these states, this logic is all we need
-        if (prevInstance == AirborneState.INSTANCE)
+        if (prevInstance == AirborneState.INSTANCE || prevInstance == GrapplingState.INSTANCE)
             AirJump();
         else if (prevInstance == WallClingingState.INSTANCE || prevInstance == GlitchWallClingingState.INSTANCE)
             WallJump();
@@ -77,7 +77,7 @@ public class JumpingState : PlayerState
     public override void Exit()
     {
         controller.Animator.SetBool("Jump", false);
-        rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
+        UpdateGravity();
     }
 
     public override void Jump()

@@ -47,36 +47,31 @@ public class GrapplingState : PlayerState
 
     public override void Update()
     {
-        if (Input.GetButtonDown("Jump"))
+        if (controller.WallTrigger != 0)
         {
-            bool shouldJump = hasGrappledToHook && controller.WallTrigger != 0;
             firedHook.Destroy();
-            if (shouldJump)
-                controller.ChangeState(JumpingState.INSTANCE);
+
+            if (controller.GlitchActive)
+            {
+                controller.ChangeState(GlitchWallClingingState.INSTANCE);
+            }
             else
-                controller.ChangeState(AirborneState.INSTANCE);
+            {
+                controller.ChangeState(WallClingingState.INSTANCE);
+            }
         }
         else if (Input.GetButtonDown("Grapple"))
         {
             firedHook.Destroy();
             firedHook = null;
             FireGrapplingHook();
+            hasGrappledToHook = false;
             controller.ChangeState(AirborneState.INSTANCE);
         }
     }
 
     public override void FixedUpdate()
     {
-        // Prevents constant jittering once the player has reached the hook
-        if (shouldStopMoving)
-            return;
-        if (hasGrappledToHook && controller.WallTrigger != 0)
-        {
-            shouldStopMoving = true;
-            rigidbody.velocity = Vector2.zero;
-            return;
-        }
-
         // Move towards the hook
         Vector2 hookDirection = VectorUtils.GetDirectionToVector(rigidbody.position, firedHook.transform.position);
         Vector2 targetVelocity = controller.grapplingSpeed * hookDirection;
@@ -85,11 +80,34 @@ public class GrapplingState : PlayerState
         rigidbody.AddForce(newVelocity, ForceMode2D.Impulse);
     }
 
+    // Exits state and destroys hook if player reaches hook
     public override void OnTriggerEnter2D(Collider2D collider)
     {
         HookHead hitHook = collider.GetComponent<HookHead>();
         if (hitHook != null && hitHook == firedHook)
-            hasGrappledToHook = true;
+        {
+            firedHook.Destroy();
+            
+            if (controller.Grounded)
+            {
+                controller.ChangeState(IdleState.INSTANCE);
+            }
+            else if (controller.WallTrigger != 0)
+            {
+                if (controller.GlitchActive)
+                {
+                    controller.ChangeState(GlitchWallClingingState.INSTANCE);
+                }
+                else
+                {
+                    controller.ChangeState(WallClingingState.INSTANCE);
+                }
+            }
+            else
+            {
+                controller.ChangeState(AirborneState.INSTANCE);
+            }
+        }
     }
 
     public override void Exit()
@@ -100,5 +118,18 @@ public class GrapplingState : PlayerState
     public void OnGrapplingHookStopped()
     {
         firedHook = null;
+    }
+
+    public override void Jump()
+    {
+        firedHook.Destroy();
+        if (controller.GlitchActive)
+        {
+            controller.ChangeState(JumpingState.INSTANCE);
+        }
+        else
+        {
+            controller.ChangeState(AirborneState.INSTANCE);
+        }
     }
 }
