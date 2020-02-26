@@ -22,6 +22,8 @@ public class DashingState : PlayerState
 
     public override void Update()
     {
+        CheckGrappling();
+
         if (controller.WallTrigger != 0)
         {
             if (controller.GlitchActive)

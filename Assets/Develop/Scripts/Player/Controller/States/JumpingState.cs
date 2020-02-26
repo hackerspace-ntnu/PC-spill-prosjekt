@@ -29,6 +29,8 @@ public class JumpingState : PlayerState
 
     public override void Update()
     {
+        CheckGrappling();
+
         if (controller.WallTrigger != 0 && Time.time - controller.JumpTime > 0.2f)
         {
             if (controller.GlitchActive)

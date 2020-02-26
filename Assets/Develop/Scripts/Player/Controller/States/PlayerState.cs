@@ -41,6 +41,11 @@ public abstract class PlayerState
         HandleHorizontalInput();
         controller.Animator.SetFloat("Hinput", Mathf.Abs(horizontalInput));
 
+        CheckGrappling();
+    }
+
+    public void CheckGrappling()
+    {
         if (Input.GetButtonDown("Grapple"))
             GrapplingState.INSTANCE.FireGrapplingHook();
     }

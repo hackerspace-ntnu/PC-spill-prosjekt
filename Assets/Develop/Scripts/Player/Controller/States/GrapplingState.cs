@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public class GrapplingState : PlayerState
 {
@@ -11,7 +13,8 @@ public class GrapplingState : PlayerState
     private GameObject grapplingHookPrefab;
     private HookHead firedHook;
 
-    private Vector3 hookHitPos;
+    private bool hasGrappledToHook;
+    private bool shouldStopMoving;
 
     private GrapplingState() {}
 
@@ -26,35 +29,58 @@ public class GrapplingState : PlayerState
         if (firedHook != null)
             return;
 
+        // Instantiate and initialize grappling hook
         firedHook = Object.Instantiate(
                               grapplingHookPrefab, controller.transform.position, Quaternion.identity, controller.transform.parent
                           )
-                          .GetComponent<HookHead>();
+                          .GetComponentInChildren<HookHead>();
         firedHook.grapplingState = this;
         firedHook.playerController = controller;
     }
 
     public override void Enter()
     {
-        hookHitPos = firedHook.transform.position;
-        rigidbody.gravityScale = 0;
+        rigidbody.gravityScale = 0f;
+        hasGrappledToHook = false;
+        shouldStopMoving = false;
     }
 
     public override void Update()
     {
         if (Input.GetButtonDown("Jump"))
         {
+            bool shouldJump = hasGrappledToHook && controller.WallTrigger != 0;
             firedHook.Destroy();
-            controller.ChangeState(JumpingState.INSTANCE);
+            if (shouldJump)
+                controller.ChangeState(JumpingState.INSTANCE);
+            else
+                controller.ChangeState(AirborneState.INSTANCE);
+        }
+        else if (Input.GetButtonDown("Grapple"))
+        {
+            firedHook.Destroy();
+            firedHook = null;
+            FireGrapplingHook();
+            controller.ChangeState(AirborneState.INSTANCE);
         }
     }
 
     public override void FixedUpdate()
     {
+        // Prevents constant jittering once the player has reached the hook
+        if (shouldStopMoving)
+            return;
+        if (hasGrappledToHook && controller.WallTrigger != 0)
+        {
+            shouldStopMoving = true;
+            rigidbody.velocity = Vector2.zero;
+            return;
+        }
 
+        // Move towards the hook
         Vector2 hookDirection = VectorUtils.GetDirectionToVector(rigidbody.position, firedHook.transform.position);
         Vector2 targetVelocity = controller.grapplingSpeed * hookDirection;
-        // rigidbody.velocity + newVelocity = targetVelocity
+        // Equation: rigidbody.velocity + newVelocity = targetVelocity
         Vector2 newVelocity = targetVelocity - rigidbody.velocity;
         rigidbody.AddForce(newVelocity, ForceMode2D.Impulse);
     }
@@ -62,13 +88,13 @@ public class GrapplingState : PlayerState
     public override void OnTriggerEnter2D(Collider2D collider)
     {
         HookHead hitHook = collider.GetComponent<HookHead>();
-        if (hitHook == null || hitHook != firedHook)
-            return;
+        if (hitHook != null && hitHook == firedHook)
+            hasGrappledToHook = true;
     }
 
     public override void Exit()
     {
-        rigidbody.gravityScale = baseGravityScale;
+        UpdateGravity();
     }
 
     public void OnGrapplingHookStopped()

@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class VectorUtils
 {
-    public static Vector3 GetDirectionToVector(Vector3 fromVector, Vector3 toVector)
+    public static Vector2 To2(Vector3 vec)
     {
-        Vector3 direction = toVector - fromVector;
-        direction.z = 0; // because z is not used
+        return new Vector2(vec.x, vec.y);
+    }
+
+    public static Vector3 GetDirectionToVector(Vector3 fromVec, Vector3 toVec)
+    {
+        Vector3 direction = toVec - fromVec;
+        direction.z = 0f; // in case the two vectors are on different Z coordinates
         direction.Normalize();
         return direction;
     }
