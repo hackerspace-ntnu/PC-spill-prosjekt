@@ -22,7 +22,7 @@ public class BossController : MonoBehaviour
 
     void Start()
     {
-        // Set boss state to it's starting state, potencially an attack
+        // Set boss state to its starting state, potentially an attack
         bossLick = GetComponent<BossLick>();
         bossSpit = GetComponent<BossSpit>();
         bossBGCrawl = GetComponent<BossBGCrawl>();
