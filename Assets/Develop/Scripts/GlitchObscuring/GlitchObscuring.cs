@@ -32,7 +32,7 @@ public class GlitchObscuring : MonoBehaviour
             if(sliderValue > 0)
             {
                 timer += diff;
-                print("Timer: " + timer);
+                    print("Timer: " + timer);
             }
             if (timer > spawnUpperLimit)
             {
@@ -81,14 +81,15 @@ public class GlitchObscuring : MonoBehaviour
     
     private void SpawnCircle() // Spawn masking circle (was previously a circle, and thus the function name is SpawnCircle)
     {
+        Debug.Log("Spawn");
         GameObject circle = Instantiate(glitchMask);
+        circle.GetComponent<GlitchMask>().enabled = true;
         Vector3 maincamPos = Camera.main.transform.position;
         circle.transform.position = new Vector3(maincamPos.x + Random.Range(-7, 7), maincamPos.y + Random.Range(-5, 5), 1); // TODO: ta inn main cam - koordinater
         int rand = Random.Range(0, 2);
-        
         if(rand==1)
         {
-            circle.transform.Rotate(new Vector3(0,0,180f));
+            circle.transform.Rotate(new Vector3(0,0,180f)); // flip
         }
         //Debug.Log(circle.transform.rotation);
         //circle.transform.rotation = new Quaternion(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));

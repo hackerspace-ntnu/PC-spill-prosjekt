@@ -15,7 +15,7 @@ public class GlitchMask : MonoBehaviour
         // Reduce mask size and destroy mask
         this.transform.localScale -= new Vector3(0.01f,0.001f,0f);
         
-        if(this.transform.localScale.x < 2.7)
+        if(this.transform.localScale.x < 0.5)
         {
             Destroy(this.gameObject);
         }

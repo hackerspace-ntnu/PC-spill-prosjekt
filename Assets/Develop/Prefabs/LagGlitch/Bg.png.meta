@@ -1,12 +1,12 @@
 fileFormatVersion: 2
-guid: 7271e48091896184eac08b4155bf6014
+guid: cad6eaec930dc55498023766d9a01e36
 TextureImporter:
   fileIDToRecycleName: {}
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -31,21 +31,21 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
-    wrapU: 1
-    wrapV: 1
-    wrapW: 1
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 3
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 4
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -62,8 +62,8 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
+    textureFormat: 4
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -72,10 +72,18 @@ TextureImporter:
   spriteSheet:
     serializedVersion: 2
     sprites: []
-    outline: []
-    physicsShape: []
+    outline:
+    - - {x: -2, y: -2}
+      - {x: -2, y: 2}
+      - {x: 2, y: 2}
+      - {x: 2, y: -2}
+    physicsShape:
+    - - {x: -2, y: -2}
+      - {x: -2, y: 2}
+      - {x: 2, y: 2}
+      - {x: 2, y: -2}
     bones: []
-    spriteID: 2c19b772d21ec6f44aff32b2085fac31
+    spriteID: 31dcbe7c177085e4bbf366771b51b1ba
     vertices: []
     indices: 
     edges: []
