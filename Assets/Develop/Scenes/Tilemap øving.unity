@@ -118,6 +118,24 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1012954613}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &139288613 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2088323570198517652, guid: 39d5bb7ea1f645544b59d5915c4441c9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1012954613}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139288611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9db98c60740638449864eb028fbe7ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &139288614 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9015697448632070258, guid: 39d5bb7ea1f645544b59d5915c4441c9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1012954613}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &139288617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2069,6 +2087,16 @@ PrefabInstance:
       propertyPath: distanceFactor
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 204303438614116762, guid: 39d5bb7ea1f645544b59d5915c4441c9,
+        type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 139288614}
+    - target: {fileID: 204303438614116762, guid: 39d5bb7ea1f645544b59d5915c4441c9,
+        type: 3}
+      propertyPath: skeletonMecanim
+      value: 
+      objectReference: {fileID: 139288613}
     - target: {fileID: 7430890279600280874, guid: 39d5bb7ea1f645544b59d5915c4441c9,
         type: 3}
       propertyPath: m_TagString

@@ -20,6 +20,8 @@ public class FamiliarController : MonoBehaviour {
 
     [SerializeField]
     private SkeletonMecanim skeletonMecanim;
+    [SerializeField]
+    private Animator animator;
 
     [SerializeField]
     private PlayerController controller;
@@ -32,6 +34,11 @@ public class FamiliarController : MonoBehaviour {
         skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
         if(!skeletonMecanim) {
             Debug.LogError("SKELETONMECANIM is NULL in FAMILIARCONTROLLER");
+        }
+
+        animator = GetComponentInChildren<Animator>();
+        if(!animator) {
+            Debug.LogError("ANIMATOR is NULL in FAMILIARCONTROLLER");
         }
 
         if(controller == null) {
@@ -48,6 +55,8 @@ public class FamiliarController : MonoBehaviour {
         worldTargetPos = new Vector3(objToFollow.transform.position.x + targetPos.x, objToFollow.transform.position.y + targetPos.y, 0.0f);
         transform.position = worldTargetPos;
         defaultTarget = targetPos;
+
+        StartCoroutine(GlitchAnimation());
 	}
 	
 	// Update is called once per frame
@@ -101,6 +110,19 @@ public class FamiliarController : MonoBehaviour {
         // If the object to follow is not the player, set a min velocity to speed up approach.
         if (objToFollow.tag != "Player" && thisRBody.velocity.magnitude < minVel) {
             thisRBody.velocity = thisRBody.velocity.normalized * minVel;
+        }
+    }
+
+    private IEnumerator GlitchAnimation() {
+        while (true) {
+            
+            yield return new WaitForSeconds(Random.Range(4.0f, 12.0f));
+
+            animator.SetBool("Glitch", true);
+
+            yield return new WaitForSeconds(2.0f);
+
+            animator.SetBool("Glitch", false);
         }
     }
 
