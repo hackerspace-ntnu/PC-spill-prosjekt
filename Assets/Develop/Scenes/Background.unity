@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 135593563}
   - component: {fileID: 135593562}
   - component: {fileID: 135593561}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (11)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -379,7 +379,7 @@ GameObject:
   - component: {fileID: 207079683}
   - component: {fileID: 207079682}
   - component: {fileID: 207079684}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hut
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -485,7 +485,7 @@ GameObject:
   - component: {fileID: 311931318}
   - component: {fileID: 311931320}
   - component: {fileID: 311931319}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (12)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -591,7 +591,7 @@ GameObject:
   - component: {fileID: 318978403}
   - component: {fileID: 318978402}
   - component: {fileID: 318978401}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (4)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -896,7 +896,7 @@ GameObject:
   - component: {fileID: 614675758}
   - component: {fileID: 614675757}
   - component: {fileID: 614675756}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (9)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -1002,7 +1002,7 @@ GameObject:
   - component: {fileID: 798020427}
   - component: {fileID: 798020426}
   - component: {fileID: 798020425}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (8)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -1187,7 +1187,7 @@ GameObject:
   - component: {fileID: 897754040}
   - component: {fileID: 897754042}
   - component: {fileID: 897754041}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (9)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -1293,7 +1293,7 @@ GameObject:
   - component: {fileID: 955577552}
   - component: {fileID: 955577554}
   - component: {fileID: 955577553}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (7)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -1399,7 +1399,7 @@ GameObject:
   - component: {fileID: 1140615121}
   - component: {fileID: 1140615120}
   - component: {fileID: 1140615119}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (6)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -1505,7 +1505,7 @@ GameObject:
   - component: {fileID: 1147868788}
   - component: {fileID: 1147868787}
   - component: {fileID: 1147868786}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (5)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -1769,7 +1769,7 @@ GameObject:
   - component: {fileID: 1208567535}
   - component: {fileID: 1208567537}
   - component: {fileID: 1208567536}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (9)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -1875,7 +1875,7 @@ GameObject:
   - component: {fileID: 1219775394}
   - component: {fileID: 1219775396}
   - component: {fileID: 1219775395}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (11)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -2139,7 +2139,7 @@ GameObject:
   - component: {fileID: 1333082750}
   - component: {fileID: 1333082752}
   - component: {fileID: 1333082751}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (8)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -2668,7 +2668,7 @@ GameObject:
   - component: {fileID: 1523196336}
   - component: {fileID: 1523196335}
   - component: {fileID: 1523196334}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (13)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2774,7 +2774,7 @@ GameObject:
   - component: {fileID: 1524841079}
   - component: {fileID: 1524841078}
   - component: {fileID: 1524841077}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (3)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -3483,7 +3483,7 @@ GameObject:
   - component: {fileID: 1823127998}
   - component: {fileID: 1823127997}
   - component: {fileID: 1823127996}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (2)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -3834,7 +3834,7 @@ GameObject:
   - component: {fileID: 2093064487}
   - component: {fileID: 2093064489}
   - component: {fileID: 2093064488}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: plattform (10)
   m_TagString: Standard
   m_Icon: {fileID: 0}
