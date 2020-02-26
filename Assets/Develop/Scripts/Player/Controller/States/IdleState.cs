@@ -26,10 +26,6 @@ public class IdleState : WalkingState
             controller.ChangeState(WalkingState.INSTANCE);
     }
 
-    public override void FixedUpdate() {
-        base.FixedUpdate();
-    }
-
     public override void Exit() {
         base.Exit();
         controller.Animator.SetBool("Idle", false);

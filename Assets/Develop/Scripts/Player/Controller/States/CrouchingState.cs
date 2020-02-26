@@ -62,6 +62,8 @@ public class CrouchingState : PlayerState
 
     public override void Update()
     {
+        base.Update();
+
         if (!Input.GetButton("Crouch") && controller.CanUncrouch) {
             controller.ChangeState(IdleState.INSTANCE);
         }
@@ -69,8 +71,6 @@ public class CrouchingState : PlayerState
         if (rigidbody.velocity.y * controller.FlipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
         }
-
-        base.Update();
     }
 
     public override void FixedUpdate()

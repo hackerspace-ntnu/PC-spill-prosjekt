@@ -13,8 +13,6 @@ public class PlayerController : MonoBehaviour
     private PlayerState currentState;
     private PlayerState previousState;
 
-    private Direction dir;
-
     [SerializeField] [ReadOnly] private string currentStateName;
     [SerializeField] [ReadOnly] private string previousStateName;
     [SerializeField] [ReadOnly] private bool hasAirJumped = false;
@@ -40,7 +38,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 TargetVelocity { get; set; }
     public Animator Animator { get => animator; }
     public SkeletonMecanim SkeletonMecanim { get => skeletonMecanim; }
-    public Direction Dir { get => dir; set => dir = value; }
+    public Direction Dir { get; set; }
 
     public GameObject grapplingHookPrefab;
     public float grapplingSpeed;

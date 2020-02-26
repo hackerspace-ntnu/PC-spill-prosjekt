@@ -96,9 +96,4 @@ public abstract class PlayerState
     public float GetXVelocity() {
         return rigidbody.velocity.x;
     }
-    public float getHorizontalInput()
-    {
-        return horizontalInput;
-    }
-    
 }

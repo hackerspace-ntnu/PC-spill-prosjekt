@@ -21,7 +21,7 @@ public class GlitchWallClingingState : WallClingingState
 
     public override void Update()
     {
-        HandleHorizontalInput();
+        base.Update();
 
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)
         {
@@ -40,11 +40,6 @@ public class GlitchWallClingingState : WallClingingState
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        base.FixedUpdate();
     }
 
     public override void Exit()

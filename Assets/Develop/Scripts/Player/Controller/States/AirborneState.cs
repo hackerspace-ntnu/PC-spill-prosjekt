@@ -11,12 +11,12 @@ public class AirborneState : PlayerState
 
     public override void Enter()
     {
-        base.Enter();
         controller.Animator.SetBool("Airborne", true);
     }
 
     public override void Update()
     {
+        base.Update();
 
         if (controller.Grounded) {
             controller.ChangeState(IdleState.INSTANCE);
@@ -32,8 +32,6 @@ public class AirborneState : PlayerState
                 controller.ChangeState(WallClingingState.INSTANCE);
             }
         }
-
-        base.Update();
     }
 
     public override void FixedUpdate() {
@@ -66,7 +64,6 @@ public class AirborneState : PlayerState
 
     public override void Exit()
     {
-        base.Exit();
         controller.Animator.SetBool("Airborne", false);
         controller.DashTime = 0f;
     }

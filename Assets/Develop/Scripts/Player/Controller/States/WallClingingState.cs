@@ -22,7 +22,7 @@ public class WallClingingState : PlayerState
 
     public override void Update()
     {
-        HandleHorizontalInput();
+        base.Update();
 
 
         if (controller.WallTrigger == 1) {
@@ -48,11 +48,6 @@ public class WallClingingState : PlayerState
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        base.FixedUpdate();
     }
 
     public override void Exit()

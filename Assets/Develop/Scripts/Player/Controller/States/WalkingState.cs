@@ -14,7 +14,6 @@ public class WalkingState : PlayerState
     protected WalkingState() {}
 
     public override void Enter() {
-        base.Enter();
         controller.HasAirJumped = false;
         controller.HasDashed = false;
         controller.Animator.SetBool("Run", true);
@@ -32,12 +31,7 @@ public class WalkingState : PlayerState
         } 
     }
 
-    public override void FixedUpdate() {
-        base.FixedUpdate();
-    }
-
     public override void Exit() {
-        base.Exit();
         controller.Animator.SetBool("Run", false);
     }
 
