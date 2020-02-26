@@ -73,7 +73,6 @@ public class GlitchObscuring : MonoBehaviour
             if (sliderValue > 0 && !globalScript.glitchActive) // if the slider value is above 0 and a glitch is not being used
             {
                 sliderValue-= sliderReductionRate;
-                Debug.Log(sliderValue);
             }
                 
         }
@@ -90,7 +89,6 @@ public class GlitchObscuring : MonoBehaviour
         {
             circle.transform.Rotate(new Vector3(0,0,180f));
         }
-        //Debug.Log(circle.transform.rotation);
         //circle.transform.rotation = new Quaternion(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
         circle.SetActive(true);
     }

@@ -30,8 +30,6 @@ public class WalkingState : PlayerState
         } else if (!controller.Grounded || rigidbody.velocity.y * controller.FlipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
         } 
-
-        //Debug.Log(rigidBody.velocity.x);
     }
 
     public override void FixedUpdate() {
