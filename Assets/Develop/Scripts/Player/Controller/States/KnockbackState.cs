@@ -8,6 +8,8 @@ public class KnockbackState : PlayerState
 
     public override string Name => "KNOCKBACK";
 
+    private KnockbackState() {}
+
     public override void Enter()
     {
         throw new System.NotImplementedException();

@@ -9,6 +9,8 @@ public class GlitchWallClingingState : WallClingingState
 
     public override string Name => "GLITCH_WALL_CLINGING";
 
+    private GlitchWallClingingState() {}
+
     public override void Enter()
     {
         if (Time.time - controller.JumpButtonPressTime < 0.2f)

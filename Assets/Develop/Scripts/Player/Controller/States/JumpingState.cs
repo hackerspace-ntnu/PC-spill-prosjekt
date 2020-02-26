@@ -11,6 +11,8 @@ public class JumpingState : PlayerState
 
     public override string Name => "JUMPING";
 
+    private JumpingState() {}
+
     public override void Enter()
     {
         controller.Animator.SetBool("Jump", true);

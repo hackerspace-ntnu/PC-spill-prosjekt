@@ -9,6 +9,8 @@ public class AirborneState : PlayerState
 
     public override string Name => "AIRBORNE";
 
+    private AirborneState() {}
+
     public override void Enter()
     {
         controller.Animator.SetBool("Airborne", true);

@@ -24,6 +24,8 @@ public class CrouchingState : PlayerState
 
     protected int animatorParameterId;
 
+    protected CrouchingState() {}
+
     public override void Init(PlayerController controller) {
         base.Init(controller);
 

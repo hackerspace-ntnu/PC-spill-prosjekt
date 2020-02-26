@@ -9,6 +9,8 @@ public class WallClingingState : PlayerState
 
     public override string Name => "WALL_CLINGING";
 
+    protected WallClingingState() {}
+
     public override void Enter()
     {
         if (Time.time - controller.JumpButtonPressTime < 0.2f)

@@ -10,6 +10,8 @@ public class DashingState : PlayerState
 
     protected float dashDuration = 0.2f;
 
+    protected DashingState() {}
+
     public override void Enter()
     {
         controller.HasDashed = true;

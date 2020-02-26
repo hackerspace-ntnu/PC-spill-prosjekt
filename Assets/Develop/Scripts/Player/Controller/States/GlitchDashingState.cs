@@ -8,6 +8,8 @@ public class GlitchDashingState : DashingState
 
     public override string Name => "GLITCH_DASHING";
 
+    private GlitchDashingState() {}
+
     public override void Enter()
     {
         controller.HasDashed = true;

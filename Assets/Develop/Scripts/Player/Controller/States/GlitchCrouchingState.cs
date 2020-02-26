@@ -12,6 +12,8 @@ public class GlitchCrouchingState : CrouchingState
 
     protected override string AnimatorParameterName => "GlitchCrouch";
 
+    private GlitchCrouchingState() {}
+
     public override void Init(PlayerController controller) {
         base.Init(controller);
 
