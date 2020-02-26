@@ -15,14 +15,14 @@ public class PlayerController : MonoBehaviour
 
     private Direction dir;
 
-    [SerializeField] private string currentStateName;
-    [SerializeField] private string previousStateName;
-    [SerializeField] private bool hasAirJumped = false;
-    [SerializeField] private bool hasDashed = false;
-    [SerializeField] private bool canUncrouch = false;
-    [SerializeField] private bool glitchActive = false;
-    [SerializeField] private int flipGravityScale = 1;
-    [SerializeField] private int wallTrigger = 0;
+    [SerializeField] [ReadOnly] private string currentStateName;
+    [SerializeField] [ReadOnly] private string previousStateName;
+    [SerializeField] [ReadOnly] private bool hasAirJumped = false;
+    [SerializeField] [ReadOnly] private bool hasDashed = false;
+    [SerializeField] [ReadOnly] private bool canUncrouch = false;
+    [SerializeField] [ReadOnly] private bool glitchActive = false;
+    [SerializeField] [ReadOnly] private int flipGravityScale = 1;
+    [SerializeField] [ReadOnly] private int wallTrigger = 0;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
     
