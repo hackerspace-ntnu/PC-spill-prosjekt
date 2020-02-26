@@ -5,10 +5,12 @@ using UnityEngine;
 
 public abstract class PlayerState
 {
+    public abstract string Name { get; }
+
     protected const float JUMPING_GRAVITY_SCALE = 4f;
 
     public float baseGravityScale = 5; // base gravity affecting the player
-    public float movementSpeed = 6;  // Orig value: 7
+    public float movementSpeed = 6; // Orig value: 7
     protected float dashSpeed = 12;
     protected float baseMaxVelocityY = 8;
     protected float wallSlideMaxVelocityY = 2;
@@ -18,43 +20,56 @@ public abstract class PlayerState
     protected float airJumpSpeed = 10f;
 
     protected float horizontalInput; // input from controller in x-axis
-    
+
     protected bool hasDashed = false;
 
     protected PlayerController controller;
-    protected Rigidbody2D rigidBody;
-
-    public abstract string Name { get; }
+    protected Rigidbody2D rigidbody;
 
     public virtual void Init(PlayerController controller)
     {
         this.controller = controller;
-        rigidBody = controller.GetComponent<Rigidbody2D>();
-        rigidBody.gravityScale = baseGravityScale;
+        rigidbody = controller.GetComponent<Rigidbody2D>();
+        rigidbody.gravityScale = baseGravityScale;
         maxVelocityY = baseMaxVelocityY;
     }
 
     public virtual void Enter() {}
 
-    public virtual void Update() {
+    public virtual void Update()
+    {
         HandleHorizontalInput();
         controller.Animator.SetFloat("Hinput", Mathf.Abs(horizontalInput));
+
+        CheckGrappling();
     }
 
-    public virtual void FixedUpdate() {
-        if (controller.FlipGravityScale == 1 && rigidBody.velocity.y <= -maxVelocityY || 
-            controller.FlipGravityScale == -1 && rigidBody.velocity.y >= maxVelocityY) {
+    public void CheckGrappling()
+    {
+        if (Input.GetButtonDown("Grapple"))
+            GrapplingState.INSTANCE.FireGrapplingHook();
+    }
+
+    public virtual void FixedUpdate()
+    {
+        if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY
+            || controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY)
+        {
             maxVelocityFix = 0.2f;
-        } else {
+        }
+        else
+        {
             maxVelocityFix = 0f;
         }
 
-        float newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
-        float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
+        float newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
+        float newVelocityY = controller.TargetVelocity.y - rigidbody.velocity.y * maxVelocityFix;
 
-        rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
+        rigidbody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, 0);
     }
+
+    public virtual void OnTriggerEnter2D(Collider2D collider) {}
 
     public virtual void Exit() {}
 
@@ -64,25 +79,26 @@ public abstract class PlayerState
         controller.TargetVelocity = new Vector2(horizontalInput * movementSpeed * controller.FlipGravityScale, controller.TargetVelocity.y);
     }
 
-    public virtual void Jump() { }
+    public virtual void Jump() {}
 
-    public virtual void Crouch() { }
+    public virtual void Crouch() {}
 
-    public virtual void Dash() { }
+    public virtual void Dash() {}
 
-    public virtual void ToggleGlitch() { }
+    public void OnGrapplingHookHit()
+    {
+        controller.ChangeState(GrapplingState.INSTANCE);
+    }
+
+    public virtual void ToggleGlitch() {}
 
     public virtual void UpdateGravity()
     {
-        rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
+        rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
     }
 
-    public float GetXVelocity() {
-        return rigidBody.velocity.x;
-    }
-    public float getHorizontalInput()
+    public float GetXVelocity()
     {
-        return horizontalInput;
+        return rigidbody.velocity.x;
     }
-    
 }

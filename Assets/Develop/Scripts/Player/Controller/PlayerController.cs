@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 using Spine.Unity;
 
@@ -12,20 +13,17 @@ public class PlayerController : MonoBehaviour
     private PlayerState currentState;
     private PlayerState previousState;
 
-    private DIRECTION dir;
-
-    [SerializeField] private string currentStateName;
-    [SerializeField] private string previousStateName;
-    [SerializeField] private bool hasAirJumped = false;
-    [SerializeField] private bool hasDashed = false;
-    [SerializeField] private bool canUncrouch = false;
-    [SerializeField] private bool glitchActive = false;
-    [SerializeField] private int flipGravityScale = 1;
-    [SerializeField] private int wallTrigger = 0;
+    [SerializeField] [ReadOnly] private string currentStateName;
+    [SerializeField] [ReadOnly] private string previousStateName;
+    [SerializeField] [ReadOnly] private bool hasAirJumped = false;
+    [SerializeField] [ReadOnly] private bool hasDashed = false;
+    [SerializeField] [ReadOnly] private bool canUncrouch = false;
+    [SerializeField] [ReadOnly] private bool glitchActive = false;
+    [SerializeField] [ReadOnly] private int flipGravityScale = 1;
+    [SerializeField] [ReadOnly] private int wallTrigger = 0;
     [SerializeField] private Animator animator;
-    [SerializeField] private SkeletonMecanim skeletonMecanism;
+    [SerializeField] private SkeletonMecanim skeletonMecanim;
     
-
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;
@@ -37,9 +35,12 @@ public class PlayerController : MonoBehaviour
     public float JumpButtonPressTime { get; set; }
     public float DashTime { get; set; }
     public Vector2 TargetVelocity { get; set; }
-    public Animator Animator { get => animator; }
-    public SkeletonMecanim SkeletonMecanism { get => skeletonMecanism; }
-    public DIRECTION Dir { get => dir; set => dir = value; }
+    public Animator Animator => animator;
+    public SkeletonMecanim SkeletonMecanim => skeletonMecanim;
+    public Direction Dir { get; set; }
+
+    public GameObject grapplingHookPrefab;
+    public float grapplingSpeed;
 
     public void ChangeState(PlayerState newState)
     {
@@ -71,7 +72,7 @@ public class PlayerController : MonoBehaviour
         currentState = IdleState.INSTANCE;
         ChangeState(IdleState.INSTANCE);
 
-        Dir = DIRECTION.RIGHT;
+        Dir = Direction.RIGHT;
     }
 
     void Update()
@@ -80,7 +81,7 @@ public class PlayerController : MonoBehaviour
         currentState.Update();
 
         float velocity = currentState.GetXVelocity();
-	    if(velocity < -MOVE_TRESHOLD) {
+        if(velocity < -MOVE_TRESHOLD) {
             Dir = (DIRECTION)((int)DIRECTION.LEFT * flipGravityScale);
             skeletonMecanism.skeleton.ScaleX = -1 * flipGravityScale;
         } else if (velocity > MOVE_TRESHOLD) {
@@ -94,7 +95,13 @@ public class PlayerController : MonoBehaviour
         currentState.FixedUpdate();
     }
 
-    void HandleInput() {
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        currentState.OnTriggerEnter2D(collider);
+    }
+
+    void HandleInput()
+    {
 
         if (Input.GetButtonDown("GlitchToggle"))
         {
@@ -102,21 +109,29 @@ public class PlayerController : MonoBehaviour
             currentState.ToggleGlitch();
         }
 
-        if (Input.GetButtonDown("Dash") && !hasDashed) {
+        if (Input.GetButtonDown("Dash") && !hasDashed)
             currentState.Dash();
-        } else if(Input.GetButtonDown("Jump")) {
+        else if(Input.GetButtonDown("Jump"))
             currentState.Jump();
-        } else if(Input.GetButton("Crouch")) {
+        else if(Input.GetButton("Crouch"))
             currentState.Crouch();
-        }
     }
 
-    public PlayerState GetCurrentState() {
+    public PlayerState GetCurrentState()
+    {
         return currentState;
-    } 
-    public PlayerState GetPreviousState() {
+    }
+
+    public PlayerState GetPreviousState()
+    {
         return previousState;
     }
+
+    public void OnGrapplingHookHit()
+    {
+        currentState.OnGrapplingHookHit();
+    }
+
     public void ChangeFlipGravity()
     {
         flipGravityScale *= -1;
