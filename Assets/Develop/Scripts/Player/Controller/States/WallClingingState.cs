@@ -26,9 +26,9 @@ public class WallClingingState : PlayerState
 
 
         if (controller.WallTrigger == 1) {
-            controller.SkeletonMecanism.skeleton.ScaleX = 1;
+            controller.SkeletonMecanim.skeleton.ScaleX = 1;
         } else {
-            controller.SkeletonMecanism.skeleton.ScaleX = -1;
+            controller.SkeletonMecanim.skeleton.ScaleX = -1;
         }
 
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)

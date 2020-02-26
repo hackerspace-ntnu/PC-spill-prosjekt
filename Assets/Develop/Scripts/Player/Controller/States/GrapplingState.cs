@@ -9,7 +9,7 @@ public class GrapplingState : PlayerState
     public override string Name => "GRAPPLING";
 
     private GameObject grapplingHookPrefab;
-    private GrapplingHook firedHook;
+    private HookHead firedHook;
 
     private Vector3 hookHitPos;
 
@@ -29,7 +29,7 @@ public class GrapplingState : PlayerState
         firedHook = Object.Instantiate(
                               grapplingHookPrefab, controller.transform.position, Quaternion.identity, controller.transform.parent
                           )
-                          .GetComponent<GrapplingHook>();
+                          .GetComponent<HookHead>();
         firedHook.grapplingState = this;
         firedHook.playerController = controller;
     }
@@ -37,7 +37,7 @@ public class GrapplingState : PlayerState
     public override void Enter()
     {
         hookHitPos = firedHook.transform.position;
-        rigidBody.gravityScale = 0;
+        rigidbody.gravityScale = 0;
     }
 
     public override void Update()
@@ -52,23 +52,23 @@ public class GrapplingState : PlayerState
     public override void FixedUpdate()
     {
 
-        Vector2 hookDirection = VectorUtils.GetDirectionToVector(rigidBody.position, firedHook.transform.position);
+        Vector2 hookDirection = VectorUtils.GetDirectionToVector(rigidbody.position, firedHook.transform.position);
         Vector2 targetVelocity = controller.grapplingSpeed * hookDirection;
         // rigidbody.velocity + newVelocity = targetVelocity
-        Vector2 newVelocity = targetVelocity - rigidBody.velocity;
-        rigidBody.AddForce(newVelocity, ForceMode2D.Impulse);
+        Vector2 newVelocity = targetVelocity - rigidbody.velocity;
+        rigidbody.AddForce(newVelocity, ForceMode2D.Impulse);
     }
 
     public override void OnTriggerEnter2D(Collider2D collider)
     {
-        GrapplingHook hitHook = collider.GetComponent<GrapplingHook>();
+        HookHead hitHook = collider.GetComponent<HookHead>();
         if (hitHook == null || hitHook != firedHook)
             return;
     }
 
     public override void Exit()
     {
-        rigidBody.gravityScale = baseGravityScale;
+        rigidbody.gravityScale = baseGravityScale;
     }
 
     public void OnGrapplingHookStopped()

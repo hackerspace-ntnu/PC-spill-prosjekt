@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     private PlayerState currentState;
     private PlayerState previousState;
 
-    private DIRECTION dir;
+    private Direction dir;
 
     [SerializeField] private string currentStateName;
     [SerializeField] private string previousStateName;
@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int flipGravityScale = 1;
     [SerializeField] private int wallTrigger = 0;
     [SerializeField] private Animator animator;
-    [SerializeField] private SkeletonMecanim skeletonMecanism;
+    [SerializeField] private SkeletonMecanim skeletonMecanim;
     
 
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
@@ -41,8 +41,8 @@ public class PlayerController : MonoBehaviour
     public float DashTime { get; set; }
     public Vector2 TargetVelocity { get; set; }
     public Animator Animator { get => animator; }
-    public SkeletonMecanim SkeletonMecanism { get => skeletonMecanism; }
-    public DIRECTION Dir { get => dir; set => dir = value; }
+    public SkeletonMecanim SkeletonMecanim { get => skeletonMecanim; }
+    public Direction Dir { get => dir; set => dir = value; }
 
     public GameObject grapplingHookPrefab;
     public float grapplingSpeed;
@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
         currentState = IdleState.INSTANCE;
         ChangeState(IdleState.INSTANCE);
 
-        Dir = DIRECTION.RIGHT;
+        Dir = Direction.RIGHT;
     }
 
     void Update()
@@ -89,11 +89,11 @@ public class PlayerController : MonoBehaviour
 
         float velocity = currentState.GetXVelocity();
 	        if(velocity < -MOVE_TRESHOLD) {
-            Dir = DIRECTION.LEFT;
-            skeletonMecanism.skeleton.ScaleX = -1 * flipGravityScale;
+            Dir = Direction.LEFT;
+            skeletonMecanim.skeleton.ScaleX = -1 * flipGravityScale;
         } else if (velocity > MOVE_TRESHOLD) {
-            Dir = DIRECTION.RIGHT;
-            skeletonMecanism.skeleton.ScaleX = 1 * flipGravityScale;
+            Dir = Direction.RIGHT;
+            skeletonMecanim.skeleton.ScaleX = 1 * flipGravityScale;
         }
     }
 

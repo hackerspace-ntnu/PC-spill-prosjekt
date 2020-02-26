@@ -37,8 +37,8 @@ public class AirborneState : PlayerState
     }
 
     public override void FixedUpdate() {
-        if (controller.FlipGravityScale == 1 && rigidBody.velocity.y <= -maxVelocityY ||
-            controller.FlipGravityScale == -1 && rigidBody.velocity.y >= maxVelocityY)
+        if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY ||
+            controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY)
         {
             maxVelocityFix = 0.02f;
         }
@@ -49,18 +49,18 @@ public class AirborneState : PlayerState
 
         float newVelocityX;
         // decreases horizontal acceleration in air while input in opposite direction of velocity
-        if (Math.Sign(controller.TargetVelocity.x) != Math.Sign(rigidBody.velocity.x))
+        if (Math.Sign(controller.TargetVelocity.x) != Math.Sign(rigidbody.velocity.x))
         {
-            newVelocityX = controller.TargetVelocity.x * 0.2f - rigidBody.velocity.x * 0.1f;
+            newVelocityX = controller.TargetVelocity.x * 0.2f - rigidbody.velocity.x * 0.1f;
         }
         else
         {
-            newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
+            newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
         }
 
-        float newVelocityY = - rigidBody.velocity.y * maxVelocityFix;
+        float newVelocityY = - rigidbody.velocity.y * maxVelocityFix;
 
-        rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
+        rigidbody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
         //controller.TargetVelocity = new Vector2(newVelocityX, 0);
     }
 

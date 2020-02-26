@@ -25,11 +25,11 @@ public class GlitchWallClingingState : WallClingingState
 
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)
         {
-            rigidBody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+            rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }
         else
         {
-            rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
         if (controller.Grounded)
@@ -50,7 +50,7 @@ public class GlitchWallClingingState : WallClingingState
     public override void Exit()
     {
         controller.Animator.SetBool("WallCling", false);
-        rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     public override void Jump()

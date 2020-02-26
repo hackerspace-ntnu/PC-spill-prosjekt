@@ -25,9 +25,9 @@ public class WalkingState : PlayerState
     {
         base.Update();
 
-        if (Math.Abs(rigidBody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
+        if (Math.Abs(rigidbody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
             controller.ChangeState(IdleState.INSTANCE);
-        } else if (!controller.Grounded || rigidBody.velocity.y * controller.FlipGravityScale < 0.0f) {
+        } else if (!controller.Grounded || rigidbody.velocity.y * controller.FlipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
         } 
 

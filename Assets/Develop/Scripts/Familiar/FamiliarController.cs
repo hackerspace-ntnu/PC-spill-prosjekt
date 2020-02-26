@@ -38,24 +38,24 @@ public class FamiliarController : MonoBehaviour {
         // If player/object is moving to the left, place familiar on the right of player/object.
         if (rBodyOfObj.velocity.x < -0.1f) {
             if (targetPos.x < 0.0f) {
-                FlipSide(DIRECTION.LEFT);
+                FlipSide(Direction.LEFT);
             }
         }
 
         // If player/object is moving to the right, place familiar on the left of player/object.
         if (rBodyOfObj.velocity.x > 0.1f) {
             if (targetPos.x > 0.0f) {
-                FlipSide(DIRECTION.RIGHT);
+                FlipSide(Direction.RIGHT);
             }
         }
 
         if(objToFollow.tag != "Player") {
             if(player.transform.position.x < objToFollow.transform.position.x) {
-                FlipSide(DIRECTION.LEFT);
+                FlipSide(Direction.LEFT);
             }
 
             if (player.transform.position.x > objToFollow.transform.position.x) {
-                FlipSide(DIRECTION.RIGHT);
+                FlipSide(Direction.RIGHT);
             }
 
         }
@@ -100,7 +100,7 @@ public class FamiliarController : MonoBehaviour {
         }
     }
 
-    private void FlipSide(DIRECTION direction) {
+    private void FlipSide(Direction direction) {
         targetPos = new Vector2(targetPos.x * -1.0f, targetPos.y);
         speechBubble.Flip(direction);
     }

@@ -16,7 +16,7 @@ public class DashingState : PlayerState
         controller.DashTime = Time.time;
 
         controller.TargetVelocity = new Vector2((int)controller.Dir * dashSpeed * controller.FlipGravityScale, 0);
-        rigidBody.gravityScale = 0;
+        rigidbody.gravityScale = 0;
         controller.Animator.SetBool("Dash", true);
     }
 
@@ -44,15 +44,15 @@ public class DashingState : PlayerState
 
     public override void FixedUpdate()
     {
-        float newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
-        float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y;
+        float newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
+        float newVelocityY = controller.TargetVelocity.y - rigidbody.velocity.y;
 
-        rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
+        rigidbody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
     }
 
     public override void Exit()
     {
-        rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
+        rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
         controller.Animator.SetBool("Dash", false);
     }
 

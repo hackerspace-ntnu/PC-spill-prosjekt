@@ -18,7 +18,7 @@ public class GlitchCrouchingState : CrouchingState
     public override void Init(PlayerController controller) {
         base.Init(controller);
 
-        controller.TargetVelocity = rigidBody.velocity;
+        controller.TargetVelocity = rigidbody.velocity;
 
         // Find the game objects related to crouching
         colliderFullHeight = controller.transform.Find("ColliderFullHeight").gameObject;
@@ -52,7 +52,7 @@ public class GlitchCrouchingState : CrouchingState
             controller.ChangeState(IdleState.INSTANCE);
         }
 
-        if (rigidBody.velocity.y * controller.FlipGravityScale < 0.0f)
+        if (rigidbody.velocity.y * controller.FlipGravityScale < 0.0f)
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }
@@ -60,9 +60,9 @@ public class GlitchCrouchingState : CrouchingState
 
     public override void FixedUpdate()
     {
-        float newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
+        float newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
 
-        rigidBody.AddForce(new Vector2(newVelocityX, 0), ForceMode2D.Impulse);
+        rigidbody.AddForce(new Vector2(newVelocityX, 0), ForceMode2D.Impulse);
     }
 
     public override void Exit()

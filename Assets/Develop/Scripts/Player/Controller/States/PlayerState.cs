@@ -22,15 +22,15 @@ public abstract class PlayerState
     protected bool hasDashed = false;
 
     protected PlayerController controller;
-    protected Rigidbody2D rigidBody;
+    protected Rigidbody2D rigidbody;
 
     public abstract string Name { get; }
 
     public virtual void Init(PlayerController controller)
     {
         this.controller = controller;
-        rigidBody = controller.GetComponent<Rigidbody2D>();
-        rigidBody.gravityScale = baseGravityScale;
+        rigidbody = controller.GetComponent<Rigidbody2D>();
+        rigidbody.gravityScale = baseGravityScale;
         maxVelocityY = baseMaxVelocityY;
     }
 
@@ -46,17 +46,17 @@ public abstract class PlayerState
     }
 
     public virtual void FixedUpdate() {
-        if (controller.FlipGravityScale == 1 && rigidBody.velocity.y <= -maxVelocityY || 
-            controller.FlipGravityScale == -1 && rigidBody.velocity.y >= maxVelocityY) {
+        if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY || 
+            controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY) {
             maxVelocityFix = 0.2f;
         } else {
             maxVelocityFix = 0f;
         }
 
-        float newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
-        float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
+        float newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
+        float newVelocityY = controller.TargetVelocity.y - rigidbody.velocity.y * maxVelocityFix;
 
-        rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
+        rigidbody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, 0);
     }
 
@@ -85,11 +85,11 @@ public abstract class PlayerState
 
     public virtual void UpdateGravity()
     {
-        rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
+        rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
     }
 
     public float GetXVelocity() {
-        return rigidBody.velocity.x;
+        return rigidbody.velocity.x;
     }
     public float getHorizontalInput()
     {
