@@ -6,46 +6,58 @@ public class CrouchingState : PlayerState
 {
     public static readonly CrouchingState INSTANCE = new CrouchingState();
 
+    private const float CROUCH_HEIGHT_RATIO = 0.5f;
     private const float CROUCH_SPEED = 0.5f;
 
     public override string Name => "CROUCHING";
 
+    protected virtual string AnimatorParameterName => "Crouch";
+
     // Game objects for crouching and uncrouching
-    private GameObject colliderFullHeight;
-    private GameObject colliderCrouch;
-    private GameObject crouchCeilingDetector;
+    protected BoxCollider2D collider;
+    protected GameObject crouchCeilingDetector;
+
+    protected Vector2 baseColliderSize;
+    protected Vector2 baseColliderOffset;
+    protected Vector2 crouchColliderSize;
+    protected Vector2 crouchColliderOffset;
+
+    protected int animatorParameterId;
 
     public override void Init(PlayerController controller) {
         base.Init(controller);
-
-        // Find the game objects related to crouching
-        colliderFullHeight = controller.transform.Find("ColliderFullHeight").gameObject;
-        if (!colliderFullHeight) {
-            Debug.LogError("CROUCHING STATE: Collider full height is empty");
-        }
-
-        colliderCrouch = controller.transform.Find("ColliderCrouch").gameObject;
-        if (!colliderCrouch) {
-            Debug.LogError("CROUCHING STATE: Collider crouch is empty");
-        }
 
         crouchCeilingDetector = controller.transform.Find("CrouchCeilingDetector").gameObject;
         if (!crouchCeilingDetector) {
             Debug.LogError("CROUCHING STATE: Crouch Ceiling Check is empty");
         }
+
+        collider = controller.GetComponent<BoxCollider2D>();
+
+        baseColliderSize = collider.size;
+        baseColliderOffset = collider.offset;
+
+        crouchColliderSize = baseColliderSize;
+        crouchColliderSize.y *= CROUCH_HEIGHT_RATIO;
+
+        crouchColliderOffset = baseColliderOffset;
+        float heightDifference = baseColliderSize.y - crouchColliderSize.y;
+        crouchColliderOffset.y = -heightDifference / 2f;
+
+        animatorParameterId = Animator.StringToHash(AnimatorParameterName);
     }
 
 
     public override void Enter()
     {
-        colliderCrouch.SetActive(true);
+        collider.size = crouchColliderSize;
+        collider.offset = crouchColliderOffset;
+
         crouchCeilingDetector.SetActive(true);
 
-        colliderFullHeight.SetActive(false);
         controller.CanUncrouch = true;
 
-        controller.Animator.SetBool("Crouch", true);
-
+        controller.Animator.SetBool(animatorParameterId, true);
     }
 
     public override void Update()
@@ -72,12 +84,12 @@ public class CrouchingState : PlayerState
 
     public override void Exit()
     {
-        colliderFullHeight.SetActive(true);
+        collider.size = baseColliderSize;
+        collider.offset = baseColliderOffset;
 
-        colliderCrouch.SetActive(false);
         crouchCeilingDetector.SetActive(false);
 
-        controller.Animator.SetBool("Crouch", false);
+        controller.Animator.SetBool(animatorParameterId, false);
     }
 
     public override void Jump() {
