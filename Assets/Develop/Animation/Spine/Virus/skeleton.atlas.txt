@@ -1,0 +1,34 @@
+
+skeleton.png
+size: 411,587
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bacteriaBody
+  rotate: false
+  xy: 311, 206
+  size: 98, 379
+  orig: 98, 379
+  offset: 0, 0
+  index: -1
+bacteriaGlowBody
+  rotate: false
+  xy: 2, 40
+  size: 307, 545
+  orig: 422, 703
+  offset: 56, 90
+  index: -1
+lowerLeg
+  rotate: false
+  xy: 311, 15
+  size: 90, 189
+  orig: 90, 189
+  offset: 0, 0
+  index: -1
+upperLeg
+  rotate: true
+  xy: 2, 2
+  size: 36, 77
+  orig: 36, 77
+  offset: 0, 0
+  index: -1

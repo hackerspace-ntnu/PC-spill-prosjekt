@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool knockedBack;
     [SerializeField] private PhysicsMaterial2D bouncyMaterial;
     [SerializeField] private Collider2D bodyCollider;
-    private bool invunerable = false;
+    [SerializeField] private bool invunerable = false;
 
     public bool KnockedBack { get => knockedBack; set => knockedBack = value; }
     public bool Invunerable { get => invunerable; set => invunerable = value; }

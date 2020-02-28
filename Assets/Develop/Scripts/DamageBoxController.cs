@@ -33,18 +33,19 @@ public class DamageBoxController : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        print(collision.tag);
+        //print(collision.tag);
         if(collision.tag == "ColliderFullHeigth" || collision.tag == "ColliderCrouch")
         {
             PlayerController controller = collision.GetComponentInParent<PlayerController>();
-            collision.GetComponentInParent<HealthController>().TakeDamage(damage);
-            if (givesKnockBack && !controller.KnockedBack)
+            
+            if (givesKnockBack && !controller.KnockedBack && !controller.Invunerable)
             {
                 controller.KnockBackDuration = knockBackDuration;
                 float dir = Mathf.Sign(collision.transform.position.x - transform.position.x);
                 controller.GetComponent<Rigidbody2D>().velocity = knockBackVelocity * new Vector2(dir, 1);
                 controller.ChangeState(KnockedBackState.INSTANCE);
             }
+            collision.GetComponentInParent<HealthController>().TakeDamage(damage);
         }
     }
 }

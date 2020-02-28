@@ -19,7 +19,6 @@ public class HealthController : MonoBehaviour
     {
         if (controller.Invunerable) { return; }
         if (damage <= 0) { return; }
-        StartCoroutine(waitForInvunerability());
         if(damage >= controller.CurrentHealth)
         {
             controller.CurrentHealth = 0;
@@ -29,6 +28,7 @@ public class HealthController : MonoBehaviour
         {
             controller.CurrentHealth = controller.CurrentHealth - damage;
         }
+        StartCoroutine(waitForInvunerability());
     }
     public void die()
     {
