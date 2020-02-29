@@ -11,9 +11,16 @@ public class BossLick : MonoBehaviour
 
     public float jumpHeight;
     public float jumpDuration = 1f;
-    public float lickDuration = 0.3f;
-    private int jumpFrames;
+    public float lickLag = 0.3f;
+    public float lickChargeup = 0.5f;
     
+
+    private int jumpFrames;
+    private Vector2 target;
+
+
+    public GameObject tongueTipPref;
+    public Vector3 nuzzle;
 
     public Transform playerTransform;
 
@@ -28,6 +35,20 @@ public class BossLick : MonoBehaviour
     private void FixedUpdate()
     {
 
+    }
+
+    private IEnumerator Lick()
+    {
+        target = ((Vector2)playerTransform.position).normalized;
+        
+
+        GameObject tongue = Instantiate(tongueTipPref, nuzzle, Quaternion.identity);
+        TongueController tongueController = tongue.GetComponent<TongueController>();
+        tongueController.target = target;
+
+        Disable();
+
+        yield return null;
     }
 
     public IEnumerator Jump()
@@ -51,14 +72,7 @@ public class BossLick : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        Disable();
-
-        yield return null;
-    }
-
-    private IEnumerator Lick()
-    {
-
+        StartCoroutine("Lick");
 
         yield return null;
     }
