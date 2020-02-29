@@ -9,10 +9,22 @@ public class GlitchCrouchingState : CrouchingState
     public override string Name => "GLITCH_CROUCHING";
 
     private const float crouchSpeed = 1f;
+    private const float animPosOffset = 0.4f;
 
     protected override string AnimatorParameterName => "GlitchCrouch";
 
     private GlitchCrouchingState() {}
+
+    public override void Enter() {
+        collider.size = crouchColliderSize;
+        collider.offset = crouchColliderOffset;
+
+        crouchCeilingDetector.SetActive(true);
+
+        Vector3 animPos = controller.SkeletonMecanim.gameObject.transform.position;
+        animPos.y -= animPosOffset;
+        controller.SkeletonMecanim.gameObject.transform.position = animPos;
+    }
 
     public override void Init(PlayerController controller)
     {
@@ -31,5 +43,16 @@ public class GlitchCrouchingState : CrouchingState
     public override void ToggleGlitch()
     {
         controller.ChangeState(CrouchingState.INSTANCE);
+    }
+
+    public override void Exit() {
+        collider.size = baseColliderSize;
+        collider.offset = baseColliderOffset;
+
+        crouchCeilingDetector.SetActive(false);
+
+        Vector3 animPos = controller.SkeletonMecanim.gameObject.transform.position;
+        animPos.y += animPosOffset;
+        controller.SkeletonMecanim.gameObject.transform.position = animPos;
     }
 }

@@ -11,11 +11,9 @@ public class IdleState : WalkingState
 
     private IdleState() {}
 
-    public override void Enter()
-    {
+    public override void Enter() {
         controller.HasAirJumped = false;
         controller.HasDashed = false;
-        //controller.Animator.SetBool("Run", false);
         controller.Animator.SetBool("Idle", true);
     }
 
@@ -27,8 +25,11 @@ public class IdleState : WalkingState
             controller.ChangeState(WalkingState.INSTANCE);
     }
 
-    public override void Exit()
-    {
+    public override void FixedUpdate() {
+        base.FixedUpdate();
+    }
+
+    public override void Exit() {
         base.Exit();
         controller.Animator.SetBool("Idle", false);
     }

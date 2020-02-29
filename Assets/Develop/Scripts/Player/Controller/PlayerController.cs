@@ -82,11 +82,11 @@ public class PlayerController : MonoBehaviour
 
         float velocity = currentState.GetXVelocity();
         if(velocity < -MOVE_TRESHOLD) {
-            Dir = (DIRECTION)((int)DIRECTION.LEFT * flipGravityScale);
-            skeletonMecanism.skeleton.ScaleX = -1 * flipGravityScale;
+            Dir = (Direction)((int)Direction.LEFT * flipGravityScale);
+            skeletonMecanim.skeleton.ScaleX = -1 * flipGravityScale;
         } else if (velocity > MOVE_TRESHOLD) {
-            Dir = (DIRECTION)((int)DIRECTION.RIGHT * flipGravityScale);
-            skeletonMecanism.skeleton.ScaleX = 1 * flipGravityScale;
+            Dir = (Direction)((int)Direction.RIGHT * flipGravityScale);
+            skeletonMecanim.skeleton.ScaleX = 1 * flipGravityScale;
         }
     }
 
