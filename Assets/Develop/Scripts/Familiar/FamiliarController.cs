@@ -117,7 +117,7 @@ public class FamiliarController : MonoBehaviour {
     private IEnumerator GlitchAnimation() {
         while (true) {
             
-            yield return new WaitForSeconds(Random.Range(4.0f, 12.0f));
+            yield return new WaitForSeconds(Random.Range(10.0f, 30.0f));
 
             animator.SetBool("Glitch", true);
 

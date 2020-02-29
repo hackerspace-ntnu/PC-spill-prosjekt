@@ -43,6 +43,8 @@ public class GlitchCrouchingState : CrouchingState
     public override void ToggleGlitch()
     {
         controller.ChangeState(CrouchingState.INSTANCE);
+        controller.Animator.SetBool("GlitchCrouch", true);
+        controller.Animator.SetBool("GlitchCrouch", true);
     }
 
     public override void Exit() {

@@ -149,8 +149,10 @@ MonoBehaviour:
   player: {fileID: 0}
   speechBubble: {fileID: 204303439285638489}
   targetPos: {x: 0.4, y: 0.5}
-  distanceFactor: 1.5
+  distanceFactor: 2
   minVel: 10
+  skeletonMecanim: {fileID: 2088323570198517652}
+  animator: {fileID: 9015697448632070258}
   controller: {fileID: 0}
 --- !u!1 &204303439285638498
 GameObject:
@@ -355,9 +357,10 @@ GameObject:
   - component: {fileID: 269484107973115813}
   - component: {fileID: 9015697448632070258}
   - component: {fileID: 2088323570198517652}
+  - component: {fileID: 139288617}
   m_Layer: 0
   m_Name: Spine Mecanim GameObject (skeleton)
-  m_TagString: Untagged
+  m_TagString: Skeleton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -477,3 +480,18 @@ MonoBehaviour:
     autoReset: 1
     layerMixModes: 01000000
     layerBlendModes: 01000000
+--- !u!114 &139288617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7430890279600280874}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9379e6555406df84788f882852801ea8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scriptRef: {fileID: 204303438614116762}
+  twitchFactor: 0.01
+  twitchTolerance: 0.2
