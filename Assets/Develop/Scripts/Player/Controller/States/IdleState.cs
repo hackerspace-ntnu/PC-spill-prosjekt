@@ -21,7 +21,7 @@ public class IdleState : WalkingState
     {
         base.Update();
 
-        if (Math.Abs(rigidbody.velocity.x) >= idleSpeedThreshold)
+        if (Math.Abs(rigidbody.velocity.x) >= IDLE_SPEED_TRESHOLD)
             controller.ChangeState(WalkingState.INSTANCE);
     }
 

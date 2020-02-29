@@ -17,13 +17,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] [ReadOnly] private string previousStateName;
     [SerializeField] [ReadOnly] private bool hasAirJumped = false;
     [SerializeField] [ReadOnly] private bool hasDashed = false;
-    [SerializeField] [ReadOnly] private bool canUncrouch = false;
     [SerializeField] [ReadOnly] private bool glitchActive = false;
     [SerializeField] [ReadOnly] private int flipGravityScale = 1;
     [SerializeField] [ReadOnly] private int wallTrigger = 0;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
-    
+
+    [ReadOnly] private bool canUncrouch = true;
+    [ReadOnly] private bool canUnglitch = true;
+
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;
@@ -38,6 +40,7 @@ public class PlayerController : MonoBehaviour
     public Animator Animator => animator;
     public SkeletonMecanim SkeletonMecanim => skeletonMecanim;
     public Direction Dir { get; set; }
+    public bool CanUnglitch { get => canUnglitch; set => canUnglitch = value; }
 
     public GameObject grapplingHookPrefab;
     public float grapplingSpeed;

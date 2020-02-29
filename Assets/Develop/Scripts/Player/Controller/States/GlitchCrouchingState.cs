@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,53 +9,83 @@ public class GlitchCrouchingState : CrouchingState
 
     public override string Name => "GLITCH_CROUCHING";
 
-    private const float crouchSpeed = 1f;
-    private const float animPosOffset = 0.4f;
+    private const float SPRITE_POS_OFFSET = 0.22f;
+    private const float CROUCH_HEIGHT_RATIO = 0.6f;
 
     protected override string AnimatorParameterName => "GlitchCrouch";
+
+    protected Vector2 glitchCrouchColliderSize;
+    protected Vector2 glitchCrouchColliderOffset;
+
+    private bool tryToUnglitch = false;
 
     private GlitchCrouchingState() {}
 
     public override void Enter() {
-        collider.size = crouchColliderSize;
-        collider.offset = crouchColliderOffset;
+        base.Enter();
 
-        crouchCeilingDetector.SetActive(true);
+        collider.size = glitchCrouchColliderSize;
+        collider.offset = glitchCrouchColliderOffset;
+
+        tryToUnglitch = false;
 
         Vector3 animPos = controller.SkeletonMecanim.gameObject.transform.position;
-        animPos.y -= animPosOffset;
+        animPos.y -= SPRITE_POS_OFFSET;
         controller.SkeletonMecanim.gameObject.transform.position = animPos;
+
+        
     }
 
     public override void Init(PlayerController controller)
     {
         base.Init(controller);
 
-        controller.TargetVelocity = rigidbody.velocity;
+        glitchCrouchColliderSize = baseColliderSize;
+        glitchCrouchColliderSize.y *= CROUCH_HEIGHT_RATIO;
+
+        glitchCrouchColliderSize = baseColliderSize;
+        glitchCrouchColliderSize.y *= CROUCH_HEIGHT_RATIO;
+
+        glitchCrouchColliderOffset = baseColliderOffset;
+        float heightDifference = baseColliderSize.y - glitchCrouchColliderSize.y;
+        glitchCrouchColliderOffset.y = -heightDifference / 2f;
+    }
+
+    public override void Update() {
+        if (Math.Abs(rigidbody.velocity.x) >= IDLE_SPEED_TRESHOLD) {
+            controller.Animator.SetBool("Walk", true);
+            controller.Animator.SetBool("Idle", false);
+        } else {
+            controller.Animator.SetBool("Idle", true);
+            controller.Animator.SetBool("Walk", false);
+        }
+
+        if(tryToUnglitch && controller.CanUnglitch) {
+            controller.ChangeState(CrouchingState.INSTANCE);
+        }
+
+        base.Update();
     }
 
     public override void FixedUpdate()
     {
-        float newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
 
-        rigidbody.AddForce(new Vector2(newVelocityX, 0), ForceMode2D.Impulse);
+        base.FixedUpdate();
     }
 
     public override void ToggleGlitch()
     {
-        controller.ChangeState(CrouchingState.INSTANCE);
-        controller.Animator.SetBool("GlitchCrouch", true);
-        controller.Animator.SetBool("GlitchCrouch", true);
+        tryToUnglitch = !tryToUnglitch;
     }
 
     public override void Exit() {
-        collider.size = baseColliderSize;
-        collider.offset = baseColliderOffset;
+        base.Exit();
 
-        crouchCeilingDetector.SetActive(false);
+        controller.Animator.SetBool("Idle", false);
+        controller.Animator.SetBool("Walk", false);
 
         Vector3 animPos = controller.SkeletonMecanim.gameObject.transform.position;
-        animPos.y += animPosOffset;
+        animPos.y += SPRITE_POS_OFFSET;
         controller.SkeletonMecanim.gameObject.transform.position = animPos;
     }
 }
