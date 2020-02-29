@@ -8,19 +8,21 @@ public class GlitchDashingState : DashingState
 
     public override string Name => "GLITCH_DASHING";
 
+    private GlitchDashingState() {}
+
     public override void Enter()
     {
         controller.HasDashed = true;
         controller.DashTime = Time.time;
 
         controller.TargetVelocity = new Vector2((int)controller.Dir * dashSpeed * controller.FlipGravityScale, 0);
-        rigidBody.gravityScale = 0;
+        rigidbody.gravityScale = 0;
         //disable damageBoxCollider
     }
 
     public override void Exit()
     {
-        rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
+        rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
         //enable damageBoxCollider
     }
 }

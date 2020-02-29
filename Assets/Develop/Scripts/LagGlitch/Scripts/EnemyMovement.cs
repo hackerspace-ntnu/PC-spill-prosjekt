@@ -34,7 +34,6 @@ public class EnemyMovement : MonoBehaviour
     public void toggleLagGlitch(bool on)
     {
         this.GetComponent<BoxCollider2D>().enabled = !on;
-        Debug.Log(this.name);
         if (on)
         {
             clone = Instantiate(this.gameObject); // clone enemy 

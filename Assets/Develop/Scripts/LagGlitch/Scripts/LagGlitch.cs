@@ -80,9 +80,7 @@ public class LagGlitch : MonoBehaviour
         enemyMovement.toggleLagGlitch(false); // Turn enemy box colliders back on
         
         lagTimer.SetActive(false); // Hide lag glitch-timer
-        // Debug.Log("Destroy " + this.name);
         cloneStats.playerHealth = this.GetComponent<PlayerStats>().playerHealth;
-        // Debug.Log("This.health: " + this.GetComponent<PlayerStats>().playerHealth + ", clone.health: " + cloneStats.playerHealth);
         cloneScript.isClone = false;
         clone.GetComponent<SpriteRenderer>().sprite = spriteLoad.playerRegular;
         Destroy(this.gameObject);
@@ -101,7 +99,6 @@ public class LagGlitch : MonoBehaviour
         while (currCountdownValue > 0)
         {
             lagTimer.transform.localScale = new Vector3(currCountdownValue / countdownValue, 1, 1); // Update lag glitch timer
-            // Debug.Log("Countdown: " + currCountdownValue);
             yield return new WaitForSeconds(0.1f);
             currCountdownValue-=0.1f;
         }
@@ -113,7 +110,6 @@ public class LagGlitch : MonoBehaviour
     {
         while(ghostActive)
         {
-            // print("BIN");
             GameObject ghost = Instantiate(ghostTrailObj, clone.transform.position, new Quaternion(0,0,0,0));
             ghost.GetComponent<GhostTrail>().enabled = true;
             yield return new WaitForSeconds(0.2f);
