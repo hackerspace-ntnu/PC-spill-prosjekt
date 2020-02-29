@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 212090327}
   - component: {fileID: 212090326}
   - component: {fileID: 212090325}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Crouch Tester (1)
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -1673,7 +1673,7 @@ GameObject:
   - component: {fileID: 788885670}
   - component: {fileID: 788885669}
   - component: {fileID: 788885668}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: 45 deg
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -2097,7 +2097,7 @@ GameObject:
   - component: {fileID: 1766465127}
   - component: {fileID: 1766465126}
   - component: {fileID: 1766465125}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Crouch Tester
   m_TagString: Standard
   m_Icon: {fileID: 0}
@@ -2206,7 +2206,7 @@ GameObject:
   - component: {fileID: 1816465710}
   - component: {fileID: 1816465714}
   - component: {fileID: 1816465713}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hitbox
   m_TagString: Standard
   m_Icon: {fileID: 0}

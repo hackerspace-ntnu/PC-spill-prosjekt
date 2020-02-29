@@ -9,6 +9,8 @@ public class GlitchWallClingingState : WallClingingState
 
     public override string Name => "GLITCH_WALL_CLINGING";
 
+    private GlitchWallClingingState() {}
+
     public override void Enter()
     {
         if (Time.time - controller.JumpButtonPressTime < 0.2f)
@@ -21,15 +23,15 @@ public class GlitchWallClingingState : WallClingingState
 
     public override void Update()
     {
-        HandleHorizontalInput();
+        base.Update();
 
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)
         {
-            rigidBody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+            rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }
         else
         {
-            rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
         if (controller.Grounded)
@@ -42,15 +44,10 @@ public class GlitchWallClingingState : WallClingingState
         }
     }
 
-    public override void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
-
     public override void Exit()
     {
         controller.Animator.SetBool("WallCling", false);
-        rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     public override void Jump()

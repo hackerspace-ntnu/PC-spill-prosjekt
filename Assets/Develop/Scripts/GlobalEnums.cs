@@ -1,7 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿namespace GlobalEnums
+{
+    public enum Direction
+    {
+        LEFT = -1,
+        RIGHT = 1,
+    }
 
-public class GlobalEnums : MonoBehaviour{}
-
-public enum DIRECTION { LEFT = -1, RIGHT = 1 }
+    public enum SquareSide
+    {
+        TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT,
+    }
+}

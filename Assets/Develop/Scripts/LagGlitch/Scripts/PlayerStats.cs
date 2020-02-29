@@ -15,11 +15,9 @@ public class PlayerStats : MonoBehaviour
     {
         playerHealth -= damage;
         UpdateHealthbar();
-        Debug.Log(playerHealth);
         if(playerHealth <= 0)
         {
             Die();
-            Debug.Log("Isded");
         }
     }
 
