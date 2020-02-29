@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CrouchingState : PlayerState
+public class GlitchCrouchingState : CrouchingState
 {
-    public static readonly CrouchingState INSTANCE = new CrouchingState();
+    public new static readonly GlitchCrouchingState INSTANCE = new GlitchCrouchingState();
 
-    private const float CROUCH_SPEED = 0.5f;
+    private const float crouchSpeed = 1f;
 
-    public override string Name => "CROUCHING";
+    public override string Name => "GLITCH_CROUCHING";
 
     // Game objects for crouching and uncrouching
     private GameObject colliderFullHeight;
@@ -17,6 +17,8 @@ public class CrouchingState : PlayerState
 
     public override void Init(PlayerController controller) {
         base.Init(controller);
+
+        controller.TargetVelocity = rigidBody.velocity;
 
         // Find the game objects related to crouching
         colliderFullHeight = controller.transform.Find("ColliderFullHeight").gameObject;
@@ -38,36 +40,29 @@ public class CrouchingState : PlayerState
 
     public override void Enter()
     {
-        colliderCrouch.SetActive(true);
-        crouchCeilingDetector.SetActive(true);
+        base.Enter();
 
-        colliderFullHeight.SetActive(false);
-        controller.CanUncrouch = true;
-
-        controller.Animator.SetBool("Crouch", true);
-
+        controller.Animator.SetBool("GlitchCrouch", true);
     }
 
     public override void Update()
     {
-        if (!Input.GetButton("Crouch") && controller.CanUncrouch) {
+        if (!Input.GetButton("Crouch") && controller.CanUncrouch)
+        {
             controller.ChangeState(IdleState.INSTANCE);
         }
 
-        if (rigidBody.velocity.y * controller.FlipGravityScale < 0.0f) {
+        if (rigidBody.velocity.y * controller.FlipGravityScale < 0.0f)
+        {
             controller.ChangeState(AirborneState.INSTANCE);
         }
-
-        base.Update();
     }
 
     public override void FixedUpdate()
     {
+        float newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
 
-        // Set movement speed to crouch speed.
-        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x * CROUCH_SPEED, controller.TargetVelocity.y);
-
-        base.FixedUpdate();
+        rigidBody.AddForce(new Vector2(newVelocityX, 0), ForceMode2D.Impulse);
     }
 
     public override void Exit()
@@ -104,6 +99,6 @@ public class CrouchingState : PlayerState
 
     public override void ToggleGlitch()
     {
-        controller.ChangeState(GlitchCrouchingState.INSTANCE);
+        controller.ChangeState(CrouchingState.INSTANCE);
     }
 }

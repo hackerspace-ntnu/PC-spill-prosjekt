@@ -67,7 +67,7 @@ public class LagGlitch : MonoBehaviour
             camScript.player = clone;
 
             // Enemies
-            enemyMovement.boxColliderToggle(false); // Turn off enemy box colliders
+            enemyMovement.toggleLagGlitch(true); // Turn off enemy box colliders
         } else if (ghostActive) // You press H, and the following shall be done to the original sprite:
         {
             Teleport();
@@ -77,7 +77,7 @@ public class LagGlitch : MonoBehaviour
     public GlitchMask gMask;
     public void Teleport()
     {
-        enemyMovement.boxColliderToggle(true); // Turn enemy box colliders back on
+        enemyMovement.toggleLagGlitch(false); // Turn enemy box colliders back on
         
         lagTimer.SetActive(false); // Hide lag glitch-timer
         // Debug.Log("Destroy " + this.name);

@@ -10,7 +10,6 @@ public abstract class PlayerState
     public float baseGravityScale = 5; // base gravity affecting the player
     public float movementSpeed = 6;  // Orig value: 7
     protected float dashSpeed = 12;
-    protected int flipGravityScale = 1;
     protected float baseMaxVelocityY = 8;
     protected float wallSlideMaxVelocityY = 2;
     protected float maxVelocityY;
@@ -43,8 +42,8 @@ public abstract class PlayerState
     }
 
     public virtual void FixedUpdate() {
-        if (flipGravityScale == 1 && rigidBody.velocity.y <= -maxVelocityY || 
-            flipGravityScale == -1 && rigidBody.velocity.y >= maxVelocityY) {
+        if (controller.FlipGravityScale == 1 && rigidBody.velocity.y <= -maxVelocityY || 
+            controller.FlipGravityScale == -1 && rigidBody.velocity.y >= maxVelocityY) {
             maxVelocityFix = 0.2f;
         } else {
             maxVelocityFix = 0f;
@@ -54,6 +53,7 @@ public abstract class PlayerState
         float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y * maxVelocityFix;
 
         rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
+        controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, 0);
     }
 
     public virtual void Exit() {}
@@ -61,22 +61,7 @@ public abstract class PlayerState
     protected void HandleHorizontalInput()
     {
         horizontalInput = Input.GetAxis("Horizontal");
-        controller.TargetVelocity = new Vector2(horizontalInput * movementSpeed * flipGravityScale, controller.TargetVelocity.y);
-
-        /*if (Math.Abs(Input.GetAxis("Horizontal")) <= 0.1) //Beholde?
-        {
-            horizontalInput = 0;
-        } else if (Math.Abs(horizontalInput) <= Math.Abs(Input.GetAxis("Horizontal"))) {
-            horizontalInput = Input.GetAxis("Horizontal");
-            if (Math.Abs(horizontalInput) > horizontalInputRunningThreshold) {
-                targetVelocity.x = Math.Sign(horizontalInput) * movementSpeed * flipGravityScale; // Set horizontalInput to max
-            } else {
-                targetVelocity.x = horizontalInput * movementSpeed * flipGravityScale;
-            }
-        } else {
-            targetVelocity.x = 0;
-            horizontalInput = Input.GetAxis("Horizontal");
-        }*/
+        controller.TargetVelocity = new Vector2(horizontalInput * movementSpeed * controller.FlipGravityScale, controller.TargetVelocity.y);
     }
 
     public virtual void Jump() { }
@@ -85,6 +70,13 @@ public abstract class PlayerState
 
     public virtual void Dash() { }
 
+    public virtual void ToggleGlitch() { }
+
+    public virtual void UpdateGravity()
+    {
+        rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
+    }
+
     public float GetXVelocity() {
         return rigidBody.velocity.x;
     }
@@ -92,4 +84,5 @@ public abstract class PlayerState
     {
         return horizontalInput;
     }
+    
 }

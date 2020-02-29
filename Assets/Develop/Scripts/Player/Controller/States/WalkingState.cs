@@ -27,11 +27,11 @@ public class WalkingState : PlayerState
 
         if (Math.Abs(rigidBody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE) {
             controller.ChangeState(IdleState.INSTANCE);
-        } else if (rigidBody.velocity.y * flipGravityScale < 0.0f) {
+        } else if (!controller.Grounded || rigidBody.velocity.y * controller.FlipGravityScale < 0.0f) {
             controller.ChangeState(AirborneState.INSTANCE);
-        }
+        } 
 
-        Debug.Log(rigidBody.velocity.x);
+        //Debug.Log(rigidBody.velocity.x);
     }
 
     public override void FixedUpdate() {
@@ -48,12 +48,24 @@ public class WalkingState : PlayerState
     }
 
     public override void Crouch() {
-        controller.ChangeState(CrouchingState.INSTANCE);
+        if (controller.GlitchActive)
+        {
+            controller.ChangeState(GlitchCrouchingState.INSTANCE);
+        }
+        else
+        {
+            controller.ChangeState(CrouchingState.INSTANCE);
+        }
     }
 
     public override void Dash()
     {
-        if (Time.time - controller.DashTime > 0.4f)
-            controller.ChangeState(DashingState.INSTANCE);
+        if (Time.time - controller.DashTime > 0.4f) {
+            if (controller.GlitchActive) {
+                controller.ChangeState(GlitchDashingState.INSTANCE);
+            } else {
+                controller.ChangeState(DashingState.INSTANCE);
+            }
+        }
     }
 }
