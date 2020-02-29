@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum TonguePhase
+{
+    FIRST,
+    SECOND,
+    THIRD
+}
+
 public class TongueController : MonoBehaviour
 {
     public Vector2 target;
@@ -10,7 +17,7 @@ public class TongueController : MonoBehaviour
     public GameObject tEnd;
 
     private Vector2 translation;
-    private int tongueFase = 1;
+    private TonguePhase tongueFase = TonguePhase.FIRST;
 
     private void Start()
     {
@@ -18,16 +25,15 @@ public class TongueController : MonoBehaviour
 
 
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
-        if (tongueFase == 1)
+        if (tongueFase == TonguePhase.FIRST)
         {
-            tStart.transform.position += new Vector3(translation.x, translation.y, 0);
-            SpriteRenderer.
+            tStart.transform.position += new Vector3(translation.x, translation.y, 0); 
+            // TODO: SpriteRenderer.
         }
-        else if(tongueFase == 2)
+        else if(tongueFase == TonguePhase.SECOND)
         {
 
         }
