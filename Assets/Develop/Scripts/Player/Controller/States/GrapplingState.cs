@@ -10,7 +10,6 @@ public class GrapplingState : PlayerState
 
     public override string Name => "GRAPPLING";
 
-    private GameObject grapplingHookPrefab;
     private float lastGrapplingStoppedTime;
     private HookHead firedHook;
 
@@ -22,7 +21,6 @@ public class GrapplingState : PlayerState
     public override void Init(PlayerController controller)
     {
         base.Init(controller);
-        grapplingHookPrefab = controller.grapplingHookPrefab;
         // Lets the player grapple as soon as the game starts
         lastGrapplingStoppedTime = Time.time - controller.delayBetweenGrapplingAttempts;
     }
@@ -34,7 +32,7 @@ public class GrapplingState : PlayerState
 
         // Instantiate and initialize grappling hook
         firedHook = Object.Instantiate(
-                              grapplingHookPrefab, controller.transform.position, Quaternion.identity, controller.transform.parent
+                              controller.grapplingHookPrefab, controller.transform.position, Quaternion.identity, controller.transform.parent
                           )
                           .GetComponentInChildren<HookHead>();
         firedHook.grapplingState = this;
@@ -57,11 +55,11 @@ public class GrapplingState : PlayerState
     public override void FixedUpdate()
     {
         // Move towards the hook
-        Vector2 hookDirection = VectorUtils.GetDirectionToVector(rigidbody.position, firedHook.transform.position);
+        Vector2 hookDirection = rigidbody.position.DirectionTo(firedHook.transform.position.To2());
         Vector2 targetVelocity = controller.grapplingSpeed * hookDirection;
 
         // Wait for player to change direction (after having reached hook) before stopping
-        if (hasReachedHook && VectorUtils.HaveDifferentSigns(targetVelocity, lastTargetVelocity))
+        if (hasReachedHook && !targetVelocity.HasEqualSignAs(lastTargetVelocity))
         {
             StopGrappling();
             return;

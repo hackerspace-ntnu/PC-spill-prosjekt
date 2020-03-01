@@ -16,9 +16,9 @@ public class SpriteUtils
     public static Vector2 GetWorldSize(Vector3 spriteSize, Transform spriteTransform)
     {
         Vector3 worldScale = spriteTransform.lossyScale;
-        return new Vector2(spriteSize.x * worldScale.x, spriteSize.y * worldScale.y);;
+        return new Vector2(spriteSize.x * worldScale.x, spriteSize.y * worldScale.y);
     }
-    
+
     /// <summary>
     ///   <para>Returns the position of the given edge of the sprite.</para>
     /// </summary>
@@ -72,7 +72,7 @@ public class SpriteUtils
     public static Vector3 GetDistanceBetween(Transform fromTransform, Transform toTransform, float distanceOffset = 0f)
     {
         Vector3 distance = toTransform.position - fromTransform.position;
-        Vector3 adjustedDistance = VectorUtils.ExtendVectorInDirection(distance, distance.normalized, distanceOffset);
+        Vector3 adjustedDistance = distance.ExtendInDirection(distance.normalized, distanceOffset);
         return adjustedDistance;
     }
 }
