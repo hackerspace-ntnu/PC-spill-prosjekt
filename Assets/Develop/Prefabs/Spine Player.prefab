@@ -324,6 +324,7 @@ MonoBehaviour:
   grapplingHookPrefab: {fileID: 609932798181576808, guid: 219c3121c76325849afa159e84bb265f,
     type: 3}
   grapplingSpeed: 10
+  delayBetweenGrapplingAttempts: 0.5
 --- !u!114 &178474723645681530
 MonoBehaviour:
   m_ObjectHideFlags: 0

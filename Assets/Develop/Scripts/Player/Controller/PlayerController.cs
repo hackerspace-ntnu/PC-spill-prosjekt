@@ -41,6 +41,8 @@ public class PlayerController : MonoBehaviour
 
     public GameObject grapplingHookPrefab;
     public float grapplingSpeed;
+    [Tooltip("In seconds.")]
+    public float delayBetweenGrapplingAttempts;
 
     public void ChangeState(PlayerState newState)
     {

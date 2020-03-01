@@ -18,6 +18,7 @@ public class HookHead : MonoBehaviour
     public HookChain hookChain;
 
     public float movementSpeed;
+    [Tooltip("In world units.")]
     public float maxFiringLength;
 
     private new Rigidbody2D rigidbody;

@@ -11,6 +11,7 @@ public class GrapplingState : PlayerState
     public override string Name => "GRAPPLING";
 
     private GameObject grapplingHookPrefab;
+    private float lastGrapplingStoppedTime;
     private HookHead firedHook;
 
     private Vector2 lastTargetVelocity;
@@ -22,11 +23,13 @@ public class GrapplingState : PlayerState
     {
         base.Init(controller);
         grapplingHookPrefab = controller.grapplingHookPrefab;
+        // Lets the player grapple as soon as the game starts
+        lastGrapplingStoppedTime = Time.time - controller.delayBetweenGrapplingAttempts;
     }
 
     public void FireGrapplingHook()
     {
-        if (firedHook != null)
+        if (firedHook != null || Time.time - lastGrapplingStoppedTime < controller.delayBetweenGrapplingAttempts)
             return;
 
         // Instantiate and initialize grappling hook
@@ -75,6 +78,7 @@ public class GrapplingState : PlayerState
     {
         firedHook.Destroy();
         firedHook = null;
+        lastGrapplingStoppedTime = Time.time;
         controller.ChangeState(AirborneState.INSTANCE);
     }
 
