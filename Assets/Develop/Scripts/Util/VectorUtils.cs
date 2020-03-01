@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,17 @@ public class VectorUtils
     public static Vector2 To2(Vector3 vec)
     {
         return new Vector2(vec.x, vec.y);
+    }
+
+    public static Vector2Int Sign(Vector2 vec)
+    {
+        // Do not use Unity's Mathf.Sign(), as it doesn't return 0
+        return new Vector2Int(Math.Sign(vec.x), Math.Sign(vec.y));
+    }
+
+    public static bool HaveDifferentSigns(Vector2 vec1, Vector2 vec2)
+    {
+        return Sign(vec1) != Sign(vec2);
     }
 
     public static Vector3 GetDirectionToVector(Vector3 fromVec, Vector3 toVec)
