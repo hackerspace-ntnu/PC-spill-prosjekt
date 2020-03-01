@@ -56,6 +56,9 @@ public class HookChain : MonoBehaviour
 
         Vector3 hookDirection = VectorUtils.GetDirectionToVector(playerPos, hookPos);
         transform.up = hookDirection;
+        // Fixes bug where the transform would rotate around other axes than Z when components of hookDirection were too close to 0
+        Vector3 localEulerAngles = new Vector3(0f, 0f, transform.localEulerAngles.z);
+        transform.localEulerAngles = localEulerAngles;
 
         Vector2 localHookDistance = transform.parent.InverseTransformVector(hookPos - playerPos);
         float targetLength = localHookDistance.magnitude;
