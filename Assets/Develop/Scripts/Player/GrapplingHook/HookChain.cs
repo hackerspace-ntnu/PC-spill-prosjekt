@@ -10,23 +10,14 @@ public class HookChain : MonoBehaviour
     private PlayerController playerController;
     private SpriteRenderer hookHeadRenderer;
 
-    private float baseAngle;
-
     private Material mat;
     private Vector3 spriteSize;
     private float textureAspectRatio;
-
-    public void RotateTo(float angle)
-    {
-        transform.localRotation = Quaternion.Euler(0f, 0f, baseAngle + angle);
-    }
 
     void Start()
     {
         playerController = hookHead.playerController;
         hookHeadRenderer = hookHead.GetComponent<SpriteRenderer>();
-
-        baseAngle = transform.localEulerAngles.z;
 
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         mat = spriteRenderer.material;
@@ -43,11 +34,11 @@ public class HookChain : MonoBehaviour
     {
         UpdateStretch();
 
-        // Update material's X-tiling to make it look like the chain's texture is coming out of the player
+        // Update material's Y-tiling to make it look like the chain's texture is coming out of the player
         Vector2 spriteWorldSize = SpriteUtils.GetWorldSize(spriteSize, transform);
-        float spriteTargetWorldWidth = spriteWorldSize.y * textureAspectRatio;
-        float xTiling = spriteWorldSize.x / spriteTargetWorldWidth;
-        mat.SetTextureScale("_MainTex", new Vector2(xTiling, 1f));
+        float spriteTargetWorldLength = spriteWorldSize.x / textureAspectRatio;
+        float yTiling = spriteWorldSize.y / spriteTargetWorldLength;
+        mat.SetTextureScale("_MainTex", new Vector2(1f, yTiling));
     }
 
     /// <summary>
@@ -57,18 +48,18 @@ public class HookChain : MonoBehaviour
     /// </summary>
     private void UpdateStretch()
     {
-        Vector3 hookPos = SpriteUtils.GetSidePos(hookHeadRenderer, SquareSide.BOTTOM);
+        Vector3 hookPos = SpriteUtils.GetSidePos(hookHeadRenderer, SquareSide.TOP);
 
         Vector3 playerPos = playerController.transform.position;
         Vector3 centerPos = (playerPos + hookPos) / 2f;
         transform.position = centerPos;
 
         Vector3 hookDirection = VectorUtils.GetDirectionToVector(playerPos, hookPos);
-        transform.right = -hookDirection;
+        transform.up = hookDirection;
 
         Vector2 localHookDistance = transform.parent.InverseTransformVector(hookPos - playerPos);
         float targetLength = localHookDistance.magnitude;
-        float targetScaleX = targetLength / spriteSize.x;
-        transform.localScale = new Vector3(targetScaleX, transform.localScale.y, 1f);
+        float targetScaleY = targetLength / spriteSize.y;
+        transform.localScale = new Vector3(transform.localScale.x, targetScaleY, 1f);
     }
 }

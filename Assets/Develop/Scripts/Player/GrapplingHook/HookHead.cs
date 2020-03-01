@@ -15,7 +15,6 @@ public class HookHead : MonoBehaviour
 
     public PlayerController playerController;
     public Transform containerObject;
-    public HookChain hookChain;
 
     public float movementSpeed;
     [Tooltip("In world units.")]
@@ -102,9 +101,8 @@ public class HookHead : MonoBehaviour
     {
         // Use rigidbody's position instead of transform's, as it's the rigidbody that's moved each physics update
         Vector2 directionFromPlayer = rigidbody.position - VectorUtils.To2(playerController.transform.position);
-        float directionAngle = Vector2.SignedAngle(Vector3.up, directionFromPlayer);
+        float directionAngle = Vector2.SignedAngle(Vector3.down, directionFromPlayer);
         transform.localRotation = Quaternion.Euler(0f, 0f, directionAngle);
-        hookChain.RotateTo(directionAngle);
     }
 
     void OnTriggerEnter2D(Collider2D collider)
