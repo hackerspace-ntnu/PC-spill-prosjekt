@@ -48,7 +48,7 @@ public class HookChain : MonoBehaviour
     /// </summary>
     private void UpdateStretch()
     {
-        Vector3 hookPos = SpriteUtils.GetSidePos(hookHeadRenderer, SquareSide.TOP);
+        Vector3 hookPos = SpriteUtils.GetEdgePos(hookHeadRenderer, SquareEdge.TOP);
 
         Vector3 playerPos = playerController.transform.position;
         Vector3 centerPos = (playerPos + hookPos) / 2f;

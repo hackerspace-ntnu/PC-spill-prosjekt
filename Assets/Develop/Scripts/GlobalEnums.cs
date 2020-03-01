@@ -6,7 +6,7 @@
         RIGHT = 1,
     }
 
-    public enum SquareSide
+    public enum SquareEdge
     {
         TOP,
         BOTTOM,

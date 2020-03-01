@@ -20,50 +20,50 @@ public class SpriteUtils
     }
     
     /// <summary>
-    ///   <para>Returns the position of the given side of the sprite.</para>
+    ///   <para>Returns the position of the given edge of the sprite.</para>
     /// </summary>
     /// <param name="sprite"></param>
-    /// <param name="spriteSide">Must be either TOP or BOTTOM.</param>
-    public static Vector3 GetSidePos(SpriteRenderer sprite, SquareSide spriteSide)
+    /// <param name="spriteEdge">The edge of <c>sprite</c> in its non-rotated orientation. Must be either TOP or BOTTOM.</param>
+    public static Vector3 GetEdgePos(SpriteRenderer sprite, SquareEdge spriteEdge)
     {
         Transform spriteTransform = sprite.transform;
         float spriteLocalHeight = GetLocalSize(sprite.sprite.bounds.size, spriteTransform).y;
         float positionOffset;
-        switch (spriteSide)
+        switch (spriteEdge)
         {
-            case SquareSide.TOP:
+            case SquareEdge.TOP:
                 positionOffset = spriteLocalHeight / 2f;
                 break;
 
-            case SquareSide.BOTTOM:
+            case SquareEdge.BOTTOM:
                 positionOffset = -spriteLocalHeight / 2f;
                 break;
 
             default:
-                throw new InvalidEnumArgumentException($"{nameof(spriteSide)} must be either TOP or BOTTOM.");
+                throw new InvalidEnumArgumentException($"{nameof(spriteEdge)} must be either TOP or BOTTOM.");
         }
 
         Vector3 spriteLocalPosition = spriteTransform.localPosition + positionOffset * spriteTransform.up;
         return spriteTransform.parent.TransformPoint(spriteLocalPosition);
     }
 
-    public static Vector3 GetDistanceBetween(Transform fromTransform, SpriteRenderer toSprite, SquareSide relativeToSpriteSide)
+    public static Vector3 GetDistanceBetween(Transform fromTransform, SpriteRenderer toSprite, SquareEdge relativeToSpriteEdge)
     {
         Transform toTransform = toSprite.transform;
         float spriteWorldHeight = GetWorldSize(toSprite.sprite.bounds.size, toTransform).y;
         float distanceOffset;
-        switch (relativeToSpriteSide)
+        switch (relativeToSpriteEdge)
         {
-            case SquareSide.TOP:
+            case SquareEdge.TOP:
                 distanceOffset = spriteWorldHeight / 2f;
                 break;
 
-            case SquareSide.BOTTOM:
+            case SquareEdge.BOTTOM:
                 distanceOffset = -spriteWorldHeight / 2f;
                 break;
 
             default:
-                throw new InvalidEnumArgumentException($"{nameof(relativeToSpriteSide)} must be either TOP or BOTTOM.");
+                throw new InvalidEnumArgumentException($"{nameof(relativeToSpriteEdge)} must be either TOP or BOTTOM.");
         }
 
         return GetDistanceBetween(fromTransform, toTransform, distanceOffset);
