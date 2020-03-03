@@ -8,8 +8,6 @@ public class GlitchCrouchingState : CrouchingState
 
     public override string Name => "GLITCH_CROUCHING";
 
-    private const float crouchSpeed = 1f;
-
     protected override string AnimatorParameterName => "GlitchCrouch";
 
     private GlitchCrouchingState() {}
@@ -19,6 +17,19 @@ public class GlitchCrouchingState : CrouchingState
         base.Init(controller);
 
         controller.TargetVelocity = rigidbody.velocity;
+    }
+
+    public override void Update()
+    {
+        if (!Input.GetButton("Crouch") && controller.CanUncrouch)
+        {
+            controller.ChangeState(IdleState.INSTANCE);
+        }
+
+        if (rigidbody.velocity.y * controller.FlipGravityScale < 0.0f)
+        {
+            controller.ChangeState(AirborneState.INSTANCE);
+        }
     }
 
     public override void FixedUpdate()

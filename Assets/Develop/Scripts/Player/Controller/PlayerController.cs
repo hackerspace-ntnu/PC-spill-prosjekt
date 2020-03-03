@@ -51,6 +51,8 @@ public class PlayerController : MonoBehaviour
         currentState = newState;
         currentStateName = newState.Name;
         newState.Enter();
+
+        Debug.Log(currentState.Name);
     }
 
     void Start()

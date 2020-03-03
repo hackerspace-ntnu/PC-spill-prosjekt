@@ -25,7 +25,7 @@ public class GlitchWallClingingState : WallClingingState
     {
         base.Update();
 
-        if (Math.Sign(horizontalInput) == -controller.WallTrigger)
+        if (Mathf.Sign(horizontalInput) == -controller.WallTrigger)
         {
             rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }
