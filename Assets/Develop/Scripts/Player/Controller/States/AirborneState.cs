@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 
 public class AirborneState : PlayerState
@@ -22,7 +23,7 @@ public class AirborneState : PlayerState
 
         if (controller.Grounded)
             controller.ChangeState(IdleState.INSTANCE);
-        else if (controller.WallTrigger != 0
+        else if (controller.WallTrigger != WallTrigger.NONE
                  // Only wall cling if player is sliding downwards; this allows for sliding over edges without slowing down
                  && JumpingState.INSTANCE.IsHeadingDownwards())
         {

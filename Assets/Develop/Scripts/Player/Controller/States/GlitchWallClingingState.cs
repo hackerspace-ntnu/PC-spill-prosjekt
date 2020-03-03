@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 
 public class GlitchWallClingingState : WallClingingState
@@ -25,7 +26,7 @@ public class GlitchWallClingingState : WallClingingState
     {
         base.Update();
 
-        if (Math.Sign(horizontalInput) == -controller.WallTrigger)
+        if (Math.Sign(horizontalInput) == -(int) controller.WallTrigger)
         {
             rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }
@@ -38,7 +39,7 @@ public class GlitchWallClingingState : WallClingingState
         {
             controller.ChangeState(IdleState.INSTANCE);
         }
-        else if (controller.WallTrigger == 0)
+        else if (controller.WallTrigger == WallTrigger.NONE)
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }

@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] [ReadOnly] private bool canUncrouch = false;
     [SerializeField] [ReadOnly] private bool glitchActive = false;
     [SerializeField] [ReadOnly] private int flipGravityScale = 1;
-    [SerializeField] [ReadOnly] private int wallTrigger = 0;
+    [SerializeField] [ReadOnly] private WallTrigger wallTrigger = WallTrigger.NONE;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
     
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     public bool CanUncrouch { get => canUncrouch; set => canUncrouch = value; }
     public bool GlitchActive { get => glitchActive; set => glitchActive = value; }
     public int FlipGravityScale { get => flipGravityScale; set => flipGravityScale = value; }
-    public int WallTrigger { get => wallTrigger; set => wallTrigger = value; }
+    public WallTrigger WallTrigger { get => wallTrigger; set => wallTrigger = value; }
     public float JumpTime { get; set; }
     public float JumpButtonPressTime { get; set; }
     public float DashTime { get; set; }

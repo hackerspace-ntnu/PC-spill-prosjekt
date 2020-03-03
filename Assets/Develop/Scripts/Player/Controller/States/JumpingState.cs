@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 
 public class JumpingState : PlayerState
@@ -32,7 +33,7 @@ public class JumpingState : PlayerState
     {
         CheckGrappling();
 
-        if (controller.WallTrigger != 0 && Time.time - controller.JumpTime > 0.2f)
+        if (controller.WallTrigger != WallTrigger.NONE && Time.time - controller.JumpTime > 0.2f)
         {
             if (controller.GlitchActive)
                 controller.ChangeState(GlitchWallClingingState.INSTANCE);
@@ -112,9 +113,9 @@ public class JumpingState : PlayerState
     {
         // The input to differentiate between the kinds of wallJump is too tight
         if (Math.Abs(horizontalInput) >= 0.8f)
-            controller.TargetVelocity = new Vector2(controller.WallTrigger * dashSpeed * 2f, airJumpSpeed) * controller.FlipGravityScale * 1.2f;
+            controller.TargetVelocity = new Vector2((int) controller.WallTrigger * dashSpeed * 2f, airJumpSpeed) * controller.FlipGravityScale * 1.2f;
         else
-            controller.TargetVelocity = new Vector2(controller.WallTrigger * movementSpeed * 1.5f, groundJumpSpeed) * controller.FlipGravityScale * 1.1f;
+            controller.TargetVelocity = new Vector2((int) controller.WallTrigger * movementSpeed * 1.5f, groundJumpSpeed) * controller.FlipGravityScale * 1.1f;
 
         controller.HasDashed = false;
         controller.HasAirJumped = false;

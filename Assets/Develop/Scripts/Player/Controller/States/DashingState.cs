@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 
 public class DashingState : PlayerState
@@ -26,7 +27,7 @@ public class DashingState : PlayerState
     {
         CheckGrappling();
 
-        if (controller.WallTrigger != 0)
+        if (controller.WallTrigger != WallTrigger.NONE)
         {
             if (controller.GlitchActive)
                 controller.ChangeState(GlitchWallClingingState.INSTANCE);

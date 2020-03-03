@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 
 public enum TriggerType
@@ -33,11 +34,11 @@ public class TriggerDetector : MonoBehaviour
                 break;
 
             case TriggerType.WALL_LEFT:
-                controller.WallTrigger = 1;
+                controller.WallTrigger = WallTrigger.LEFT;
                 break;
 
             case TriggerType.WALL_RIGHT:
-                controller.WallTrigger = -1;
+                controller.WallTrigger = WallTrigger.RIGHT;
                 break;
 
             case TriggerType.CEILING:
@@ -56,7 +57,7 @@ public class TriggerDetector : MonoBehaviour
 
             case TriggerType.WALL_LEFT:
             case TriggerType.WALL_RIGHT:
-                controller.WallTrigger = 0;
+                controller.WallTrigger = WallTrigger.NONE;
                 break;
 
             case TriggerType.CEILING:
