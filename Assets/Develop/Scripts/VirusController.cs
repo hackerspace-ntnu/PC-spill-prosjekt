@@ -31,6 +31,8 @@ public class VirusController : MonoBehaviour
 
     private int mask;
     private Rigidbody2D body;
+
+    [SerializeField]
     private int dir = 1;
     // Start is called before the first frame update
     void Start()
@@ -56,7 +58,7 @@ public class VirusController : MonoBehaviour
         {
             body.AddForce(verticalDir[currentRotation] * gravity* body.mass);
             checkForObstacles();
-            body.velocity = speed * dir * horizontalDir[currentRotation] + rotateVector(body.velocity) * verticalDir[currentRotation];
+            body.velocity = speed * dir * horizontalDir[currentRotation] + rotateVector(body.velocity).y * verticalDir[currentRotation];
 
         }
         else
@@ -74,10 +76,6 @@ public class VirusController : MonoBehaviour
             if (checkForLedge() || checkForWall())
             {
                 dir *= -1;
-                Vector3 newScale = transform.localScale;
-                newScale.Scale(new Vector3(-1f, 1f, 1f));
-                ledgeCheckPos.Scale(new Vector2(-1f, 1));
-                transform.localScale = newScale;
             }
         }
         else
@@ -92,6 +90,13 @@ public class VirusController : MonoBehaviour
                 print("wall");
                 rotate(-dir);
             }
+        }
+        if(Mathf.Sign(dir) != transform.localScale.x)
+        {
+            Vector3 newScale = transform.localScale;
+            newScale.Scale(new Vector3(-1f, 1f, 1f));
+            ledgeCheckPos.Scale(new Vector2(-1f, 1));
+            transform.localScale = newScale;
         }
     }
     private void rotate(int dir)
