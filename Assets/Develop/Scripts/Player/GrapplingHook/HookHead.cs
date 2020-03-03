@@ -29,6 +29,7 @@ public class HookHead : MonoBehaviour
 
     public void Destroy()
     {
+        // TODO: play sound of stuffing away grappling hook?
         Destroy(containerObject.gameObject);
     }
 
@@ -41,6 +42,8 @@ public class HookHead : MonoBehaviour
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         firedDirection = playerController.transform.position.DirectionTo(mouseWorldPos);
         stopped = false;
+
+        // TODO: play throwing sound
 
         // Move a little bit and update rotation before first frame update to prevent default rotation in first frame
         MoveInFiredDirection(spriteWorldHeight / 2f);
@@ -111,6 +114,8 @@ public class HookHead : MonoBehaviour
             return;
 
         stopped = true;
+
+        // TODO: play hook hit sound
 
         // Collisions between player and weapons - the layer the hook is normally on - are ignored,
         // so set layer to "Triggers", as player needs to know when it has reached the hook
