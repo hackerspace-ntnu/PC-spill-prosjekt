@@ -7,12 +7,13 @@ public class LightchainFlicker : MonoBehaviour
     private SpriteRenderer renderer;
     private Color32 color;
     private byte alpha = 255;
-    // Start is called before the first frame update
+
     void Start()
     {
         renderer = this.GetComponent<SpriteRenderer>();
         StartCoroutine(flicker());
     }
+
     private IEnumerator flicker()
     {
         byte speed = 3;

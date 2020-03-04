@@ -6,6 +6,13 @@
         RIGHT = 1,
     }
 
+    public enum WallTrigger
+    {
+        NONE = 0,
+        LEFT = 1,
+        RIGHT = -1,
+    }
+
     public enum SquareEdge
     {
         TOP,
