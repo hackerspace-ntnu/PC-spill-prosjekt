@@ -7,9 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class HookHead : MonoBehaviour
 {
-    private const int COLLIDERS_LAYER = 10;
-    private const int COLLIDERS_ONLY_MASK = 1 << COLLIDERS_LAYER;
-    private const int TRIGGERS_LAYER = 11;
+    private readonly int COLLIDERS_ONLY_MASK = Layers.MaskFromLayer(Layers.COLLIDERS);
 
     public GrapplingState grapplingState;
 
@@ -119,7 +117,7 @@ public class HookHead : MonoBehaviour
 
         // Collisions between player and weapons - the layer the hook is normally on - are ignored,
         // so set layer to "Triggers", as player needs to know when it has reached the hook
-        gameObject.layer = TRIGGERS_LAYER;
+        gameObject.layer = Layers.TRIGGERS;
 
         playerController.OnGrapplingHookHit();
     }
