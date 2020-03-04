@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 
 public class GlitchWallClingingState : WallClingingState
@@ -23,6 +24,7 @@ public class GlitchWallClingingState : WallClingingState
             controller.ChangeState(JumpingState.INSTANCE);
             return;
         }
+
         controller.Animator.SetBool("GlitchWallCling", true);
     }
 
@@ -48,7 +50,7 @@ public class GlitchWallClingingState : WallClingingState
         {
             controller.ChangeState(IdleState.INSTANCE);
         }
-        else if (controller.WallTrigger == 0)
+        else if (controller.WallTrigger == WallTrigger.NONE)
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }

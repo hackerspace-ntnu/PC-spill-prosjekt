@@ -44,7 +44,7 @@ public abstract class PlayerState
         CheckGrappling();
     }
 
-    public void CheckGrappling()
+    protected void CheckGrappling()
     {
         if (Input.GetButtonDown("Grapple"))
             GrapplingState.INSTANCE.FireGrapplingHook();
@@ -87,7 +87,7 @@ public abstract class PlayerState
 
     public void OnGrapplingHookHit()
     {
-        controller.ChangeState(GrapplingState.INSTANCE);
+        controller.ChangeNewState(GrapplingState.INSTANCE);
     }
 
     public virtual void ToggleGlitch() {}

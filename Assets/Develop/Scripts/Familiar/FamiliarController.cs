@@ -18,8 +18,7 @@ public class FamiliarController : MonoBehaviour {
     private Vector3 worldTargetPos;
     private Vector2 defaultTarget;
 
-	// Use this for initialization
-	void Start () {
+    void Start () {
         player = transform.parent.gameObject;
 
         // Initialize object to follow. Set to parent object if not set in editor.
@@ -32,10 +31,9 @@ public class FamiliarController : MonoBehaviour {
         worldTargetPos = new Vector3(objToFollow.transform.position.x + targetPos.x, objToFollow.transform.position.y + targetPos.y, 0.0f);
         transform.position = worldTargetPos;
         defaultTarget = targetPos;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+    
+    void Update () {
         // If player/object is moving to the left, place familiar on the right of player/object.
         if (rBodyOfObj.velocity.x < -0.1f) {
             if (targetPos.x < 0.0f) {
@@ -66,7 +64,7 @@ public class FamiliarController : MonoBehaviour {
         
     }
 
-    private void FixedUpdate() {
+    void FixedUpdate() {
         // Calculate distance to target position and set velocity towards target with speed increasing with distance.
         Vector2 distanceToTarget = transform.position - worldTargetPos;
         Vector2 newVelocity = distanceToTarget.normalized * Mathf.Pow(distanceToTarget.magnitude, distanceFactor);

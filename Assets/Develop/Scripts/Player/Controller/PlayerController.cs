@@ -20,17 +20,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] [ReadOnly] private bool canUncrouch = false;
     [SerializeField] [ReadOnly] private bool glitchActive = false;
     [SerializeField] [ReadOnly] private int flipGravityScale = 1;
-    [SerializeField] [ReadOnly] private int wallTrigger = 0;
+    [SerializeField] [ReadOnly] private WallTrigger wallTrigger = WallTrigger.NONE;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
-    
+
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;
     public bool CanUncrouch { get => canUncrouch; set => canUncrouch = value; }
     public bool GlitchActive { get => glitchActive; set => glitchActive = value; }
     public int FlipGravityScale { get => flipGravityScale; set => flipGravityScale = value; }
-    public int WallTrigger { get => wallTrigger; set => wallTrigger = value; }
+    public WallTrigger WallTrigger { get => wallTrigger; set => wallTrigger = value; }
     public float JumpTime { get; set; }
     public float JumpButtonPressTime { get; set; }
     public float DashTime { get; set; }
@@ -41,6 +41,8 @@ public class PlayerController : MonoBehaviour
 
     public GameObject grapplingHookPrefab;
     public float grapplingSpeed;
+    [Tooltip("In seconds.")]
+    public float delayBetweenGrapplingAttempts;
 
     public void ChangeState(PlayerState newState)
     {
@@ -53,6 +55,14 @@ public class PlayerController : MonoBehaviour
         newState.Enter();
 
         Debug.Log(currentState.Name);
+    }
+
+    public void ChangeNewState(PlayerState newState)
+    {
+        if (newState == currentState)
+            return;
+
+        ChangeState(newState);
     }
 
     void Start()
@@ -83,7 +93,7 @@ public class PlayerController : MonoBehaviour
         currentState.Update();
 
         float velocity = currentState.GetXVelocity();
-        if(velocity < -MOVE_TRESHOLD)
+        if (velocity < -MOVE_TRESHOLD)
         {
             Dir = Direction.LEFT;
             skeletonMecanim.skeleton.ScaleX = -1 * flipGravityScale;
@@ -107,7 +117,6 @@ public class PlayerController : MonoBehaviour
 
     void HandleInput()
     {
-
         if (Input.GetButtonDown("GlitchToggle"))
         {
             glitchActive = !glitchActive;
@@ -116,9 +125,9 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Dash") && !hasDashed)
             currentState.Dash();
-        else if(Input.GetButtonDown("Jump"))
+        else if (Input.GetButtonDown("Jump"))
             currentState.Jump();
-        else if(Input.GetButton("Crouch"))
+        else if (Input.GetButton("Crouch"))
             currentState.Crouch();
     }
 

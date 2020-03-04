@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 
 public class WallClingingState : PlayerState
@@ -33,19 +34,19 @@ public class WallClingingState : PlayerState
     {
         base.Update();
 
-        if (controller.WallTrigger == 1)
+        if (controller.WallTrigger == WallTrigger.LEFT)
             controller.SkeletonMecanim.skeleton.ScaleX = 1;
         else
             controller.SkeletonMecanim.skeleton.ScaleX = -1;
 
-        if (Math.Sign(horizontalInput) == -controller.WallTrigger)
+        if (Math.Sign(horizontalInput) == -(int) controller.WallTrigger)
             maxVelocityY = wallSlideMaxVelocityY;
         else
             maxVelocityY = baseMaxVelocityY;
 
         if (controller.Grounded)
             controller.ChangeState(IdleState.INSTANCE);
-        else if (controller.WallTrigger == 0)
+        else if (controller.WallTrigger == WallTrigger.NONE)
             controller.ChangeState(AirborneState.INSTANCE);
     }
 

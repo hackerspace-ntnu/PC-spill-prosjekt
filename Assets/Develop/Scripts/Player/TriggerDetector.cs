@@ -1,32 +1,43 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
+
+public enum TriggerType
+{
+    GROUND,
+    WALL_LEFT,
+    WALL_RIGHT,
+    CEILING,
+}
 
 public class TriggerDetector : MonoBehaviour
 {
-    [SerializeField]
-    private PlayerController controller;
+    [SerializeField] private PlayerController controller;
+    [SerializeField] private TriggerType triggerType;
 
     private int CeilingCount = 0;   // Keep track of number of objects above player when crouching.
 
-    void Start()
-    {
-        controller = transform.parent.GetComponent<PlayerController>();
-    }
-
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<Collider2D>().tag == "Standard")
+        switch (triggerType)
         {
-            if (this.gameObject.tag == "CeilingDetector")
-                controller.CanUncrouch = false;
-
-            if (this.gameObject.name == "Ground Trigger")
+            case TriggerType.GROUND:
                 controller.Grounded = true;
-            else if (this.gameObject.name == "Wall Trigger Left")
-                controller.WallTrigger = 1;
-            else
-                controller.WallTrigger = -1;
+                break;
+
+            case TriggerType.WALL_LEFT:
+                controller.WallTrigger = WallTrigger.LEFT;
+                break;
+
+            case TriggerType.WALL_RIGHT:
+                controller.WallTrigger = WallTrigger.RIGHT;
+                break;
+
+            case TriggerType.CEILING:
+                controller.CanUncrouch = false;
+                break;
         }
     }
     
@@ -43,12 +54,20 @@ public class TriggerDetector : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<Collider2D>().tag == "Standard" && this.gameObject.tag == "CeilingDetector")
-            controller.CanUncrouch = true;
+        switch (triggerType)
+        {
+            case TriggerType.GROUND:
+                controller.Grounded = false;
+                break;
 
-        if (this.gameObject.name == "Ground Trigger")
-            controller.Grounded = false;
-        else
-            controller.WallTrigger = 0;
+            case TriggerType.WALL_LEFT:
+            case TriggerType.WALL_RIGHT:
+                controller.WallTrigger = WallTrigger.NONE;
+                break;
+
+            case TriggerType.CEILING:
+                controller.CanUncrouch = true;
+                break;
+        }
     }
 }

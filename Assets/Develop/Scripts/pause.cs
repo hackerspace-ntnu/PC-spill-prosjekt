@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 
 public class pause : MonoBehaviour {
+    /*
     [SerializeField] public GameObject pausePanel;
 
     private bool paused;
@@ -11,9 +12,9 @@ public class pause : MonoBehaviour {
     void Start ()
     {
         pausePanel.SetActive(false);
-	}
-	
-	void Update ()
+    }
+    
+    void Update ()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
@@ -26,7 +27,7 @@ public class pause : MonoBehaviour {
                 continueGame();
             }
         }
-	}
+    }
 
     private void pauseGame()
     {
@@ -50,4 +51,5 @@ public class pause : MonoBehaviour {
         GetComponent<gravityChange>().enabled = true;
         //Enable said scripts
     }
+    */
 }

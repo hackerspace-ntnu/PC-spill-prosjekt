@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 
 public class JumpingState : PlayerState
@@ -32,14 +33,14 @@ public class JumpingState : PlayerState
     {
         CheckGrappling();
 
-        if (controller.WallTrigger != 0 && Time.time - controller.JumpTime > 0.2f)
+        if (controller.WallTrigger != WallTrigger.NONE && Time.time - controller.JumpTime > 0.2f)
         {
             if (controller.GlitchActive)
                 controller.ChangeState(GlitchWallClingingState.INSTANCE);
             else
                 controller.ChangeState(WallClingingState.INSTANCE);
         }
-        else if (rigidbody.velocity.y * controller.FlipGravityScale < 0.0f && controller.TargetVelocity.y == 0)
+        else if (IsHeadingDownwards())
             controller.ChangeState(AirborneState.INSTANCE);
 
         if (controller.Grounded)
@@ -47,6 +48,11 @@ public class JumpingState : PlayerState
 
         if (Time.time - wallJumpTime > 0.05f)
             base.Update();
+    }
+
+    public bool IsHeadingDownwards()
+    {
+        return rigidbody.velocity.y * controller.FlipGravityScale < 0f && controller.TargetVelocity.y == 0f;
     }
 
     public override void FixedUpdate()
@@ -88,7 +94,7 @@ public class JumpingState : PlayerState
             controller.JumpButtonPressTime = Time.time;
     }
 
-    internal void GroundJump()
+    private void GroundJump()
     {
         controller.Grounded = false;
 
@@ -98,7 +104,7 @@ public class JumpingState : PlayerState
         Debug.Log("GroundJump");
     }
 
-    internal void AirJump()
+    private void AirJump()
     {
         controller.HasAirJumped = true;
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, airJumpSpeed * controller.FlipGravityScale);
@@ -106,7 +112,7 @@ public class JumpingState : PlayerState
         Debug.Log("AirJump");
     }
 
-    internal void WallJump()
+    private void WallJump()
     {
         // Uses ScaleX instead of WallTrigger for edgecase where Jump() is called in WallClingingState before it realizes that WallTrigger = 0
         // This also makes the input slightly more lenient for the player if at the bottom of a wall
