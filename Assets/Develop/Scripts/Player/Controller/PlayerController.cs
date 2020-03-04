@@ -55,6 +55,14 @@ public class PlayerController : MonoBehaviour
         newState.Enter();
     }
 
+    public void ChangeNewState(PlayerState newState)
+    {
+        if (newState == currentState)
+            return;
+
+        ChangeState(newState);
+    }
+
     void Start()
     {
         AirborneState.INSTANCE.Init(this);

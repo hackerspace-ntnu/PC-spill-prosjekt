@@ -83,7 +83,6 @@ public class HookHead : MonoBehaviour
         Vector3 firingDistance = SpriteUtils.GetDistanceBetween(playerController.transform, spriteRenderer, SquareEdge.TOP);
         if (firingDistance.magnitude >= maxFiringLength)
         {
-            stopped = true;
             grapplingState.OnGrapplingHookStopped();
             Destroy();
         }
@@ -108,6 +107,9 @@ public class HookHead : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
+        if (stopped)
+            return;
+
         stopped = true;
 
         // Collisions between player and weapons - the layer the hook is normally on - are ignored,

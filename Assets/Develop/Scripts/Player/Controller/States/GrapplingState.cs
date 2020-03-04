@@ -13,8 +13,9 @@ public class GrapplingState : PlayerState
     private float lastGrapplingStoppedTime;
     private HookHead firedHook;
 
-    private Vector2 lastTargetVelocity;
+    private Vector2? lastHookDirection;
     private bool hasReachedHook;
+    private Vector2? targetVelocityWhenReachedHook;
 
     private GrapplingState() {}
 
@@ -42,8 +43,9 @@ public class GrapplingState : PlayerState
     public override void Enter()
     {
         rigidbody.gravityScale = 0f;
-        lastTargetVelocity = Vector2.zero;
+        lastHookDirection = null;
         hasReachedHook = false;
+        targetVelocityWhenReachedHook = null;
     }
 
     public override void Update()
@@ -54,22 +56,32 @@ public class GrapplingState : PlayerState
 
     public override void FixedUpdate()
     {
-        // Move towards the hook
-        Vector2 hookDirection = rigidbody.position.DirectionTo(firedHook.transform.position.To2());
-        Vector2 targetVelocity = controller.grapplingSpeed * hookDirection;
 
-        // Wait for player to change direction (after having reached hook) before stopping
-        if (hasReachedHook && !targetVelocity.HasEqualSignAs(lastTargetVelocity))
+        Vector2 hookDirection = rigidbody.position.DirectionTo(firedHook.transform.position.To2());
+        // Use the same velocity as when reached hook, to not prevent sliding (over walls, and on floors and ceilings)
+        Vector2 targetVelocity = targetVelocityWhenReachedHook ?? controller.grapplingSpeed * hookDirection;
+
+        // Set variable once hook has been reached
+        if (hasReachedHook && targetVelocityWhenReachedHook == null)
+            targetVelocityWhenReachedHook = targetVelocity;
+
+        // Wait for player to move at least one frame before deciding whether to stop
+        if (lastHookDirection != null)
         {
-            StopGrappling();
-            return;
+            if (hasReachedHook
+                // Wait for player to change direction (after having reached hook) before stopping
+                && !hookDirection.HasEqualSignAs(lastHookDirection.Value))
+            {
+                StopGrappling();
+                return;
+            }
         }
 
         // Equation: rigidbody.velocity + newVelocity = targetVelocity
         Vector2 newVelocity = targetVelocity - rigidbody.velocity;
         rigidbody.AddForce(newVelocity, ForceMode2D.Impulse);
 
-        lastTargetVelocity = targetVelocity;
+        lastHookDirection = hookDirection;
     }
 
     private void StopGrappling()
