@@ -55,7 +55,7 @@ public class AirborneState : PlayerState
             newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
         }
 
-        float newVelocityY = - rigidbody.velocity.y * maxVelocityFix;
+        float newVelocityY = -rigidbody.velocity.y * maxVelocityFix;
 
         rigidbody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
         //controller.TargetVelocity = new Vector2(newVelocityX, 0);

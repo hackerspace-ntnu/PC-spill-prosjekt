@@ -12,9 +12,9 @@ public class pause : MonoBehaviour {
     void Start ()
     {
         pausePanel.SetActive(false);
-	}
-	
-	void Update ()
+    }
+    
+    void Update ()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
@@ -27,7 +27,7 @@ public class pause : MonoBehaviour {
                 continueGame();
             }
         }
-	}
+    }
 
     private void pauseGame()
     {

@@ -94,7 +94,7 @@ public class JumpingState : PlayerState
             controller.JumpButtonPressTime = Time.time;
     }
 
-    internal void GroundJump()
+    private void GroundJump()
     {
         controller.Grounded = false;
 
@@ -102,14 +102,14 @@ public class JumpingState : PlayerState
         controller.JumpTime = Time.time;
     }
 
-    internal void AirJump()
+    private void AirJump()
     {
         controller.HasAirJumped = true;
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, airJumpSpeed * controller.FlipGravityScale);
         controller.JumpTime = Time.time;
     }
 
-    internal void WallJump()
+    private void WallJump()
     {
         // The input to differentiate between the kinds of wallJump is too tight
         if (Math.Abs(horizontalInput) >= 0.8f)

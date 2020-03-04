@@ -9,9 +9,9 @@ public class wallClip : MonoBehaviour {
 
     public bool clip;
 
-	void Start () {
+    void Start () {
         col = null;
-	}
+    }
 
     private void disableColliders()
     {

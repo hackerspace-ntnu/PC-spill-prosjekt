@@ -14,16 +14,10 @@ public enum TriggerType
 
 public class TriggerDetector : MonoBehaviour
 {
-    [SerializeField]
-    private PlayerController controller;
+    [SerializeField] private PlayerController controller;
     [SerializeField] private TriggerType triggerType;
 
     private int CeilingCount = 0;   // Keep track of number of objects above player when crouching.
-
-    void Start()
-    {
-        controller = transform.parent.GetComponent<PlayerController>();
-    }
 
     void OnTriggerEnter2D(Collider2D collision)
     {

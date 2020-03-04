@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class GentleCameraMovement : MonoBehaviour
 {
-    // Start is called before the first frame update
-
-
     private int direction = 0;
     private Vector3 movementVector;
+
     void Start()
     {
-        
         StartCoroutine(changeDirection());   
     }
+
     public IEnumerator changeDirection()
     {
         float speed = 0.005f;
@@ -43,7 +41,6 @@ public class GentleCameraMovement : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         this.transform.position += movementVector;

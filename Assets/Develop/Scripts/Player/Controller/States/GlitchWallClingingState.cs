@@ -19,6 +19,7 @@ public class GlitchWallClingingState : WallClingingState
             controller.ChangeState(JumpingState.INSTANCE);
             return;
         }
+
         controller.Animator.SetBool("GlitchWallCling", true);
     }
 

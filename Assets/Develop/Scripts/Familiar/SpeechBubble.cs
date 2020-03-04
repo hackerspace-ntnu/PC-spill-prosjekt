@@ -13,18 +13,11 @@ public class SpeechBubble : MonoBehaviour {
     private RectTransform textboxPanel;
     private Direction direction;
 
-    // Use this for initialization
     void Start () {
         panel.SetActive(false);
         direction = Direction.RIGHT;
         textboxPanel = panel.GetComponent<RectTransform>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        
-	}
-
+    }
 
     // Flip side of speechBubble if directions are different.
     public void Flip(Direction dir) {

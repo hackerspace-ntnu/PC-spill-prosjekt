@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
 using Cinemachine;
-
 
 public class GravityChanger : MonoBehaviour
 {
@@ -21,17 +19,13 @@ public class GravityChanger : MonoBehaviour
 
     private bool wait = false;
 
-    void Start()
-    {
-    }
-
     void Update()
     {
         if (controller.Grounded) //Should
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                flipGravity();
+                FlipGravity();
             }
         }
 
@@ -72,7 +66,7 @@ public class GravityChanger : MonoBehaviour
         }
     }
 
-    void flipGravity()
+    private void FlipGravity()
     {
         controller.ChangeFlipGravity();
         transform.Rotate(new Vector3(0, 0, 180));

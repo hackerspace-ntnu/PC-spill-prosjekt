@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] [ReadOnly] private WallTrigger wallTrigger = WallTrigger.NONE;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
-    
+
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;
@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
         currentState.Update();
 
         float velocity = currentState.GetXVelocity();
-        if(velocity < -MOVE_TRESHOLD)
+        if (velocity < -MOVE_TRESHOLD)
         {
             Dir = Direction.LEFT;
             skeletonMecanim.skeleton.ScaleX = -1 * flipGravityScale;
@@ -115,7 +115,6 @@ public class PlayerController : MonoBehaviour
 
     void HandleInput()
     {
-
         if (Input.GetButtonDown("GlitchToggle"))
         {
             glitchActive = !glitchActive;
@@ -124,9 +123,9 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Dash") && !hasDashed)
             currentState.Dash();
-        else if(Input.GetButtonDown("Jump"))
+        else if (Input.GetButtonDown("Jump"))
             currentState.Jump();
-        else if(Input.GetButton("Crouch"))
+        else if (Input.GetButton("Crouch"))
             currentState.Crouch();
     }
 

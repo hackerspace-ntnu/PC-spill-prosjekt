@@ -39,9 +39,9 @@
 
             sampler2D _MainTex;
 
-			fixed4 frag(v2f IN) : SV_Target
-			{
-				
+            fixed4 frag(v2f IN) : SV_Target
+            {
+                
                 fixed4 col = tex2D(_MainTex, IN.uv);
                 // just invert the colors
                 col.rgb = 1 - col.rgb;
