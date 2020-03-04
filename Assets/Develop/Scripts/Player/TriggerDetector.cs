@@ -10,6 +10,7 @@ public enum TriggerType
     WALL_LEFT,
     WALL_RIGHT,
     CEILING,
+    GLITCH_CEILING,
 }
 
 public class TriggerDetector : MonoBehaviour
@@ -38,6 +39,11 @@ public class TriggerDetector : MonoBehaviour
 
             case TriggerType.CEILING:
                 controller.CanUncrouch = false;
+                ceilingCount++;
+                break;
+            case TriggerType.GLITCH_CEILING:
+                controller.CanUnglitch = false;
+                glitchCeilingCount++;
                 break;
         }
     }
@@ -56,7 +62,16 @@ public class TriggerDetector : MonoBehaviour
                 break;
 
             case TriggerType.CEILING:
-                controller.CanUncrouch = true;
+                ceilingCount--;
+                if(ceilingCount <= 0) {
+                    controller.CanUncrouch = true;
+                }
+                break;
+            case TriggerType.GLITCH_CEILING:
+                glitchCeilingCount--;
+                if(glitchCeilingCount <= 0) {
+                    controller.CanUnglitch = true;
+                }
                 break;
         }
     }
