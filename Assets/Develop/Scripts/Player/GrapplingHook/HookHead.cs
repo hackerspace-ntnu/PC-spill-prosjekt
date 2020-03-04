@@ -15,9 +15,9 @@ public class HookHead : MonoBehaviour
 
     public PlayerController playerController;
     public Transform containerObject;
-    public HookChain hookChain;
 
     public float movementSpeed;
+    [Tooltip("In world units.")]
     public float maxFiringLength;
 
     private new Rigidbody2D rigidbody;
@@ -38,7 +38,8 @@ public class HookHead : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteWorldHeight = SpriteUtils.GetWorldSize(spriteRenderer.sprite.bounds.size, transform).y;
 
-        firedDirection = VectorUtils.GetDirectionToVector(playerController.transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        firedDirection = playerController.transform.position.DirectionTo(mouseWorldPos);
         stopped = false;
 
         // Move a little bit and update rotation before first frame update to prevent default rotation in first frame
@@ -79,10 +80,9 @@ public class HookHead : MonoBehaviour
         UpdateRotation();
 
         // Destroy hook if it's too far away from player
-        Vector3 firingDistance = SpriteUtils.GetDistanceBetween(playerController.transform, spriteRenderer, SquareSide.TOP);
+        Vector3 firingDistance = SpriteUtils.GetDistanceBetween(playerController.transform, spriteRenderer, SquareEdge.TOP);
         if (firingDistance.magnitude >= maxFiringLength)
         {
-            stopped = true;
             grapplingState.OnGrapplingHookStopped();
             Destroy();
         }
@@ -90,7 +90,7 @@ public class HookHead : MonoBehaviour
 
     private void MoveInFiredDirection(float distance)
     {
-        Vector3 newPosition = VectorUtils.ExtendVectorInDirection(rigidbody.position, firedDirection, distance);
+        Vector3 newPosition = rigidbody.position.ExtendInDirection(firedDirection, distance);
         rigidbody.position = newPosition;
     }
 
@@ -100,14 +100,16 @@ public class HookHead : MonoBehaviour
     private void UpdateRotation()
     {
         // Use rigidbody's position instead of transform's, as it's the rigidbody that's moved each physics update
-        Vector2 directionFromPlayer = rigidbody.position - VectorUtils.To2(playerController.transform.position);
-        float directionAngle = Vector2.SignedAngle(Vector3.up, directionFromPlayer);
+        Vector2 directionFromPlayer = rigidbody.position - playerController.transform.position.To2();
+        float directionAngle = Vector2.SignedAngle(Vector3.down, directionFromPlayer);
         transform.localRotation = Quaternion.Euler(0f, 0f, directionAngle);
-        hookChain.RotateTo(directionAngle);
     }
 
     void OnTriggerEnter2D(Collider2D collider)
     {
+        if (stopped)
+            return;
+
         stopped = true;
 
         // Collisions between player and weapons - the layer the hook is normally on - are ignored,
