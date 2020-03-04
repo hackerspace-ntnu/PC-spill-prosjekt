@@ -13,6 +13,13 @@ public class WallClingingState : PlayerState
 
     public override void Enter()
     {
+        if (controller.WallTrigger == 1)
+            controller.SkeletonMecanim.skeleton.ScaleX = 1;
+        else
+            controller.SkeletonMecanim.skeleton.ScaleX = -1;
+
+        Debug.Log(controller.WallTrigger);
+
         if (Time.time - controller.JumpButtonPressTime < 0.2f)
         {
             controller.ChangeState(JumpingState.INSTANCE);

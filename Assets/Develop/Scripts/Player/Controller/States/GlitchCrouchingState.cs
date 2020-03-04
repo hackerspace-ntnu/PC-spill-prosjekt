@@ -21,15 +21,24 @@ public class GlitchCrouchingState : CrouchingState
 
     public override void Update()
     {
-        if (!Input.GetButton("Crouch") && controller.CanUncrouch)
+        if (Input.GetAxis("Horizontal") != 0)
         {
-            controller.ChangeState(IdleState.INSTANCE);
+            base.Update();
         }
+        else
+        {
+            if (!Input.GetButton("Crouch") && controller.CanUncrouch)
+            {
+                controller.ChangeState(IdleState.INSTANCE);
+            }
 
-        if (rigidbody.velocity.y * controller.FlipGravityScale < 0.0f)
-        {
-            controller.ChangeState(AirborneState.INSTANCE);
+            if (rigidbody.velocity.y * controller.FlipGravityScale < 0.0f)
+            {
+                controller.ChangeState(AirborneState.INSTANCE);
+            }
+
         }
+        
     }
 
     public override void FixedUpdate()

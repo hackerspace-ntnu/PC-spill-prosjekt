@@ -36,10 +36,8 @@ public class AirborneState : PlayerState
         if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY
             || controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY)
         {
-            maxVelocityFix = 0.02f;
+            rigidbody.gravityScale = controller.FlipGravityScale;
         }
-        else
-            maxVelocityFix = 0f;
 
         float newVelocityX;
         // decreases horizontal acceleration in air while input in opposite direction of velocity
@@ -52,16 +50,14 @@ public class AirborneState : PlayerState
             newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
         }
 
-        float newVelocityY = - rigidbody.velocity.y * maxVelocityFix;
-
-        rigidbody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
-        //controller.TargetVelocity = new Vector2(newVelocityX, 0);
+        rigidbody.AddForce(new Vector2(newVelocityX, 0), ForceMode2D.Impulse);
     }
 
     public override void Exit()
     {
         controller.Animator.SetBool("Airborne", false);
         controller.DashTime = 0f;
+        rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
     }
 
     public override void Jump()

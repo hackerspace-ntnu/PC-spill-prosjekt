@@ -29,6 +29,17 @@ public class TriggerDetector : MonoBehaviour
                 controller.WallTrigger = -1;
         }
     }
+    
+    void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Collider2D>().tag == "Standard")
+        {
+            if (this.gameObject.name == "Wall Trigger Left")
+                controller.WallTrigger = 1;
+            else if (this.gameObject.name == "Wall Trigger Right")
+                controller.WallTrigger = -1;
+        }
+    }
 
     void OnTriggerExit2D(Collider2D collision)
     {

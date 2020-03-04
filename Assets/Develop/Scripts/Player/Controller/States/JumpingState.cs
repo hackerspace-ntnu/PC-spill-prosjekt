@@ -94,6 +94,8 @@ public class JumpingState : PlayerState
 
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, groundJumpSpeed * controller.FlipGravityScale);
         controller.JumpTime = Time.time;
+
+        Debug.Log("GroundJump");
     }
 
     internal void AirJump()
@@ -101,20 +103,24 @@ public class JumpingState : PlayerState
         controller.HasAirJumped = true;
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, airJumpSpeed * controller.FlipGravityScale);
         controller.JumpTime = Time.time;
+        Debug.Log("AirJump");
     }
 
     internal void WallJump()
     {
-        // The input to differentiate between the kinds of wallJump is too tight
-        if (Math.Abs(horizontalInput) >= 0.8f)
-            controller.TargetVelocity = new Vector2(controller.WallTrigger * dashSpeed * 2f, airJumpSpeed) * controller.FlipGravityScale * 1.2f;
+        // Uses ScaleX instead of WallTrigger for edgecase where Jump() is called in WallClingingState before it realizes that WallTrigger = 0
+        // This also makes the input slightly more lenient for the player if at the bottom of a wall
+        if (Math.Abs(horizontalInput) >= 0.3f && Math.Sign(horizontalInput) == -controller.WallTrigger)
+            controller.TargetVelocity = new Vector2(controller.SkeletonMecanim.skeleton.ScaleX * dashSpeed * 2f, airJumpSpeed) * controller.FlipGravityScale * 1.2f;
         else
-            controller.TargetVelocity = new Vector2(controller.WallTrigger * movementSpeed * 1.5f, groundJumpSpeed) * controller.FlipGravityScale * 1.1f;
+            controller.TargetVelocity = new Vector2(controller.SkeletonMecanim.skeleton.ScaleX * movementSpeed * 1.5f, groundJumpSpeed) * controller.FlipGravityScale * 1.1f;
 
         controller.HasDashed = false;
         controller.HasAirJumped = false;
         wallJumpTime = Time.time;
         controller.JumpTime = Time.time;
+        Debug.Log("WallJump");
+        Debug.Log(controller.TargetVelocity);
     }
 
     public override void Dash()
