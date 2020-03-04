@@ -27,8 +27,7 @@ public class FamiliarController : MonoBehaviour {
     [SerializeField]
     private PlayerController controller;
 
-	// Use this for initialization
-	void Start () {
+    void Start () {
         player = transform.parent.gameObject;
         controller = transform.parent.gameObject.GetComponent<PlayerController>();
 
@@ -58,10 +57,9 @@ public class FamiliarController : MonoBehaviour {
         defaultTarget = targetPos;
 
         StartCoroutine(GlitchAnimation());
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+    
+    void Update () {
         // If player/object is moving to the left, place familiar on the right of player/object.
         if (rBodyOfObj.velocity.x < -0.1f) {
             if (targetPos.x < 0.0f) {
@@ -101,7 +99,7 @@ public class FamiliarController : MonoBehaviour {
         
     }
 
-    private void FixedUpdate() {
+    void FixedUpdate() {
         // Calculate distance to target position and set velocity towards target with speed increasing with distance.
         Vector2 distanceToTarget = transform.position - worldTargetPos;
         Vector2 newVelocity = distanceToTarget.normalized * Mathf.Pow(distanceToTarget.magnitude, distanceFactor);

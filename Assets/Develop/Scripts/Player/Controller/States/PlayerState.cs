@@ -45,7 +45,7 @@ public abstract class PlayerState
         CheckGrappling();
     }
 
-    public void CheckGrappling()
+    protected void CheckGrappling()
     {
         if (Input.GetButtonDown("Grapple"))
             GrapplingState.INSTANCE.FireGrapplingHook();

@@ -1,64 +1,63 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
+
+public enum TriggerType
+{
+    GROUND,
+    WALL_LEFT,
+    WALL_RIGHT,
+    CEILING,
+}
 
 public class TriggerDetector : MonoBehaviour
 {
-    [SerializeField]
-    private PlayerController controller;
+    [SerializeField] private PlayerController controller;
+    [SerializeField] private TriggerType triggerType;
 
     private int ceilingCount = 0;   // Keep track of number of objects above player when crouching.
     private int glitchCeilingCount = 0;   // Keep track of number of objects above player when crouching.
 
-    void Start()
-    {
-        controller = transform.parent.GetComponent<PlayerController>();
-    }
-
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<Collider2D>().tag == "Standard")
+        switch (triggerType)
         {
-            if (this.gameObject.tag == "CeilingDetector") {
-                controller.CanUncrouch = false;
-                ceilingCount++;
-            }
-
-            if(this.gameObject.tag == "GlitchCeilingDetector") {
-                controller.CanUnglitch = false;
-                glitchCeilingCount++;
-            }
-
-            if (this.gameObject.name == "Ground Trigger")
+            case TriggerType.GROUND:
                 controller.Grounded = true;
-            else if (this.gameObject.name == "Wall Trigger Left")
-                controller.WallTrigger = 1;
-            else
-                controller.WallTrigger = -1;
+                break;
+
+            case TriggerType.WALL_LEFT:
+                controller.WallTrigger = WallTrigger.LEFT;
+                break;
+
+            case TriggerType.WALL_RIGHT:
+                controller.WallTrigger = WallTrigger.RIGHT;
+                break;
+
+            case TriggerType.CEILING:
+                controller.CanUncrouch = false;
+                break;
         }
     }
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<Collider2D>().tag == "Standard" && this.gameObject.tag == "CeilingDetector") {
-            ceilingCount--;
+        switch (triggerType)
+        {
+            case TriggerType.GROUND:
+                controller.Grounded = false;
+                break;
 
-            if (ceilingCount <= 0) {
+            case TriggerType.WALL_LEFT:
+            case TriggerType.WALL_RIGHT:
+                controller.WallTrigger = WallTrigger.NONE;
+                break;
+
+            case TriggerType.CEILING:
                 controller.CanUncrouch = true;
-            }
+                break;
         }
-        
-        if (collision.GetComponent<Collider2D>().tag == "Standard" && this.gameObject.tag == "GlitchCeilingDetector") {
-            glitchCeilingCount--;
-
-            if (glitchCeilingCount <= 0) {
-                controller.CanUnglitch = true;
-            }
-        }
-
-        if (this.gameObject.name == "Ground Trigger")
-            controller.Grounded = false;
-        else
-            controller.WallTrigger = 0;
     }
 }

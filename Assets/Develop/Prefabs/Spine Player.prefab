@@ -71,6 +71,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 178474723645681529}
+  triggerType: 0
 --- !u!1 &178474723029313215
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,6 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 178474723645681529}
+  triggerType: 2
 --- !u!1 &178474723249797620
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +155,7 @@ GameObject:
   - component: {fileID: 178474723249797621}
   - component: {fileID: 178474723249797622}
   - component: {fileID: 178474723249797623}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: CrouchCeilingDetector
   m_TagString: CeilingDetector
   m_Icon: {fileID: 0}
@@ -213,6 +215,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 178474723645681529}
+  triggerType: 3
 --- !u!1 &178474723645681528
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,6 +417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 178474723645681529}
+  triggerType: 1
 --- !u!1 &178474724169337120
 GameObject:
   m_ObjectHideFlags: 0

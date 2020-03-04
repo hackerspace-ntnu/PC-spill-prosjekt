@@ -11,13 +11,11 @@ public class FamiliarTwitchController : MonoBehaviour
     private Rigidbody2D pRBody;
     private GameObject objToFollow;
 
-    // Start is called before the first frame update
     void Start()
     {
         pRBody = GetComponentInParent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         objToFollow = scriptRef.GetTarget();
@@ -31,9 +29,5 @@ public class FamiliarTwitchController : MonoBehaviour
         } else {
             transform.localPosition = new Vector3(0.0f, 0.0f);
         }
-    }
-
-    private void FixedUpdate() {
-        
     }
 }
