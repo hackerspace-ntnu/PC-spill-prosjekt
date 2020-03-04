@@ -8,13 +8,16 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
-  - enabled: 1
+  - enabled: 0
     path: Assets/Develop/Scenes/Main Menu.unity
     guid: 375e337d6a9214c4a9bede037e193352
-  - enabled: 1
+  - enabled: 0
     path: "Assets/Develop/Scenes/Tilemap \xF8ving.unity"
     guid: 7a4d02aadf7b91441ab2c97b1b5d9320
-  - enabled: 1
+  - enabled: 0
     path: Assets/Develop/Scenes/LagGlitch.unity
     guid: a66cacecb0175054a9d9854da169079d
+  - enabled: 1
+    path: Assets/Develop/Scenes/TestSceneDesign.unity
+    guid: 79da4a2b544305347a7494cd2b69f33e
   m_configObjects: {}
