@@ -14,7 +14,7 @@ public class WallClingingState : PlayerState
 
     public override void Enter()
     {
-        if (controller.WallTrigger == 1)
+        if (controller.WallTrigger == WallTrigger.LEFT)
             controller.SkeletonMecanim.skeleton.ScaleX = 1;
         else
             controller.SkeletonMecanim.skeleton.ScaleX = -1;

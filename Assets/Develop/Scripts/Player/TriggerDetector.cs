@@ -46,9 +46,9 @@ public class TriggerDetector : MonoBehaviour
         if (collision.GetComponent<Collider2D>().tag == "Standard")
         {
             if (this.gameObject.name == "Wall Trigger Left")
-                controller.WallTrigger = 1;
+                controller.WallTrigger = WallTrigger.LEFT;
             else if (this.gameObject.name == "Wall Trigger Right")
-                controller.WallTrigger = -1;
+                controller.WallTrigger = WallTrigger.RIGHT;
         }
     }
 

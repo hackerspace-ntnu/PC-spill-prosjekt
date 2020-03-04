@@ -116,7 +116,7 @@ public class JumpingState : PlayerState
     {
         // Uses ScaleX instead of WallTrigger for edgecase where Jump() is called in WallClingingState before it realizes that WallTrigger = 0
         // This also makes the input slightly more lenient for the player if at the bottom of a wall
-        if (Math.Abs(horizontalInput) >= 0.3f && Math.Sign(horizontalInput) == -controller.WallTrigger)
+        if (Math.Abs(horizontalInput) >= 0.3f && Math.Sign(horizontalInput) == -controller.SkeletonMecanim.skeleton.ScaleX)
             controller.TargetVelocity = new Vector2(controller.SkeletonMecanim.skeleton.ScaleX * dashSpeed * 2f, airJumpSpeed) * controller.FlipGravityScale * 1.2f;
         else
             controller.TargetVelocity = new Vector2(controller.SkeletonMecanim.skeleton.ScaleX * movementSpeed * 1.5f, groundJumpSpeed) * controller.FlipGravityScale * 1.1f;

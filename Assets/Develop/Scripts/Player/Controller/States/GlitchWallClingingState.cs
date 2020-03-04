@@ -14,7 +14,7 @@ public class GlitchWallClingingState : WallClingingState
 
     public override void Enter()
     {
-        if (controller.WallTrigger == 1)
+        if (controller.WallTrigger == WallTrigger.LEFT)
             controller.SkeletonMecanim.skeleton.ScaleX = 1;
         else
             controller.SkeletonMecanim.skeleton.ScaleX = -1;
@@ -32,12 +32,12 @@ public class GlitchWallClingingState : WallClingingState
     {
         base.Update();
 
-        if (controller.WallTrigger == 1)
+        if (controller.WallTrigger == WallTrigger.LEFT)
             controller.SkeletonMecanim.skeleton.ScaleX = 1;
         else
             controller.SkeletonMecanim.skeleton.ScaleX = -1;
 
-        if (Math.Sign(horizontalInput) == -controller.WallTrigger && horizontalInput != 0)
+        if (Math.Sign(horizontalInput) == -controller.SkeletonMecanim.skeleton.ScaleX && horizontalInput != 0)
         {
             rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }
