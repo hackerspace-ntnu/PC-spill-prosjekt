@@ -6,7 +6,7 @@ using System;
 using Cinemachine;
 
 
-public class gravityChange : MonoBehaviour
+public class GravityChanger : MonoBehaviour
 {
     public CinemachineVirtualCamera CM_camera;
 
