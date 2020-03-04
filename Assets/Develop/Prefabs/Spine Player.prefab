@@ -624,6 +624,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 178474723645681529}
+  triggerType: 4
 --- !u!114 &139288617
 MonoBehaviour:
   m_ObjectHideFlags: 0
