@@ -88,7 +88,7 @@ public abstract class PlayerState
 
     public void OnGrapplingHookHit()
     {
-        controller.ChangeState(GrapplingState.INSTANCE);
+        controller.ChangeNewState(GrapplingState.INSTANCE);
     }
 
     public virtual void ToggleGlitch() {}

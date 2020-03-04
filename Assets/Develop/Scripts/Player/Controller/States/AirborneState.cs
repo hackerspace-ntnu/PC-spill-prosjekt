@@ -22,7 +22,9 @@ public class AirborneState : PlayerState
 
         if (controller.Grounded)
             controller.ChangeState(IdleState.INSTANCE);
-        else if (controller.WallTrigger != 0)
+        else if (controller.WallTrigger != 0
+                 // Only wall cling if player is sliding downwards; this allows for sliding over edges without slowing down
+                 && JumpingState.INSTANCE.IsHeadingDownwards())
         {
             if (controller.GlitchActive)
                 controller.ChangeState(GlitchWallClingingState.INSTANCE);
