@@ -9,6 +9,10 @@ public class GlitchWallClingingState : WallClingingState
 
     public override string Name => "GLITCH_WALL_CLINGING";
 
+    private const float SPRITE_POS_OFFSET = 0.2f;
+
+    private bool isStuck = false;
+
     private GlitchWallClingingState() {}
 
     public override void Enter()
@@ -18,12 +22,18 @@ public class GlitchWallClingingState : WallClingingState
             controller.ChangeState(JumpingState.INSTANCE);
             return;
         }
-        controller.Animator.SetBool("GlitchWallCling", true);
     }
 
     public override void Update()
     {
         base.Update();
+        if(Math.Abs(rigidbody.velocity.y) <= IDLE_SPEED_TRESHOLD && !isStuck) {
+            isStuck = true;
+            TogglePlayerStuck();
+        } else if(Math.Abs(rigidbody.velocity.y) > IDLE_SPEED_TRESHOLD && isStuck) {
+            isStuck = false;
+            TogglePlayerStuck();
+        }
 
         if (Math.Sign(horizontalInput) == -controller.WallTrigger)
         {
@@ -47,6 +57,7 @@ public class GlitchWallClingingState : WallClingingState
     public override void Exit()
     {
         controller.Animator.SetBool("WallCling", false);
+        controller.Animator.SetBool("Idle", false);
         rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
@@ -66,5 +77,15 @@ public class GlitchWallClingingState : WallClingingState
     public override void ToggleGlitch()
     {
         controller.ChangeState(WallClingingState.INSTANCE);
+    }
+
+    private void TogglePlayerStuck() {
+
+        controller.Animator.SetBool("WallCling", !isStuck);
+        controller.Animator.SetBool("Idle", isStuck);
+
+        Vector3 animPos = controller.SkeletonMecanim.gameObject.transform.position;
+        animPos.x =  isStuck ? animPos.x - SPRITE_POS_OFFSET : animPos.x + SPRITE_POS_OFFSET;
+        controller.SkeletonMecanim.gameObject.transform.position = animPos;
     }
 }

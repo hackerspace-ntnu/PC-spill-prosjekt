@@ -32,7 +32,6 @@ public class GlitchCrouchingState : CrouchingState
         Vector3 animPos = controller.SkeletonMecanim.gameObject.transform.position;
         animPos.y -= SPRITE_POS_OFFSET;
         controller.SkeletonMecanim.gameObject.transform.position = animPos;
-
         
     }
 
