@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 
 public class pause : MonoBehaviour {
+    /*
     [SerializeField] public GameObject pausePanel;
 
     private bool paused;
@@ -50,4 +51,5 @@ public class pause : MonoBehaviour {
         GetComponent<gravityChange>().enabled = true;
         //Enable said scripts
     }
+    */
 }

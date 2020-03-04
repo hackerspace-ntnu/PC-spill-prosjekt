@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class wallClip : MonoBehaviour {
 
+    /*
     private Collider col;
 
     public bool clip;
@@ -49,4 +50,5 @@ public class wallClip : MonoBehaviour {
         enableColliders();
         clip = false;
     }
+    */
 }
