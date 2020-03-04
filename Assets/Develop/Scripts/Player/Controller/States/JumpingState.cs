@@ -39,7 +39,7 @@ public class JumpingState : PlayerState
             else
                 controller.ChangeState(WallClingingState.INSTANCE);
         }
-        else if (rigidbody.velocity.y * controller.FlipGravityScale < 0.0f && controller.TargetVelocity.y == 0)
+        else if (IsHeadingDownwards())
             controller.ChangeState(AirborneState.INSTANCE);
 
         if (controller.Grounded)
@@ -47,6 +47,11 @@ public class JumpingState : PlayerState
 
         if (Time.time - wallJumpTime > 0.05f)
             base.Update();
+    }
+
+    public bool IsHeadingDownwards()
+    {
+        return rigidbody.velocity.y * controller.FlipGravityScale < 0f && controller.TargetVelocity.y == 0f;
     }
 
     public override void FixedUpdate()
