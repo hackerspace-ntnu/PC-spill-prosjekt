@@ -5,7 +5,7 @@ using System.ComponentModel;
 using GlobalEnums;
 using UnityEngine;
 
-public class SpriteUtils
+public static class SpriteUtils
 {
     public static Vector2 GetLocalSize(Vector3 spriteSize, Transform spriteTransform)
     {
@@ -24,7 +24,7 @@ public class SpriteUtils
     /// </summary>
     /// <param name="sprite"></param>
     /// <param name="spriteEdge">The edge of <c>sprite</c> in its non-rotated orientation. Must be either TOP or BOTTOM.</param>
-    public static Vector3 GetEdgePos(SpriteRenderer sprite, SquareEdge spriteEdge)
+    public static Vector3 EdgePos(this SpriteRenderer sprite, SquareEdge spriteEdge)
     {
         Transform spriteTransform = sprite.transform;
         float spriteLocalHeight = GetLocalSize(sprite.sprite.bounds.size, spriteTransform).y;
@@ -47,7 +47,7 @@ public class SpriteUtils
         return spriteTransform.parent.TransformPoint(spriteLocalPosition);
     }
 
-    public static Vector3 GetDistanceBetween(Transform fromTransform, SpriteRenderer toSprite, SquareEdge relativeToSpriteEdge)
+    public static Vector3 DistanceTo(this Transform fromTransform, SpriteRenderer toSprite, SquareEdge relativeToSpriteEdge)
     {
         Transform toTransform = toSprite.transform;
         float spriteWorldHeight = GetWorldSize(toSprite.sprite.bounds.size, toTransform).y;
@@ -66,10 +66,10 @@ public class SpriteUtils
                 throw new InvalidEnumArgumentException($"{nameof(relativeToSpriteEdge)} must be either TOP or BOTTOM.");
         }
 
-        return GetDistanceBetween(fromTransform, toTransform, distanceOffset);
+        return DistanceTo(fromTransform, toTransform, distanceOffset);
     }
 
-    public static Vector3 GetDistanceBetween(Transform fromTransform, Transform toTransform, float distanceOffset = 0f)
+    public static Vector3 DistanceTo(this Transform fromTransform, Transform toTransform, float distanceOffset = 0f)
     {
         Vector3 distance = toTransform.position - fromTransform.position;
         Vector3 adjustedDistance = distance.ExtendInDirection(distance.normalized, distanceOffset);

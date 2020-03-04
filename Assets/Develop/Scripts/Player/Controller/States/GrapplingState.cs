@@ -77,11 +77,17 @@ public class GrapplingState : PlayerState
             }
         }
 
+        SetVelocity(targetVelocity);
+
+        lastHookDirection = hookDirection;
+    }
+
+    // Move towards the hook
+    private void SetVelocity(Vector2 targetVelocity)
+    {
         // Equation: rigidbody.velocity + newVelocity = targetVelocity
         Vector2 newVelocity = targetVelocity - rigidbody.velocity;
         rigidbody.AddForce(newVelocity, ForceMode2D.Impulse);
-
-        lastHookDirection = hookDirection;
     }
 
     private void StopGrappling()

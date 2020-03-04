@@ -81,7 +81,7 @@ public class HookHead : MonoBehaviour
         UpdateRotation();
 
         // Destroy hook if it's too far away from player
-        Vector3 firingDistance = SpriteUtils.GetDistanceBetween(playerController.transform, spriteRenderer, SquareEdge.TOP);
+        Vector3 firingDistance = playerController.transform.DistanceTo(spriteRenderer, SquareEdge.TOP);
         if (firingDistance.magnitude >= maxFiringLength)
         {
             grapplingState.OnGrapplingHookStopped();
