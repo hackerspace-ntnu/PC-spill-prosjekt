@@ -564,7 +564,7 @@ GameObject:
   - component: {fileID: 1780388426197614767}
   - component: {fileID: 4636131176099744000}
   - component: {fileID: 8836209988376173928}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GlitchCrouchCeilingDetector
   m_TagString: GlitchCeilingDetector
   m_Icon: {fileID: 0}
