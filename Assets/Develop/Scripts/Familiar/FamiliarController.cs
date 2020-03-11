@@ -19,12 +19,9 @@ public class FamiliarController : MonoBehaviour {
     private Vector3 worldTargetPos;
     private Vector2 defaultTarget;
 
-    [SerializeField]
     private SkeletonMecanim skeletonMecanim;
-    [SerializeField]
     private Animator animator;
 
-    [SerializeField]
     private PlayerController controller;
 
     void Start () {
@@ -32,7 +29,7 @@ public class FamiliarController : MonoBehaviour {
         controller = transform.parent.gameObject.GetComponent<PlayerController>();
 
         skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
-        if(!skeletonMecanim) {
+        if(skeletonMecanim == null) {
             Debug.LogError("SKELETONMECANIM is NULL in FAMILIARCONTROLLER");
         }
 
@@ -85,11 +82,8 @@ public class FamiliarController : MonoBehaviour {
 
         }
 
-        if(player.transform.position.x > this.transform.position.x) {
-            skeletonMecanim.skeleton.ScaleX = 1 * controller.FlipGravityScale;
-        } else if (player.transform.position.x < this.transform.position.x) {
-            skeletonMecanim.skeleton.ScaleX = -1 * controller.FlipGravityScale;
-        }
+        float scaleDirection = Mathf.Sign(player.transform.position.x - this.transform.position.x);
+        skeletonMecanim.skeleton.ScaleX = scaleDirection * controller.FlipGravityScale;
 
         // Set the target for the familiar in world coordinates.
         worldTargetPos = new Vector3(

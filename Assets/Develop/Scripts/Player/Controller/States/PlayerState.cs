@@ -43,6 +43,8 @@ public abstract class PlayerState
         controller.Animator.SetFloat("Hinput", Mathf.Abs(horizontalInput));
 
         CheckGrappling();
+
+        controller.SkeletonMecanim.skeleton.ScaleX = (int)controller.Dir;
     }
 
     protected void CheckGrappling()

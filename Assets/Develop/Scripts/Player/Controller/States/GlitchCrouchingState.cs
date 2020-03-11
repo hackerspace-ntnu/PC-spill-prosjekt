@@ -66,12 +66,6 @@ public class GlitchCrouchingState : CrouchingState
         base.Update();
     }
 
-    public override void FixedUpdate()
-    {
-
-        base.FixedUpdate();
-    }
-
     public override void ToggleGlitch()
     {
         tryToUnglitch = !tryToUnglitch;

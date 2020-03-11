@@ -27,10 +27,8 @@ public class WallClingingState : PlayerState
     {
         base.Update();
 
-        if (controller.WallTrigger == WallTrigger.LEFT)
-            controller.SkeletonMecanim.skeleton.ScaleX = 1;
-        else
-            controller.SkeletonMecanim.skeleton.ScaleX = -1;
+        // Set the sprite direction to face away from the wall they are clinging to
+        controller.SkeletonMecanim.skeleton.ScaleX = (int)controller.WallTrigger;
 
         if (Math.Sign(horizontalInput) == -(int) controller.WallTrigger)
             maxVelocityY = wallSlideMaxVelocityY;

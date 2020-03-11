@@ -18,13 +18,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] [ReadOnly] private bool hasAirJumped = false;
     [SerializeField] [ReadOnly] private bool hasDashed = false;
     [SerializeField] [ReadOnly] private bool glitchActive = false;
+    [SerializeField] [ReadOnly] private bool canUncrouch = true;
+    [SerializeField] [ReadOnly] private bool canUnglitch = true;
     [SerializeField] [ReadOnly] private int flipGravityScale = 1;
     [SerializeField] [ReadOnly] private WallTrigger wallTrigger = WallTrigger.NONE;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
 
-    [ReadOnly] private bool canUncrouch = true;
-    [ReadOnly] private bool canUnglitch = true;
+
 
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
@@ -94,13 +95,14 @@ public class PlayerController : MonoBehaviour
         currentState.Update();
 
         float velocity = currentState.GetXVelocity();
+
+        // Change direction character is facing only when moving over treshold.
         if (velocity < -MOVE_TRESHOLD) {
             Dir = (Direction)((int)Direction.LEFT * flipGravityScale);
-            skeletonMecanim.skeleton.ScaleX = -1 * flipGravityScale;
         } else if (velocity > MOVE_TRESHOLD) {
             Dir = (Direction)((int)Direction.RIGHT * flipGravityScale);
-            skeletonMecanim.skeleton.ScaleX = 1 * flipGravityScale;
         }
+
     }
 
     void FixedUpdate()
