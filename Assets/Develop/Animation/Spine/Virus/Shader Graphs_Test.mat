@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: skeleton_Material
+  m_Name: Shader Graphs_Test
   m_Shader: {fileID: 4800000, guid: f8c5827a2b8141c46be636810a8a9f2d, type: 3}
-  m_ShaderKeywords: _STRAIGHT_ALPHA_INPUT _USE8NEIGHBOURHOOD_ON
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -20,27 +20,12 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Texture2D_6DCA258D:
-        m_Texture: {fileID: 2800000, guid: 68d8dd65712b6674e9955c3ea0581096, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7729349ac0ed9ed4c9ff3a9ecc16a711, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_7A01223E:
         m_Texture: {fileID: 2800000, guid: dc0eedeb49b859c40913312cae98e846, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 68d8dd65712b6674e9955c3ea0581096, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - _Cutoff: 0.101
-    - _OutlineMipLevel: 0
-    - _OutlineReferenceTexWidth: 1024
-    - _OutlineSmoothness: 1
-    - _OutlineWidth: 0
-    - _StencilComp: 8
-    - _StencilRef: 1
-    - _StraightAlphaInput: 1
-    - _ThresholdEnd: 0.25
-    - _Use8Neighbourhood: 1
-    m_Colors:
-    - _OutlineColor: {r: 1, g: 1, b: 0, a: 1}
+    m_Floats: []
+    m_Colors: []
