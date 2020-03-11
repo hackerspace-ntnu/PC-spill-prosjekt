@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 
 public class DashingState : PlayerState
@@ -10,28 +11,28 @@ public class DashingState : PlayerState
 
     protected float dashDuration = 0.2f;
 
+    protected DashingState() {}
+
     public override void Enter()
     {
         controller.HasDashed = true;
         controller.DashTime = Time.time;
 
         controller.TargetVelocity = new Vector2((int)controller.Dir * dashSpeed * controller.FlipGravityScale, 0);
-        rigidBody.gravityScale = 0;
+        rigidbody.gravityScale = 0;
         controller.Animator.SetBool("Dash", true);
     }
 
     public override void Update()
     {
-        if (controller.WallTrigger != 0)
+        CheckGrappling();
+
+        if (controller.WallTrigger != WallTrigger.NONE)
         {
             if (controller.GlitchActive)
-            {
                 controller.ChangeState(GlitchWallClingingState.INSTANCE);
-            }
             else
-            {
                 controller.ChangeState(WallClingingState.INSTANCE);
-            }
         }
         else if (Time.time - controller.DashTime >= dashDuration)
         {
@@ -44,15 +45,15 @@ public class DashingState : PlayerState
 
     public override void FixedUpdate()
     {
-        float newVelocityX = controller.TargetVelocity.x - rigidBody.velocity.x;
-        float newVelocityY = controller.TargetVelocity.y - rigidBody.velocity.y;
+        float newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
+        float newVelocityY = controller.TargetVelocity.y - rigidbody.velocity.y;
 
-        rigidBody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
+        rigidbody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
     }
 
     public override void Exit()
     {
-        rigidBody.gravityScale = baseGravityScale * controller.FlipGravityScale;
+        rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
         controller.Animator.SetBool("Dash", false);
     }
 
@@ -61,13 +62,9 @@ public class DashingState : PlayerState
         if (controller.Grounded)
         {
             if (controller.GlitchActive)
-            {
                 controller.ChangeState(GlitchCrouchingState.INSTANCE);
-            }
             else
-            {
                 controller.ChangeState(CrouchingState.INSTANCE);
-            }
         }
     }
 }

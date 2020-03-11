@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 
 public class GlitchWallClingingState : WallClingingState
@@ -9,6 +10,8 @@ public class GlitchWallClingingState : WallClingingState
 
     public override string Name => "GLITCH_WALL_CLINGING";
 
+    private GlitchWallClingingState() {}
+
     public override void Enter()
     {
         if (Time.time - controller.JumpButtonPressTime < 0.2f)
@@ -16,41 +19,37 @@ public class GlitchWallClingingState : WallClingingState
             controller.ChangeState(JumpingState.INSTANCE);
             return;
         }
+
         controller.Animator.SetBool("GlitchWallCling", true);
     }
 
     public override void Update()
     {
-        HandleHorizontalInput();
+        base.Update();
 
-        if (Math.Sign(horizontalInput) == -controller.WallTrigger)
+        if (Math.Sign(horizontalInput) == -(int) controller.WallTrigger)
         {
-            rigidBody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+            rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         }
         else
         {
-            rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
         if (controller.Grounded)
         {
             controller.ChangeState(IdleState.INSTANCE);
         }
-        else if (controller.WallTrigger == 0)
+        else if (controller.WallTrigger == WallTrigger.NONE)
         {
             controller.ChangeState(AirborneState.INSTANCE);
         }
     }
 
-    public override void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
-
     public override void Exit()
     {
         controller.Animator.SetBool("WallCling", false);
-        rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     public override void Jump()

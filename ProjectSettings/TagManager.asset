@@ -22,8 +22,8 @@ TagManager:
   - 
   - Player
   - Player Weapons
-  - IgnorePlayerCollision
-  - Platforms
+  - Colliders
+  - Triggers
   - 
   - 
   - 

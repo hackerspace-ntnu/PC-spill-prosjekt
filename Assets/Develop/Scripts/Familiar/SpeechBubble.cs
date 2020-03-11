@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -10,23 +11,16 @@ public class SpeechBubble : MonoBehaviour {
     public Text bubbleText;
 
     private RectTransform textboxPanel;
-    private DIRECTION direction;
+    private Direction direction;
 
-    // Use this for initialization
     void Start () {
         panel.SetActive(false);
-        direction = DIRECTION.RIGHT;
+        direction = Direction.RIGHT;
         textboxPanel = panel.GetComponent<RectTransform>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        
-	}
-
+    }
 
     // Flip side of speechBubble if directions are different.
-    public void Flip(DIRECTION dir) {
+    public void Flip(Direction dir) {
         if(dir != direction) {
             textboxPanel.anchoredPosition = new Vector2(textboxPanel.anchoredPosition.x * -1.0f, textboxPanel.anchoredPosition.y);
             direction = dir;

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GlobalEnums;
 using UnityEngine;
 using Spine.Unity;
 
@@ -12,16 +13,14 @@ public class PlayerController : MonoBehaviour
     private PlayerState currentState;
     private PlayerState previousState;
 
-    private DIRECTION dir;
-
-    [SerializeField] private string currentStateName;
-    [SerializeField] private string previousStateName;
-    [SerializeField] private bool hasAirJumped = false;
-    [SerializeField] private bool hasDashed = false;
-    [SerializeField] private bool canUncrouch = false;
-    [SerializeField] private bool glitchActive = false;
-    [SerializeField] private int flipGravityScale = 1;
-    [SerializeField] private int wallTrigger = 0;
+    [SerializeField] [ReadOnly] private string currentStateName;
+    [SerializeField] [ReadOnly] private string previousStateName;
+    [SerializeField] [ReadOnly] private bool hasAirJumped = false;
+    [SerializeField] [ReadOnly] private bool hasDashed = false;
+    [SerializeField] [ReadOnly] private bool canUncrouch = false;
+    [SerializeField] [ReadOnly] private bool glitchActive = false;
+    [SerializeField] [ReadOnly] private int flipGravityScale = 1;
+    [SerializeField] [ReadOnly] private WallTrigger wallTrigger = WallTrigger.NONE;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanism;
     [SerializeField] private int maxHealth;
@@ -39,22 +38,31 @@ public class PlayerController : MonoBehaviour
     public float InvunerabilityTime { get => invunerabilityTime; set => invunerabilityTime = value; }
     public int CurrentHealth { get => currentHealth; set => currentHealth = value;}
     public int MaxHealth { get => maxHealth; set => maxHealth = value; }
+    [SerializeField] private SkeletonMecanim skeletonMecanim;
+
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;
     public bool CanUncrouch { get => canUncrouch; set => canUncrouch = value; }
     public bool GlitchActive { get => glitchActive; set => glitchActive = value; }
     public int FlipGravityScale { get => flipGravityScale; set => flipGravityScale = value; }
-    public int WallTrigger { get => wallTrigger; set => wallTrigger = value; }
+    public WallTrigger WallTrigger { get => wallTrigger; set => wallTrigger = value; }
     public float JumpTime { get; set; }
     public float JumpButtonPressTime { get; set; }
     public float DashTime { get; set; }
     public Vector2 TargetVelocity { get; set; }
     public Animator Animator { get => animator; }
     public SkeletonMecanim SkeletonMecanism { get => skeletonMecanism; }
-    public DIRECTION Dir { get => dir; set => dir = value; }
     public PhysicsMaterial2D BouncyMaterial { get => bouncyMaterial; }
     public Collider2D BodyCollider { get => bodyCollider; }
+    public SkeletonMecanim SkeletonMecanim => skeletonMecanim;
+    public Direction Dir { get; set; }
+
+    public GameObject grapplingHookPrefab;
+    public float grapplingSpeed;
+    [Tooltip("In seconds.")]
+    public float delayBetweenGrapplingAttempts;
+
     public void ChangeState(PlayerState newState)
     {
         previousState = currentState;
@@ -64,6 +72,14 @@ public class PlayerController : MonoBehaviour
         currentState = newState;
         currentStateName = newState.Name;
         newState.Enter();
+    }
+
+    public void ChangeNewState(PlayerState newState)
+    {
+        if (newState == currentState)
+            return;
+
+        ChangeState(newState);
     }
 
     void Start()
@@ -85,7 +101,7 @@ public class PlayerController : MonoBehaviour
         currentState = IdleState.INSTANCE;
         ChangeState(IdleState.INSTANCE);
 
-        Dir = DIRECTION.RIGHT;
+        Dir = Direction.RIGHT;
     }
 
     void Update()
@@ -97,12 +113,15 @@ public class PlayerController : MonoBehaviour
 
         }
         float velocity = currentState.GetXVelocity();
-	        if(velocity < -MOVE_TRESHOLD) {
-            Dir = DIRECTION.LEFT;
-            skeletonMecanism.skeleton.ScaleX = -1 * flipGravityScale;
-        } else if (velocity > MOVE_TRESHOLD) {
-            Dir = DIRECTION.RIGHT;
-            skeletonMecanism.skeleton.ScaleX = 1 * flipGravityScale;
+        if (velocity < -MOVE_TRESHOLD)
+        {
+            Dir = Direction.LEFT;
+            skeletonMecanim.skeleton.ScaleX = -1 * flipGravityScale;
+        }
+        else if (velocity > MOVE_TRESHOLD)
+        {
+            Dir = Direction.RIGHT;
+            skeletonMecanim.skeleton.ScaleX = 1 * flipGravityScale;
         }
     }
 
@@ -114,29 +133,43 @@ public class PlayerController : MonoBehaviour
     {
         currentState.OnCollisionEnter2D(collision);
     }
-    void HandleInput() {
 
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        currentState.OnTriggerEnter2D(collider);
+    }
+
+    void HandleInput()
+    {
         if (Input.GetButtonDown("GlitchToggle"))
         {
             glitchActive = !glitchActive;
             currentState.ToggleGlitch();
         }
 
-        if (Input.GetButtonDown("Dash") && !hasDashed) {
+        if (Input.GetButtonDown("Dash") && !hasDashed)
             currentState.Dash();
-        } else if(Input.GetButtonDown("Jump")) {
+        else if (Input.GetButtonDown("Jump"))
             currentState.Jump();
-        } else if(Input.GetButton("Crouch")) {
+        else if (Input.GetButton("Crouch"))
             currentState.Crouch();
-        }
     }
 
-    public PlayerState GetCurrentState() {
+    public PlayerState GetCurrentState()
+    {
         return currentState;
-    } 
-    public PlayerState GetPreviousState() {
+    }
+
+    public PlayerState GetPreviousState()
+    {
         return previousState;
     }
+
+    public void OnGrapplingHookHit()
+    {
+        currentState.OnGrapplingHookHit();
+    }
+
     public void ChangeFlipGravity()
     {
         flipGravityScale *= -1;

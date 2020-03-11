@@ -1,7 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿namespace GlobalEnums
+{
+    public enum Direction
+    {
+        LEFT = -1,
+        RIGHT = 1,
+    }
 
-public class GlobalEnums : MonoBehaviour{}
+    public enum WallTrigger
+    {
+        NONE = 0,
+        LEFT = 1,
+        RIGHT = -1,
+    }
 
-public enum DIRECTION { LEFT = -1, RIGHT = 1 }
+    public enum SquareEdge
+    {
+        TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT,
+    }
+}
