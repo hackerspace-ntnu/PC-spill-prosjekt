@@ -8,7 +8,7 @@ public abstract class PlayerState
     public abstract string Name { get; }
 
     protected const float JUMPING_GRAVITY_SCALE = 4f;
-    protected const float IDLE_SPEED_TRESHOLD = 0.1f;
+    protected const float IDLE_SPEED_THRESHOLD = 0.1f;
 
     public float baseGravityScale = 5; // base gravity affecting the player
     public float movementSpeed = 6; // Orig value: 7
@@ -44,7 +44,7 @@ public abstract class PlayerState
 
         CheckGrappling();
 
-        controller.SkeletonMecanim.skeleton.ScaleX = (int)controller.Dir;
+        controller.SkeletonMecanim.skeleton.ScaleX = (int)controller.FacingDirection;
     }
 
     protected void CheckGrappling()

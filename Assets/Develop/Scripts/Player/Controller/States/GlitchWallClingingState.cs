@@ -42,9 +42,9 @@ public class GlitchWallClingingState : WallClingingState
 
         float velocityY = Math.Abs(rigidbody.velocity.y);
 
-        if (velocityY <= IDLE_SPEED_TRESHOLD && !isStuck) {
+        if (velocityY <= IDLE_SPEED_THRESHOLD && !isStuck) {
             TogglePlayerStuck();
-        } else if(velocityY > IDLE_SPEED_TRESHOLD && isStuck) {
+        } else if(velocityY > IDLE_SPEED_THRESHOLD && isStuck) {
             TogglePlayerStuck();
         }
 

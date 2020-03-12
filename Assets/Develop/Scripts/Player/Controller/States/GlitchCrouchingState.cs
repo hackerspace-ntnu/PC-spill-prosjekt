@@ -51,7 +51,7 @@ public class GlitchCrouchingState : CrouchingState
     }
 
     public override void Update() {
-        if (Math.Abs(rigidbody.velocity.x) >= IDLE_SPEED_TRESHOLD) {
+        if (Math.Abs(rigidbody.velocity.x) >= IDLE_SPEED_THRESHOLD) {
             controller.Animator.SetBool("Walk", true);
             controller.Animator.SetBool("Idle", false);
         } else {

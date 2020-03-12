@@ -18,7 +18,7 @@ public class DashingState : PlayerState
         controller.HasDashed = true;
         controller.DashTime = Time.time;
 
-        controller.TargetVelocity = new Vector2((int)controller.Dir * dashSpeed * controller.FlipGravityScale, 0);
+        controller.TargetVelocity = new Vector2((int)controller.FacingDirection * dashSpeed * controller.FlipGravityScale, 0);
         rigidbody.gravityScale = 0;
         controller.Animator.SetBool("Dash", true);
     }

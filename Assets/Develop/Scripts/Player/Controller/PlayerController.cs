@@ -8,7 +8,7 @@ using Spine.Unity;
 public class PlayerController : MonoBehaviour
 {
     private const float MINIMUM_TIME_BEFORE_AIR_JUMP = 0.1f;
-    private const float MOVE_TRESHOLD = 0.01f;
+    private const float CHANGE_FACING_DIRECTION_THRESHOLD = 0.01f;
 
     private PlayerState currentState;
     private PlayerState previousState;
@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 TargetVelocity { get; set; }
     public Animator Animator => animator;
     public SkeletonMecanim SkeletonMecanim => skeletonMecanim;
-    public Direction Dir { get; set; }
+    public Direction FacingDirection { get; set; }
     public bool CanUnglitch { get => canUnglitch; set => canUnglitch = value; }
 
     public GameObject grapplingHookPrefab;
@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
         currentState = IdleState.INSTANCE;
         ChangeState(IdleState.INSTANCE);
 
-        Dir = Direction.RIGHT;
+        FacingDirection = Direction.RIGHT;
     }
 
     void Update()
@@ -94,13 +94,13 @@ public class PlayerController : MonoBehaviour
         HandleInput();
         currentState.Update();
 
-        float velocity = currentState.GetXVelocity();
+        float xVelocity = currentState.GetXVelocity();
 
         // Change direction character is facing only when moving over treshold.
-        if (velocity < -MOVE_TRESHOLD) {
-            Dir = (Direction)((int)Direction.LEFT * flipGravityScale);
-        } else if (velocity > MOVE_TRESHOLD) {
-            Dir = (Direction)((int)Direction.RIGHT * flipGravityScale);
+        if (xVelocity < -CHANGE_FACING_DIRECTION_THRESHOLD) {
+            FacingDirection = (Direction)((int)Direction.LEFT * flipGravityScale);
+        } else if (xVelocity > CHANGE_FACING_DIRECTION_THRESHOLD) {
+            FacingDirection = (Direction)((int)Direction.RIGHT * flipGravityScale);
         }
 
     }
