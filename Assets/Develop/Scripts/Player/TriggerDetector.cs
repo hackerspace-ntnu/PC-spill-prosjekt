@@ -15,8 +15,10 @@ public enum TriggerType
 
 public class TriggerDetector : MonoBehaviour
 {
+#pragma warning disable 649 // disable unassigned field warning
     [SerializeField] private PlayerController controller;
     [SerializeField] private TriggerType triggerType;
+#pragma warning restore 649
 
     private int ceilingCount = 0; // Keeps track of number of objects above player when crouching
     private int glitchCeilingCount = 0; // Keeps track of number of objects above player when glitch crouching

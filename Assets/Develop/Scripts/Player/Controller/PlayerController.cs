@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private PlayerState currentState;
     private PlayerState previousState;
 
+#pragma warning disable 649 // disable unassigned field warning
     [SerializeField] [ReadOnly] private string currentStateName;
     [SerializeField] [ReadOnly] private string previousStateName;
     [SerializeField] [ReadOnly] private bool hasAirJumped = false;
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] [ReadOnly] private WallTrigger wallTrigger = WallTrigger.NONE;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
+#pragma warning restore 649
 
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
