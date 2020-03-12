@@ -27,6 +27,9 @@ public class FamiliarController : MonoBehaviour {
     void Start () {
         player = transform.parent.gameObject;
         controller = transform.parent.gameObject.GetComponent<PlayerController>();
+        if(controller == null) {
+            Debug.LogError("CONTROLLER is NULL in FAMILIAR");
+        }
 
         skeletonMecanim = GetComponentInChildren<SkeletonMecanim>();
         if(skeletonMecanim == null) {
@@ -34,12 +37,8 @@ public class FamiliarController : MonoBehaviour {
         }
 
         animator = GetComponentInChildren<Animator>();
-        if(!animator) {
+        if(animator == null) {
             Debug.LogError("ANIMATOR is NULL in FAMILIARCONTROLLER");
-        }
-
-        if(controller == null) {
-            Debug.LogError("CONTROLLER is NULL in FAMILIAR");
         }
 
         // Initialize object to follow. Set to parent object if not set in editor.
@@ -71,7 +70,7 @@ public class FamiliarController : MonoBehaviour {
             }
         }
 
-        if(objToFollow.tag != "Player") {
+        if(objToFollow != player) {
             if(player.transform.position.x < objToFollow.transform.position.x) {
                 FlipSide(Direction.LEFT);
             }
@@ -79,7 +78,6 @@ public class FamiliarController : MonoBehaviour {
             if (player.transform.position.x > objToFollow.transform.position.x) {
                 FlipSide(Direction.RIGHT);
             }
-
         }
 
         float scaleDirection = Mathf.Sign(player.transform.position.x - this.transform.position.x);
@@ -90,7 +88,6 @@ public class FamiliarController : MonoBehaviour {
             objToFollow.transform.position.x + targetPos.x, 
             objToFollow.transform.position.y + targetPos.y * controller.FlipGravityScale, 
             0.0f);
-        
     }
 
     void FixedUpdate() {
@@ -101,14 +98,13 @@ public class FamiliarController : MonoBehaviour {
         //thisRBody.velocity = -newVelocity;
 
         // If the object to follow is not the player, set a min velocity to speed up approach.
-        if (objToFollow.tag != "Player" && thisRBody.velocity.magnitude < minVel) {
+        if (objToFollow != player && thisRBody.velocity.magnitude < minVel) {
             thisRBody.velocity = thisRBody.velocity.normalized * minVel;
         }
     }
 
     private IEnumerator GlitchAnimation() {
         while (true) {
-            
             yield return new WaitForSeconds(Random.Range(10.0f, 30.0f));
 
             animator.SetBool("Glitch", true);
@@ -129,7 +125,7 @@ public class FamiliarController : MonoBehaviour {
     }
 
     public void ResetAttachment() {
-        if(objToFollow.tag != "Player") {
+        if(objToFollow != player) {
             objToFollow = player;
             rBodyOfObj = objToFollow.GetComponent<Rigidbody2D>();
 

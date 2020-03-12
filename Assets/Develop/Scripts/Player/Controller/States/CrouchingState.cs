@@ -72,7 +72,8 @@ public class CrouchingState : PlayerState
         base.FixedUpdate();
     }
 
-    public override void Exit() {
+    public override void Exit()
+    {
         collider.size = baseColliderSize;
         collider.offset = baseColliderOffset;
 

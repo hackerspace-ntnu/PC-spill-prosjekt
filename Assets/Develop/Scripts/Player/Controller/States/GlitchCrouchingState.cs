@@ -21,7 +21,8 @@ public class GlitchCrouchingState : CrouchingState
 
     private GlitchCrouchingState() {}
 
-    public override void Enter() {
+    public override void Enter()
+    {
         base.Enter();
 
         collider.size = glitchCrouchColliderSize;
@@ -32,7 +33,6 @@ public class GlitchCrouchingState : CrouchingState
         Vector3 animPos = controller.SkeletonMecanim.gameObject.transform.position;
         animPos.y -= SPRITE_POS_OFFSET;
         controller.SkeletonMecanim.gameObject.transform.position = animPos;
-        
     }
 
     public override void Init(PlayerController controller)
@@ -50,16 +50,21 @@ public class GlitchCrouchingState : CrouchingState
         glitchCrouchColliderOffset.y = -heightDifference / 2f;
     }
 
-    public override void Update() {
-        if (Math.Abs(rigidbody.velocity.x) >= IDLE_SPEED_THRESHOLD) {
+    public override void Update()
+    {
+        if (Math.Abs(rigidbody.velocity.x) >= IDLE_SPEED_THRESHOLD)
+        {
             controller.Animator.SetBool("Walk", true);
             controller.Animator.SetBool("Idle", false);
-        } else {
+        }
+        else
+        {
             controller.Animator.SetBool("Idle", true);
             controller.Animator.SetBool("Walk", false);
         }
 
-        if(tryToUnglitch && controller.CanUnglitch) {
+        if (tryToUnglitch && controller.CanUnglitch)
+        {
             controller.ChangeState(CrouchingState.INSTANCE);
         }
 
@@ -71,7 +76,8 @@ public class GlitchCrouchingState : CrouchingState
         tryToUnglitch = !tryToUnglitch;
     }
 
-    public override void Exit() {
+    public override void Exit()
+    {
         base.Exit();
 
         controller.Animator.SetBool("Idle", false);

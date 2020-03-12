@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using GlobalEnums;
 using UnityEngine;
@@ -25,8 +26,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
 
-
-
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
     public bool Grounded { get; set; } = false;
@@ -45,6 +44,7 @@ public class PlayerController : MonoBehaviour
 
     public GameObject grapplingHookPrefab;
     public float grapplingSpeed;
+
     [Tooltip("In seconds.")]
     public float delayBetweenGrapplingAttempts;
 
@@ -95,14 +95,12 @@ public class PlayerController : MonoBehaviour
         currentState.Update();
 
         float xVelocity = currentState.GetXVelocity();
-
-        // Change direction character is facing only when moving over treshold.
-        if (xVelocity < -CHANGE_FACING_DIRECTION_THRESHOLD) {
-            FacingDirection = (Direction)((int)Direction.LEFT * flipGravityScale);
-        } else if (xVelocity > CHANGE_FACING_DIRECTION_THRESHOLD) {
-            FacingDirection = (Direction)((int)Direction.RIGHT * flipGravityScale);
+        // Change direction character is facing only when moving faster than threshold
+        if (Mathf.Abs(xVelocity) > CHANGE_FACING_DIRECTION_THRESHOLD)
+        {
+            int movingDirection = Math.Sign(xVelocity) * flipGravityScale;
+            FacingDirection = DirectionUtils.Parse(movingDirection);
         }
-
     }
 
     void FixedUpdate()

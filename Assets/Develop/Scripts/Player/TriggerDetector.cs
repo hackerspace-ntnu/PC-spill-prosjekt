@@ -18,8 +18,8 @@ public class TriggerDetector : MonoBehaviour
     [SerializeField] private PlayerController controller;
     [SerializeField] private TriggerType triggerType;
 
-    private int ceilingCount = 0;   // Keep track of number of objects above player when crouching.
-    private int glitchCeilingCount = 0;   // Keep track of number of objects above player when crouching.
+    private int ceilingCount = 0; // Keeps track of number of objects above player when crouching
+    private int glitchCeilingCount = 0; // Keeps track of number of objects above player when glitch crouching
 
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -63,15 +63,19 @@ public class TriggerDetector : MonoBehaviour
 
             case TriggerType.CEILING:
                 ceilingCount--;
-                if(ceilingCount <= 0) {
+                if (ceilingCount <= 0)
+                {
                     controller.CanUncrouch = true;
                 }
+
                 break;
             case TriggerType.GLITCH_CEILING:
                 glitchCeilingCount--;
-                if(glitchCeilingCount <= 0) {
+                if (glitchCeilingCount <= 0)
+                {
                     controller.CanUnglitch = true;
                 }
+
                 break;
         }
     }
