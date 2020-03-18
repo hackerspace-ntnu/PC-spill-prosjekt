@@ -15,7 +15,6 @@ public class IdleState : WalkingState
     {
         controller.HasAirJumped = false;
         controller.HasDashed = false;
-        //controller.Animator.SetBool("Run", false);
         controller.Animator.SetBool("Idle", true);
     }
 
@@ -23,13 +22,14 @@ public class IdleState : WalkingState
     {
         base.Update();
 
-        if (Math.Abs(rigidbody.velocity.x) >= idleSpeedThreshold)
+        if (Math.Abs(rigidbody.velocity.x) >= IDLE_SPEED_THRESHOLD)
             controller.ChangeState(WalkingState.INSTANCE);
     }
 
     public override void Exit()
     {
         base.Exit();
+
         controller.Animator.SetBool("Idle", false);
     }
 }

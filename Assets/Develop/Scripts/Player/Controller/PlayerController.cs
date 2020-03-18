@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using GlobalEnums;
 using UnityEngine;
@@ -8,21 +9,24 @@ using Spine.Unity;
 public class PlayerController : MonoBehaviour
 {
     private const float MINIMUM_TIME_BEFORE_AIR_JUMP = 0.1f;
-    private const float MOVE_TRESHOLD = 0.01f;
+    private const float CHANGE_FACING_DIRECTION_THRESHOLD = 0.01f;
 
     private PlayerState currentState;
     private PlayerState previousState;
 
+#pragma warning disable 649 // disable unassigned field warning
     [SerializeField] [ReadOnly] private string currentStateName;
     [SerializeField] [ReadOnly] private string previousStateName;
     [SerializeField] [ReadOnly] private bool hasAirJumped = false;
     [SerializeField] [ReadOnly] private bool hasDashed = false;
-    [SerializeField] [ReadOnly] private bool canUncrouch = false;
     [SerializeField] [ReadOnly] private bool glitchActive = false;
+    [SerializeField] [ReadOnly] private bool canUncrouch = true;
+    [SerializeField] [ReadOnly] private bool canUnglitch = true;
     [SerializeField] [ReadOnly] private int flipGravityScale = 1;
     [SerializeField] [ReadOnly] private WallTrigger wallTrigger = WallTrigger.NONE;
     [SerializeField] private Animator animator;
     [SerializeField] private SkeletonMecanim skeletonMecanim;
+#pragma warning restore 649
 
     public bool HasAirJumped { get => hasAirJumped; set => hasAirJumped = value; }
     public bool HasDashed { get => hasDashed; set => hasDashed = value; }
@@ -37,10 +41,12 @@ public class PlayerController : MonoBehaviour
     public Vector2 TargetVelocity { get; set; }
     public Animator Animator => animator;
     public SkeletonMecanim SkeletonMecanim => skeletonMecanim;
-    public Direction Dir { get; set; }
+    public Direction FacingDirection { get; set; }
+    public bool CanUnglitch { get => canUnglitch; set => canUnglitch = value; }
 
     public GameObject grapplingHookPrefab;
     public float grapplingSpeed;
+
     [Tooltip("In seconds.")]
     public float delayBetweenGrapplingAttempts;
 
@@ -82,7 +88,7 @@ public class PlayerController : MonoBehaviour
         currentState = IdleState.INSTANCE;
         ChangeState(IdleState.INSTANCE);
 
-        Dir = Direction.RIGHT;
+        FacingDirection = Direction.RIGHT;
     }
 
     void Update()
@@ -90,16 +96,12 @@ public class PlayerController : MonoBehaviour
         HandleInput();
         currentState.Update();
 
-        float velocity = currentState.GetXVelocity();
-        if (velocity < -MOVE_TRESHOLD)
+        float xVelocity = currentState.GetXVelocity();
+        // Change direction character is facing only when moving faster than threshold
+        if (Mathf.Abs(xVelocity) > CHANGE_FACING_DIRECTION_THRESHOLD)
         {
-            Dir = Direction.LEFT;
-            skeletonMecanim.skeleton.ScaleX = -1 * flipGravityScale;
-        }
-        else if (velocity > MOVE_TRESHOLD)
-        {
-            Dir = Direction.RIGHT;
-            skeletonMecanim.skeleton.ScaleX = 1 * flipGravityScale;
+            int movingDirection = Math.Sign(xVelocity) * flipGravityScale;
+            FacingDirection = DirectionUtils.Parse(movingDirection);
         }
     }
 

@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class LightchainFlicker : MonoBehaviour
 {
-    private SpriteRenderer renderer;
+    private SpriteRenderer spriteRenderer;
     private Color32 color;
     private byte alpha = 255;
 
     void Start()
     {
-        renderer = this.GetComponent<SpriteRenderer>();
+        spriteRenderer = this.GetComponent<SpriteRenderer>();
         StartCoroutine(flicker());
     }
 
@@ -24,14 +24,14 @@ public class LightchainFlicker : MonoBehaviour
                 alpha-=speed;
                 yield return new WaitForEndOfFrame();
                 color = new Color32(255, 255, 255, alpha);
-                renderer.color = color;
+                spriteRenderer.color = color;
             }
             while(alpha<255)
             {
                 alpha+=speed;
                 yield return new WaitForEndOfFrame();
                 color = new Color32(255, 255, 255, alpha);
-                renderer.color = color;
+                spriteRenderer.color = color;
             }
             yield return new WaitForSeconds(1f);
         }
