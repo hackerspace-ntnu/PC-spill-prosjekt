@@ -38,14 +38,11 @@ public class WallClingingState : PlayerState
     {
         base.Update();
 
-        // Has to check here too because of weird edgecase
-        if (controller.WallTrigger == WallTrigger.LEFT)
-            controller.SkeletonMecanim.skeleton.ScaleX = 1;
-        else
-            controller.SkeletonMecanim.skeleton.ScaleX = -1;
+        // Set the sprite direction to face away from the wall they are clinging to
+        controller.SkeletonMecanim.skeleton.ScaleX = (int)controller.WallTrigger;
 
         //Slides down the wall slowly if player holds towards the wall
-        if (Math.Sign(horizontalInput) == -(int) controller.WallTrigger)
+        if (Math.Sign(horizontalInput) == -(int)controller.WallTrigger)
             maxVelocityY = wallSlideMaxVelocityY;
         else
             maxVelocityY = baseMaxVelocityY;

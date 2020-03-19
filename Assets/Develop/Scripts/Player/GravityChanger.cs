@@ -71,7 +71,7 @@ public class GravityChanger : MonoBehaviour
         controller.ChangeFlipGravity();
         transform.Rotate(new Vector3(0, 0, 180));
 
-        if (this.tag == "Player")
+        if (this.CompareTag("Player"))
         {
             elapsed = 0.0f;
             rotate = true;

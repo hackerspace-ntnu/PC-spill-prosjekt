@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,15 +9,37 @@ public class GlitchCrouchingState : CrouchingState
 
     public override string Name => "GLITCH_CROUCHING";
 
+    private const float SPRITE_POS_OFFSET = 0.22f;
+    private const float CROUCH_HEIGHT_RATIO = 0.6f;
     protected override string AnimatorParameterName => "GlitchCrouch";
 
+    protected Vector2 glitchCrouchColliderSize;
+    protected Vector2 glitchCrouchColliderOffset;
+
+    private bool tryToUnglitch = false;
+
     private GlitchCrouchingState() {}
+
+    public override void Enter()
+    {
+        base.Enter();
+
+        collider.size = glitchCrouchColliderSize;
+        collider.offset = glitchCrouchColliderOffset;
+
+        tryToUnglitch = false;
+
+        Vector3 animPos = controller.SkeletonMecanim.gameObject.transform.position;
+        animPos.y -= SPRITE_POS_OFFSET;
+        controller.SkeletonMecanim.gameObject.transform.position = animPos;
+    }
 
     public override void Init(PlayerController controller)
     {
         base.Init(controller);
 
         controller.TargetVelocity = rigidbody.velocity;
+        glitchCrouchColliderSize.y *= CROUCH_HEIGHT_RATIO;
     }
 
     public override void Update()
@@ -25,6 +48,12 @@ public class GlitchCrouchingState : CrouchingState
         {
             base.Update();
         }
+        glitchCrouchColliderSize = baseColliderSize;
+        glitchCrouchColliderSize.y *= CROUCH_HEIGHT_RATIO;
+
+        glitchCrouchColliderOffset = baseColliderOffset;
+        float heightDifference = baseColliderSize.y - glitchCrouchColliderSize.y;
+        glitchCrouchColliderOffset.y = -heightDifference / 2f;
         else
         {
             if (!Input.GetButton("Crouch") && controller.CanUncrouch)
@@ -41,15 +70,41 @@ public class GlitchCrouchingState : CrouchingState
         
     }
 
-    public override void FixedUpdate()
+    public override void Update()
     {
-        float newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
+        if (Math.Abs(rigidbody.velocity.x) >= IDLE_SPEED_THRESHOLD)
+        {
+            controller.Animator.SetBool("Walk", true);
+            controller.Animator.SetBool("Idle", false);
+        }
+        else
+        {
+            controller.Animator.SetBool("Idle", true);
+            controller.Animator.SetBool("Walk", false);
+        }
 
-        rigidbody.AddForce(new Vector2(newVelocityX, 0), ForceMode2D.Impulse);
+        if (tryToUnglitch && controller.CanUnglitch)
+        {
+            controller.ChangeState(CrouchingState.INSTANCE);
+        }
+
+        base.Update();
     }
 
     public override void ToggleGlitch()
     {
-        controller.ChangeState(CrouchingState.INSTANCE);
+        tryToUnglitch = !tryToUnglitch;
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+
+        controller.Animator.SetBool("Idle", false);
+        controller.Animator.SetBool("Walk", false);
+
+        Vector3 animPos = controller.SkeletonMecanim.gameObject.transform.position;
+        animPos.y += SPRITE_POS_OFFSET;
+        controller.SkeletonMecanim.gameObject.transform.position = animPos;
     }
 }

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
-  m_Name: Raggedy Spineboy_Atlas
+  m_Name: skeleton_Atlas
   m_EditorClassIdentifier: 
-  atlasFile: {fileID: 4900000, guid: bdfc7a081d52b68499e44aa82689a73d, type: 3}
+  atlasFile: {fileID: 4900000, guid: c26bdff6e851fd349a5833c29e7b8b8b, type: 3}
   materials:
-  - {fileID: 2100000, guid: 4ad4f7167d4983147ad870f93ebc9416, type: 2}
+  - {fileID: 2100000, guid: f3e3296785b921442a683a34b14d2db4, type: 2}
