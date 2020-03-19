@@ -7,7 +7,7 @@ public abstract class PlayerState
 {
     public abstract string Name { get; }
 
-    protected const float JUMPING_GRAVITY_SCALE = 4f;
+    protected const float JUMPING_GRAVITY_SCALE = 3f;
 
     public float baseGravityScale = 5; // base gravity affecting the player
     public float movementSpeed = 6; // Orig value: 7
@@ -52,16 +52,6 @@ public abstract class PlayerState
 
     public virtual void FixedUpdate()
     {
-        if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY
-            || controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY)
-        {
-            maxVelocityFix = 0.2f;
-        }
-        else
-        {
-            maxVelocityFix = 0f;
-        }
-
         float newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
         float newVelocityY = controller.TargetVelocity.y - rigidbody.velocity.y * maxVelocityFix;
 

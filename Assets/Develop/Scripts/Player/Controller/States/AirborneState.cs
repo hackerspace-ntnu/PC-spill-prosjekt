@@ -23,9 +23,7 @@ public class AirborneState : PlayerState
 
         if (controller.Grounded)
             controller.ChangeState(IdleState.INSTANCE);
-        else if (controller.WallTrigger != WallTrigger.NONE
-                 // Only wall cling if player is sliding downwards; this allows for sliding over edges without slowing down
-                 && JumpingState.INSTANCE.IsHeadingDownwards())
+        else if (controller.WallTrigger != WallTrigger.NONE)
         {
             if (controller.GlitchActive)
                 controller.ChangeState(GlitchWallClingingState.INSTANCE);
@@ -36,10 +34,14 @@ public class AirborneState : PlayerState
 
     public override void FixedUpdate()
     {
-        if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY
-            || controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY)
+        // Only need to check magnitude as player is always falling in this state
+        if (Math.Abs(rigidbody.velocity.y) >= maxVelocityY)
         {
             rigidbody.gravityScale = controller.FlipGravityScale;
+        }
+        else if (Math.Abs(rigidbody.velocity.y) < 1)
+        {
+            rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
         }
 
         float newVelocityX;
@@ -66,9 +68,13 @@ public class AirborneState : PlayerState
     public override void Jump()
     {
         if (!controller.HasAirJumped && controller.GlitchActive)
+        {
             controller.ChangeState(JumpingState.INSTANCE);
+        }
         else
+        {
             controller.JumpButtonPressTime = Time.time;
+        }
     }
 
     public override void Dash()

@@ -14,6 +14,9 @@ public class GlitchWallClingingState : WallClingingState
 
     public override void Enter()
     {
+        controller.HasDashed = false;
+        controller.HasAirJumped = false;
+
         if (controller.WallTrigger == WallTrigger.LEFT)
             controller.SkeletonMecanim.skeleton.ScaleX = 1;
         else
@@ -30,13 +33,17 @@ public class GlitchWallClingingState : WallClingingState
 
     public override void Update()
     {
-        base.Update();
+        HandleHorizontalInput();
+        controller.Animator.SetFloat("Hinput", Mathf.Abs(horizontalInput));
+
+        CheckGrappling();
 
         if (controller.WallTrigger == WallTrigger.LEFT)
             controller.SkeletonMecanim.skeleton.ScaleX = 1;
         else
             controller.SkeletonMecanim.skeleton.ScaleX = -1;
 
+        // It didn't like comparing an int to WallTrigger.LEFT
         if (Math.Sign(horizontalInput) == -controller.SkeletonMecanim.skeleton.ScaleX && horizontalInput != 0)
         {
             rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
@@ -52,7 +59,14 @@ public class GlitchWallClingingState : WallClingingState
         }
         else if (controller.WallTrigger == WallTrigger.NONE)
         {
-            controller.ChangeState(AirborneState.INSTANCE);
+            if (rigidbody.velocity.y * controller.FlipGravityScale > 0)
+            {
+                controller.ChangeState(JumpingState.INSTANCE);
+            }
+            else
+            {
+                controller.ChangeState(AirborneState.INSTANCE);
+            }
         }
     }
 
