@@ -175,6 +175,8 @@ MonoBehaviour:
   containerObject: {fileID: 611211409784351834}
   movementSpeed: 0.25
   maxFiringLength: 5
+  ignoreTags:
+  - EnemyCollider
 --- !u!61 &6461673304002060045
 BoxCollider2D:
   m_ObjectHideFlags: 0

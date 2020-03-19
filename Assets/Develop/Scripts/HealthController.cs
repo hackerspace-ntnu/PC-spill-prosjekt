@@ -6,10 +6,13 @@ using UnityEngine;
 public class HealthController : MonoBehaviour
 {
     private PlayerController controller;
+    private MeshRenderer rend;
+    private Material oldMaterial;
 
     // Start is called before the first frame update
     void Start()
     {
+        rend = GetComponentInChildren<MeshRenderer>();
         controller = GetComponent<PlayerController>();
     }
 
@@ -38,8 +41,12 @@ public class HealthController : MonoBehaviour
 
     public IEnumerator waitForInvunerability()
     {
+        print("Hei");
+        oldMaterial = rend.material;
+        rend.material = controller.GlitchMaterial;
         controller.Invunerable = true;
         yield return new WaitForSeconds(controller.InvunerabilityTime);
         controller.Invunerable = false;
+        rend.material = oldMaterial;
     }
 }

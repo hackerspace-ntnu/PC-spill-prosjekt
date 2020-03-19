@@ -25,6 +25,9 @@ public class HookHead : MonoBehaviour
     private Vector3 firedDirection;
     private bool stopped;
 
+    [SerializeField]
+    private List<String> ignoreTags;
+
     public void Destroy()
     {
         // TODO: play sound of stuffing away grappling hook?
@@ -108,6 +111,10 @@ public class HookHead : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
+        if (ignoreTags.Contains(collider.tag))
+        {
+            return;
+        }
         if (stopped)
             return;
 

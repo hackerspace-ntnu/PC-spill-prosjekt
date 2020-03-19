@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: character_Material
-  m_Shader: {fileID: 4800000, guid: f8c5827a2b8141c46be636810a8a9f2d, type: 3}
+  m_Shader: {fileID: 4800000, guid: 1e8a610c9e01c3648bac42585e5fc676, type: 3}
   m_ShaderKeywords: _USE8NEIGHBOURHOOD_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -36,6 +36,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_24F02376: 0.1
     - _Cutoff: 0.1
     - _OutlineMipLevel: 0
     - _OutlineReferenceTexWidth: 1024
@@ -47,4 +48,6 @@ Material:
     - _ThresholdEnd: 0.25
     - _Use8Neighbourhood: 1
     m_Colors:
+    - Color_349E5F2: {r: 0.1115192, g: 1, b: 0, a: 0}
+    - Color_8C37CD31: {r: 0.41750562, g: 0, b: 0.46226418, a: 0}
     - _OutlineColor: {r: 1, g: 1, b: 0, a: 1}

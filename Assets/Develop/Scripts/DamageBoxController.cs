@@ -34,7 +34,7 @@ public class DamageBoxController : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         //print(collision.tag);
-        if(collision.tag == "ColliderFullHeigth" || collision.tag == "ColliderCrouch")
+        if(collision.tag == "Player" || collision.tag == "CeilingDetector")
         {
             PlayerController controller = collision.GetComponentInParent<PlayerController>();
             

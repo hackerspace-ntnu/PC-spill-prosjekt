@@ -27,10 +27,9 @@ public class KnockedBackState : PlayerState
         controller.BodyCollider.sharedMaterial = controller.BouncyMaterial;
         controller.KnockedBack = true;
         oldSpeed = body.velocity;
-        spineContainer = controller.transform.Find("Spine Mecanim GameObject (character)");
+        spineContainer = controller.GetComponentInChildren<MeshRenderer>().transform;
         spineContainer.localScale.Scale(new Vector3(-1f, 1f, 1f));
         Debug.Log(spineContainer.name);
-
     }
     public override void Update()
     {

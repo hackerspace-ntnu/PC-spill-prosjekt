@@ -38,22 +38,27 @@ public class VirusController : MonoBehaviour
     private int mask;
     private Rigidbody2D body;
 
-    // Start is called before the first frame update
+    [SerializeField]
+    private LayerMask groundLayer;
+
+    [SerializeField]
+    private GameObject deathParticlePrefab;
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
-        mask = LayerMask.GetMask("Platforms");
+        mask = groundLayer;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+                    
     }
     
     public void die()
     {
-        //TODO: implement 
+        Instantiate(deathParticlePrefab, transform.position,transform.rotation);
+        Destroy(transform.gameObject);
     }
 
     private void FixedUpdate()
@@ -77,18 +82,7 @@ public class VirusController : MonoBehaviour
         else
         {
             this.transform.eulerAngles = this.transform.eulerAngles + new Vector3(0f, 0f, rotationSpeed * Time.fixedDeltaTime)*checkRotateDir();
-            /*
-            if (checkForLedgeRotate())
-            {
-                print("ledge");
-                rotate(1);
-            }
-            else if (checkForWall())
-            {
-                print("wall");
-                rotate(-1);
-            }
-            */
+            
         }
     }
     private float checkRotateDir()
@@ -116,38 +110,13 @@ public class VirusController : MonoBehaviour
         }
     }
 
-    /*
-    private void rotate(int dir)
-    {
-        StartCoroutine(rotationSubroutine(dir));
-    }
-
-    private IEnumerator rotationSubroutine(int dir)
-    {
-        float newdir = Mathf.Sign(transform.localScale.x)*dir;
-        rotating = true;
-        int numOfRots = (int)Mathf.Ceil(rotationTime / Time.fixedDeltaTime);
-        for(int i = 0; i < numOfRots; i++)
-        {
-            transform.Rotate(new Vector3(0, 0, 1), -newdir*rotationAngle / numOfRots);
-            yield return new WaitForFixedUpdate();
-        }
-        rotating = false;
-    }
-    */
+   
     private bool checkForLedge()
     {
-        //Debug.DrawRay(ledgeCheckPos.position, ledgeCheckDir.position - ledgeCheckPos.position, Color.green, Time.fixedDeltaTime);
+        Debug.DrawRay(ledgeCheckPos.position, ledgeCheckDir.position - ledgeCheckPos.position, Color.green, Time.fixedDeltaTime);
         return Physics2D.Raycast(ledgeCheckPos.position, ledgeCheckDir.position - ledgeCheckPos.position, 0.5f, mask).collider == null;
     }
-    /*
-    private bool checkForLedgeRotate()
-    {
-
-        //Debug.DrawRay(ledgeRotatePos.position, ledgeRotateDir.position-ledgeRotatePos.position, Color.green, Time.fixedDeltaTime);
-        return checkForLedge() && Physics2D.Raycast(ledgeRotatePos.position, ledgeRotateDir.position - ledgeRotatePos.position, 0.5f, mask).collider == null;
-    }
-    */
+   
     private bool checkForWall()
     {
         Debug.DrawRay(wallCheckPos.position, wallCheckDir.position-wallCheckPos.position,  Color.green, Time.fixedDeltaTime);

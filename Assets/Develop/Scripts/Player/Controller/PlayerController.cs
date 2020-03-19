@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PhysicsMaterial2D bouncyMaterial;
     [SerializeField] private Collider2D bodyCollider;
     [SerializeField] private bool invunerable = false;
-
+    [SerializeField] private Material glitchMaterial;
     public bool KnockedBack { get => knockedBack; set => knockedBack = value; }
     public bool Invunerable { get => invunerable; set => invunerable = value; }
     public float KnockBackDuration { get => knockbackDuration; set => knockbackDuration = value; }
@@ -57,6 +57,8 @@ public class PlayerController : MonoBehaviour
     public Collider2D BodyCollider { get => bodyCollider; }
     public SkeletonMecanim SkeletonMecanim => skeletonMecanim;
     public Direction Dir { get; set; }
+
+    public Material GlitchMaterial { get => glitchMaterial; }
 
     public GameObject grapplingHookPrefab;
     public float grapplingSpeed;
