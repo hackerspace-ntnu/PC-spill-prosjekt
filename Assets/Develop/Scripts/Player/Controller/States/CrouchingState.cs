@@ -8,14 +8,13 @@ public class CrouchingState : PlayerState
 
     public override string Name => "CROUCHING";
 
-    private const float CROUCH_HEIGHT_RATIO = 0.5f;
+    private const float CROUCH_HEIGHT_RATIO = 0.8f;
     private const float CROUCH_SPEED = 0.5f;
 
     protected virtual string AnimatorParameterName => "Crouch";
 
     // Game objects for crouching and uncrouching
     protected BoxCollider2D collider;
-    protected GameObject crouchCeilingDetector;
 
     protected Vector2 baseColliderSize;
     protected Vector2 baseColliderOffset;
@@ -29,12 +28,6 @@ public class CrouchingState : PlayerState
     public override void Init(PlayerController controller)
     {
         base.Init(controller);
-
-        crouchCeilingDetector = controller.transform.Find("CrouchCeilingDetector").gameObject;
-        if (!crouchCeilingDetector)
-        {
-            Debug.LogError("CROUCHING STATE: Crouch Ceiling Check is empty");
-        }
 
         collider = controller.GetComponent<BoxCollider2D>();
 
@@ -56,10 +49,6 @@ public class CrouchingState : PlayerState
     {
         collider.size = crouchColliderSize;
         collider.offset = crouchColliderOffset;
-
-        crouchCeilingDetector.SetActive(true);
-
-        controller.CanUncrouch = true;
 
         controller.Animator.SetBool(animatorParameterId, true);
     }
@@ -88,8 +77,6 @@ public class CrouchingState : PlayerState
         collider.size = baseColliderSize;
         collider.offset = baseColliderOffset;
 
-        crouchCeilingDetector.SetActive(false);
-
         controller.Animator.SetBool(animatorParameterId, false);
     }
 
@@ -99,17 +86,6 @@ public class CrouchingState : PlayerState
             controller.ChangeState(JumpingState.INSTANCE);
         else
             controller.JumpButtonPressTime = Time.time;
-    }
-
-    public override void Dash()
-    {
-        if (controller.CanUncrouch)
-        {
-            if (controller.GlitchActive)
-                controller.ChangeState(GlitchDashingState.INSTANCE);
-            else
-                controller.ChangeState(DashingState.INSTANCE);
-        }
     }
 
     public override void ToggleGlitch()

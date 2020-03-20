@@ -10,14 +10,18 @@ public enum TriggerType
     WALL_LEFT,
     WALL_RIGHT,
     CEILING,
+    GLITCH_CEILING,
 }
 
 public class TriggerDetector : MonoBehaviour
 {
+#pragma warning disable 649 // disable unassigned field warning
     [SerializeField] private PlayerController controller;
     [SerializeField] private TriggerType triggerType;
+#pragma warning restore 649
 
-    private int CeilingCount = 0;   // Keep track of number of objects above player when crouching.
+    private int ceilingCount = 0; // Keeps track of number of objects above player when crouching
+    private int glitchCeilingCount = 0; // Keeps track of number of objects above player when glitch crouching
 
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -37,6 +41,11 @@ public class TriggerDetector : MonoBehaviour
 
             case TriggerType.CEILING:
                 controller.CanUncrouch = false;
+                ceilingCount++;
+                break;
+            case TriggerType.GLITCH_CEILING:
+                controller.CanUnglitch = false;
+                glitchCeilingCount++;
                 break;
         }
     }
@@ -55,7 +64,20 @@ public class TriggerDetector : MonoBehaviour
                 break;
 
             case TriggerType.CEILING:
-                controller.CanUncrouch = true;
+                ceilingCount--;
+                if (ceilingCount <= 0)
+                {
+                    controller.CanUncrouch = true;
+                }
+
+                break;
+            case TriggerType.GLITCH_CEILING:
+                glitchCeilingCount--;
+                if (glitchCeilingCount <= 0)
+                {
+                    controller.CanUnglitch = true;
+                }
+
                 break;
         }
     }

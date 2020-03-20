@@ -9,8 +9,6 @@ public class WalkingState : PlayerState
 
     public override string Name => "WALKING";
 
-    protected float idleSpeedThreshold = 0.1f;
-
     protected WalkingState() {}
 
     public override void Enter()
@@ -24,7 +22,7 @@ public class WalkingState : PlayerState
     {
         base.Update();
 
-        if (Math.Abs(rigidbody.velocity.x) < idleSpeedThreshold && controller.GetCurrentState() != IdleState.INSTANCE)
+        if (Math.Abs(rigidbody.velocity.x) < IDLE_SPEED_THRESHOLD && controller.GetCurrentState() != IdleState.INSTANCE)
             controller.ChangeState(IdleState.INSTANCE);
         else if (!controller.Grounded || rigidbody.velocity.y * controller.FlipGravityScale < 0.0f)
             controller.ChangeState(AirborneState.INSTANCE);

@@ -20,7 +20,7 @@ public class Torch : MonoBehaviour {
     }
 
     private void OnTriggerStay2D(Collider2D collision) {
-        if(collision.gameObject.tag == "Player") {
+        if(collision.gameObject.CompareTag("Player")) {
             familiar.GetComponent<FamiliarController>().AttachToObject(transform.gameObject, new Vector2(0.0f, 1.0f));
             fController.ActivateSpeecBubble(true, "I can help light the way!");
         }

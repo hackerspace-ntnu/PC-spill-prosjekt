@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 1895778954545762546}
   m_Layer: 12
   m_Name: Virus
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -362,6 +362,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 1024
+  deathParticlePrefab: {fileID: 8082131180109002010, guid: 58a9d97a46c903b4b93788ce578c9efb,
+    type: 3}
 --- !u!1 &1895778954896054898
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,7 +503,7 @@ GameObject:
   - component: {fileID: 1895778955768598035}
   m_Layer: 12
   m_Name: DamageCollider
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -575,7 +577,7 @@ GameObject:
   - component: {fileID: 713884271354031867}
   m_Layer: 0
   m_Name: WeakSpot
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -632,3 +634,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c54de1bf076879946aefe5d5082ad153, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controller: {fileID: 1895778954545762546}
