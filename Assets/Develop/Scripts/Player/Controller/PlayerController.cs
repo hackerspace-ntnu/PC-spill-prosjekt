@@ -60,7 +60,6 @@ public class PlayerController : MonoBehaviour
 
         currentState = newState;
         currentStateName = newState.Name;
-        Debug.Log(currentStateName);
         newState.Enter();
     }
 

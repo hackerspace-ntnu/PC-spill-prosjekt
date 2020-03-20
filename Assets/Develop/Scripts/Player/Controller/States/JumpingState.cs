@@ -140,8 +140,6 @@ public class JumpingState : PlayerState
 
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, groundJumpSpeed * controller.FlipGravityScale);
         controller.JumpTime = Time.time;
-
-        Debug.Log("GroundJumping");
     }
 
     private void AirJump()
@@ -149,8 +147,6 @@ public class JumpingState : PlayerState
         controller.HasAirJumped = true;
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, airJumpSpeed * controller.FlipGravityScale);
         controller.JumpTime = Time.time;
-
-        Debug.Log("AirJumping");
     }
 
     private void WallJump()
@@ -161,8 +157,6 @@ public class JumpingState : PlayerState
         wallJumpOver = false;
         wallJumpTime = Time.time;
         controller.JumpTime = Time.time;
-
-        Debug.Log("Walljumping, GravityScale = " + rigidbody.gravityScale);
     }
 
     public override void Dash()
