@@ -229,6 +229,7 @@ GameObject:
   - component: {fileID: 2673916875143357945}
   - component: {fileID: 178474723645681529}
   - component: {fileID: 178474723645681530}
+  - component: {fileID: 1018245427}
   m_Layer: 8
   m_Name: Spine Player
   m_TagString: Player
@@ -321,9 +322,21 @@ MonoBehaviour:
   hasAirJumped: 0
   hasDashed: 0
   glitchActive: 0
+  canUncrouch: 0
+  canUnglitch: 1
   flipGravityScale: 1
   wallTrigger: 0
   animator: {fileID: 178474724169337123}
+  skeletonMecanism: {fileID: 0}
+  maxHealth: 3
+  invunerabilityTime: 0.5
+  currentHealth: 3
+  knockbackDuration: 0
+  knockedBack: 0
+  bouncyMaterial: {fileID: 0}
+  bodyCollider: {fileID: 2673916875143357945}
+  invunerable: 0
+  glitchMaterial: {fileID: 2100000, guid: 70560bf0350ab8843a76156f92ec2888, type: 2}
   skeletonMecanim: {fileID: 178474724169337122}
   grapplingHookPrefab: {fileID: 609932798181576808, guid: 219c3121c76325849afa159e84bb265f,
     type: 3}
@@ -346,6 +359,18 @@ MonoBehaviour:
   TF_camera: {fileID: 0}
   duration: 1
   elapsed: 0
+--- !u!114 &1018245427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 178474723645681528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4acd7896260d01044bdfd43da4b87a6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &178474723964075200
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,6 +677,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Familiar
       objectReference: {fileID: 0}
+    - target: {fileID: 204303439285638489, guid: 39d5bb7ea1f645544b59d5915c4441c9,
+        type: 3}
+      propertyPath: familiar
+      value: 
+      objectReference: {fileID: 49474955840119427}
+    - target: {fileID: 204303439285638489, guid: 39d5bb7ea1f645544b59d5915c4441c9,
+        type: 3}
+      propertyPath: panel
+      value: 
+      objectReference: {fileID: 49474954858200250}
+    - target: {fileID: 204303439285638489, guid: 39d5bb7ea1f645544b59d5915c4441c9,
+        type: 3}
+      propertyPath: bubbleText
+      value: 
+      objectReference: {fileID: 49474955847700530}
     - target: {fileID: 204303438614116763, guid: 39d5bb7ea1f645544b59d5915c4441c9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -712,31 +752,6 @@ PrefabInstance:
       propertyPath: speechBubble
       value: 
       objectReference: {fileID: 49474954661334592}
-    - target: {fileID: 204303438614116762, guid: 39d5bb7ea1f645544b59d5915c4441c9,
-        type: 3}
-      propertyPath: skeletonMecanim
-      value: 
-      objectReference: {fileID: 2198080878744095885}
-    - target: {fileID: 204303438614116762, guid: 39d5bb7ea1f645544b59d5915c4441c9,
-        type: 3}
-      propertyPath: animator
-      value: 
-      objectReference: {fileID: 9179498083589876587}
-    - target: {fileID: 204303439285638489, guid: 39d5bb7ea1f645544b59d5915c4441c9,
-        type: 3}
-      propertyPath: familiar
-      value: 
-      objectReference: {fileID: 49474955840119427}
-    - target: {fileID: 204303439285638489, guid: 39d5bb7ea1f645544b59d5915c4441c9,
-        type: 3}
-      propertyPath: panel
-      value: 
-      objectReference: {fileID: 49474954858200250}
-    - target: {fileID: 204303439285638489, guid: 39d5bb7ea1f645544b59d5915c4441c9,
-        type: 3}
-      propertyPath: bubbleText
-      value: 
-      objectReference: {fileID: 49474955847700530}
     - target: {fileID: 139288617, guid: 39d5bb7ea1f645544b59d5915c4441c9, type: 3}
       propertyPath: scriptRef
       value: 
@@ -772,12 +787,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 178474723722451737}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &9179498083589876587 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 9015697448632070258, guid: 39d5bb7ea1f645544b59d5915c4441c9,
-    type: 3}
-  m_PrefabInstance: {fileID: 178474723722451737}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &49474954661334592 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 204303439285638489, guid: 39d5bb7ea1f645544b59d5915c4441c9,
@@ -806,17 +815,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2198080878744095885 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2088323570198517652, guid: 39d5bb7ea1f645544b59d5915c4441c9,
-    type: 3}
-  m_PrefabInstance: {fileID: 178474723722451737}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7306459853216976435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9db98c60740638449864eb028fbe7ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

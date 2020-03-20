@@ -13,6 +13,7 @@ TagManager:
   - CeilingDetector
   - Skeleton
   - GlitchCeilingDetector
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -26,7 +27,7 @@ TagManager:
   - Player Weapons
   - Colliders
   - Triggers
-  - 
+  - Enemy
   - 
   - 
   - 

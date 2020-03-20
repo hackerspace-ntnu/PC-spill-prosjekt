@@ -25,6 +25,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] [ReadOnly] private int flipGravityScale = 1;
     [SerializeField] [ReadOnly] private WallTrigger wallTrigger = WallTrigger.NONE;
     [SerializeField] private Animator animator;
+    [SerializeField] private SkeletonMecanim skeletonMecanism;
+    [SerializeField] private int maxHealth;
+    [SerializeField] private float invunerabilityTime;
+    [SerializeField] private int currentHealth;
+    [SerializeField] private float knockbackDuration;
+    [SerializeField] private bool knockedBack;
+    [SerializeField] private PhysicsMaterial2D bouncyMaterial;
+    [SerializeField] private Collider2D bodyCollider;
+    [SerializeField] private bool invunerable = false;
+    [SerializeField] private Material glitchMaterial;
+    public bool KnockedBack { get => knockedBack; set => knockedBack = value; }
+    public bool Invunerable { get => invunerable; set => invunerable = value; }
+    public float KnockBackDuration { get => knockbackDuration; set => knockbackDuration = value; }
+    public float InvunerabilityTime { get => invunerabilityTime; set => invunerabilityTime = value; }
+    public int CurrentHealth { get => currentHealth; set => currentHealth = value;}
+    public int MaxHealth { get => maxHealth; set => maxHealth = value; }
     [SerializeField] private SkeletonMecanim skeletonMecanim;
 #pragma warning restore 649
 
@@ -39,10 +55,15 @@ public class PlayerController : MonoBehaviour
     public float JumpButtonPressTime { get; set; }
     public float DashTime { get; set; }
     public Vector2 TargetVelocity { get; set; }
-    public Animator Animator => animator;
+    public Animator Animator { get => animator; }
+    public SkeletonMecanim SkeletonMecanism { get => skeletonMecanism; }
+    public PhysicsMaterial2D BouncyMaterial { get => bouncyMaterial; }
+    public Collider2D BodyCollider { get => bodyCollider; }
     public SkeletonMecanim SkeletonMecanim => skeletonMecanim;
     public Direction FacingDirection { get; set; }
     public bool CanUnglitch { get => canUnglitch; set => canUnglitch = value; }
+
+    public Material GlitchMaterial { get => glitchMaterial; }
 
     public GameObject grapplingHookPrefab;
     public float grapplingSpeed;
@@ -80,7 +101,7 @@ public class PlayerController : MonoBehaviour
         GrapplingState.INSTANCE.Init(this);
         IdleState.INSTANCE.Init(this);
         JumpingState.INSTANCE.Init(this);
-        KnockbackState.INSTANCE.Init(this);
+        KnockedBackState.INSTANCE.Init(this);
         WalkingState.INSTANCE.Init(this);
         WallClingingState.INSTANCE.Init(this);
         //If new states are added, remember to init them here.
@@ -95,19 +116,27 @@ public class PlayerController : MonoBehaviour
     {
         HandleInput();
         currentState.Update();
-
-        float xVelocity = currentState.GetXVelocity();
-        // Change direction character is facing only when moving faster than threshold
-        if (Mathf.Abs(xVelocity) > CHANGE_FACING_DIRECTION_THRESHOLD)
+        if (!KnockedBack)
         {
-            int movingDirection = Math.Sign(xVelocity) * flipGravityScale;
-            FacingDirection = DirectionUtils.Parse(movingDirection);
+
+
+            float xVelocity = currentState.GetXVelocity();
+            // Change direction character is facing only when moving faster than threshold
+            if (Mathf.Abs(xVelocity) > CHANGE_FACING_DIRECTION_THRESHOLD)
+            {
+                int movingDirection = Math.Sign(xVelocity) * flipGravityScale;
+                FacingDirection = DirectionUtils.Parse(movingDirection);
+            }
         }
     }
 
     void FixedUpdate()
     {
         currentState.FixedUpdate();
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        currentState.OnCollisionEnter2D(collision);
     }
 
     void OnTriggerEnter2D(Collider2D collider)

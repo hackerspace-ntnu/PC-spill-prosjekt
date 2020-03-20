@@ -19,11 +19,24 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_394DA8C3:
+        m_Texture: {fileID: 2800000, guid: debe44bdde5986c4bbb208d2e661f8e8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_6DCA258D:
+        m_Texture: {fileID: 2800000, guid: 0920ed6bfc0989b47a9750f459ef963e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_7A01223E:
+        m_Texture: {fileID: 2800000, guid: dc0eedeb49b859c40913312cae98e846, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 0920ed6bfc0989b47a9750f459ef963e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_24F02376: 0.1
     - _Cutoff: 0.1
     - _OutlineMipLevel: 0
     - _OutlineReferenceTexWidth: 1024
@@ -35,4 +48,6 @@ Material:
     - _ThresholdEnd: 0.25
     - _Use8Neighbourhood: 1
     m_Colors:
+    - Color_349E5F2: {r: 0.1115192, g: 1, b: 0, a: 0}
+    - Color_8C37CD31: {r: 0.41750562, g: 0, b: 0.46226418, a: 0}
     - _OutlineColor: {r: 1, g: 1, b: 0, a: 1}

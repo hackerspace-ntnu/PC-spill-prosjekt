@@ -86,7 +86,9 @@ public abstract class PlayerState
 
     public virtual void Crouch() {}
 
-    public virtual void Dash() {}
+
+    public virtual void OnCollisionEnter2D(Collision2D collision) { }
+    public virtual void Dash() { }
 
     public void OnGrapplingHookHit()
     {
