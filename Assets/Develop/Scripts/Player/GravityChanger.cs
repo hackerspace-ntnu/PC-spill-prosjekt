@@ -28,6 +28,10 @@ public class GravityChanger : MonoBehaviour
                 FlipGravity();
             }
         }
+        else if (!controller.GravityFlipEnabled && controller.FlipGravityScale == -1)
+        {
+            FlipGravity();
+        }
 
         //Rotation for player
         if (wait)

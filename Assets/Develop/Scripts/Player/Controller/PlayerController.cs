@@ -154,10 +154,7 @@ public class PlayerController : MonoBehaviour
 
     public void ChangeFlipGravity()
     {
-        if (gravityFlipEnabled)
-        {
-            flipGravityScale *= -1;
-            currentState.UpdateGravity();
-        }
+        flipGravityScale *= -1;
+        currentState.UpdateGravity();
     }
 }
