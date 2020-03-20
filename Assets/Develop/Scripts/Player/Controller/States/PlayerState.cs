@@ -7,7 +7,7 @@ public abstract class PlayerState
 {
     public abstract string Name { get; }
 
-    protected const float JUMPING_GRAVITY_SCALE = 3f;
+    protected const float JUMPING_GRAVITY_SCALE = 3.5f;
     protected const float IDLE_SPEED_THRESHOLD = 0.1f;
 
     public float baseGravityScale = 5; // base gravity affecting the player

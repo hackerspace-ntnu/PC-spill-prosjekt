@@ -39,7 +39,7 @@ public class AirborneState : PlayerState
         {
             rigidbody.gravityScale = controller.FlipGravityScale;
         }
-        else if (Math.Abs(rigidbody.velocity.y) < 1)
+        else if (Math.Abs(rigidbody.velocity.y) < maxVelocityY)
         {
             rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
         }

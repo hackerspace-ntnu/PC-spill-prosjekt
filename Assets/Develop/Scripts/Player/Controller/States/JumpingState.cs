@@ -11,7 +11,9 @@ public class JumpingState : PlayerState
     public override string Name => "JUMPING";
 
     private float wallJumpTime;
+    private const float wallJumpDuration = 0.09f;
     private bool wallJumpOver = true;
+    private Vector2 wallJumpVector;
 
     private JumpingState() {}
 
@@ -36,17 +38,20 @@ public class JumpingState : PlayerState
 
         if (controller.WallTrigger != WallTrigger.NONE)
         {
-            if (Time.time - controller.JumpTime > 0.08f)
+            if (Time.time - controller.JumpTime > 0.1f)
             {
-                if (controller.GlitchActive)
+                if (Time.time - controller.JumpButtonPressTime < 0.125f)
+                {
+                    // Set the sprite direction to face away from the wall they are clinging to
+                    controller.SkeletonMecanim.skeleton.ScaleX = (int)controller.WallTrigger;
+                    WallJump();
+                }
+                else if (controller.GlitchActive)
                     controller.ChangeState(GlitchWallClingingState.INSTANCE);
                 else
                     controller.ChangeState(WallClingingState.INSTANCE);
             }
-            else if (controller.JumpButtonPressTime < 0.125f)
-            {
-                WallJump();
-            }
+            
             
         }
         else if (IsHeadingDownwards())
@@ -57,11 +62,6 @@ public class JumpingState : PlayerState
 
         if (wallJumpOver)
             base.Update();
-        else
-        {
-            Debug.Log(Time.time - wallJumpTime);
-            Debug.Log(rigidbody.velocity);
-        }
     }
 
     public bool IsHeadingDownwards()
@@ -73,7 +73,7 @@ public class JumpingState : PlayerState
     {
         float newVelocityX;
    
-        if (!Input.GetButton("Jump") && !controller.HasAirJumped && !controller.HasAirJumped && Time.time - wallJumpTime > 0.1f)
+        if (!Input.GetButton("Jump") && !controller.HasAirJumped && !controller.HasAirJumped && Time.time - wallJumpTime > wallJumpDuration * 2)
         {
             rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale * 1.5f;
         }
@@ -98,19 +98,23 @@ public class JumpingState : PlayerState
 
         rigidbody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
 
-        //Please fix superjump bug
-        if (Time.time - wallJumpTime < 0.05f)
+        //This fixes the superjump bug
+        if (Time.time - wallJumpTime < wallJumpDuration)
         {
-            controller.TargetVelocity = new Vector2(controller.SkeletonMecanim.skeleton.ScaleX * movementSpeed, airJumpSpeed) * controller.FlipGravityScale;
+            controller.TargetVelocity = wallJumpVector;
         }
         else
         {
             if (!wallJumpOver)
             {
-                base.Update();
+                HandleHorizontalInput();
                 wallJumpOver = true;
+                controller.TargetVelocity = new Vector2(newVelocityX, 0 );
             }
-            controller.TargetVelocity = new Vector2(newVelocityX, 0);
+            else
+            {
+                controller.TargetVelocity = new Vector2(newVelocityX, 0);
+            }
         }
     }
 
@@ -137,7 +141,7 @@ public class JumpingState : PlayerState
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, groundJumpSpeed * controller.FlipGravityScale);
         controller.JumpTime = Time.time;
 
-        Debug.Log("GroundJump");
+        Debug.Log("GroundJumping");
     }
 
     private void AirJump()
@@ -145,17 +149,20 @@ public class JumpingState : PlayerState
         controller.HasAirJumped = true;
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, airJumpSpeed * controller.FlipGravityScale);
         controller.JumpTime = Time.time;
-        Debug.Log("AirJump");
+
+        Debug.Log("AirJumping");
     }
 
     private void WallJump()
     {
         // Uses ScaleX instead of WallTrigger for edgecase where Jump() is called in WallClingingState before it realizes that WallTrigger = 0
         // This also makes the input slightly more lenient for the player if near the bottom of a wall
+        wallJumpVector = new Vector2(controller.SkeletonMecanim.skeleton.ScaleX * movementSpeed * 0.85f, airJumpSpeed) * controller.FlipGravityScale;
         wallJumpOver = false;
         wallJumpTime = Time.time;
         controller.JumpTime = Time.time;
-        Debug.Log("WallJump");
+
+        Debug.Log("Walljumping, GravityScale = " + rigidbody.gravityScale);
     }
 
     public override void Dash()

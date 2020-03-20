@@ -21,9 +21,7 @@ public class WallClingingState : PlayerState
             controller.SkeletonMecanim.skeleton.ScaleX = 1;
         else
             controller.SkeletonMecanim.skeleton.ScaleX = -1;
-
-        Debug.Log(controller.WallTrigger);
-
+        
         // Buffered jump
         if (Time.time - controller.JumpButtonPressTime < 0.125f)
         {
@@ -43,9 +41,17 @@ public class WallClingingState : PlayerState
 
         //Slides down the wall slowly if player holds towards the wall
         if (Math.Sign(horizontalInput) == -(int)controller.WallTrigger)
+        {
             maxVelocityY = wallSlideMaxVelocityY;
-        else
+            if (Math.Sign(rigidbody.velocity.y) != controller.FlipGravityScale)
+            {
+                rigidbody.gravityScale = controller.FlipGravityScale;
+            }
+        }
+        else {
             maxVelocityY = baseMaxVelocityY;
+            rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
+        }
 
         if (controller.Grounded)
         {
@@ -53,14 +59,7 @@ public class WallClingingState : PlayerState
         }
         else if (controller.WallTrigger == WallTrigger.NONE)
         {
-            if (rigidbody.velocity.y * controller.FlipGravityScale > 0)
-            {
-                controller.ChangeState(JumpingState.INSTANCE);
-            }
-            else
-            {
-                controller.ChangeState(AirborneState.INSTANCE);
-            }
+            controller.ChangeState(AirborneState.INSTANCE);
         }
     }
 
@@ -77,7 +76,12 @@ public class WallClingingState : PlayerState
         }
 
         float newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
-        float newVelocityY = controller.TargetVelocity.y - rigidbody.velocity.y * maxVelocityFix;
+        float newVelocityY = - rigidbody.velocity.y * maxVelocityFix;
+
+        if (Math.Sign(rigidbody.velocity.y) == controller.FlipGravityScale) // To ensure speed buildup when doing repeated buildups doesn't happen (as much)
+        {
+            newVelocityY = controller.TargetVelocity.y - rigidbody.velocity.y * 0.4f;
+        }
 
         rigidbody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
         controller.TargetVelocity = new Vector2(controller.TargetVelocity.x, 0);
@@ -87,6 +91,7 @@ public class WallClingingState : PlayerState
     {
         controller.Animator.SetBool("WallCling", false);
         maxVelocityY = baseMaxVelocityY;
+        rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
     }
 
     public override void Jump()

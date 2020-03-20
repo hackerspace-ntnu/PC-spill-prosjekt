@@ -85,8 +85,8 @@ public class TriggerDetector : MonoBehaviour
                 {
                     controller.CanUncrouch = true;
                 }
-
                 break;
+
             case TriggerType.GLITCH_CEILING:
                 glitchCeilingCount--;
                 if (glitchCeilingCount <= 0)

@@ -12,7 +12,7 @@ public class GlitchWallClingingState : WallClingingState
 
     private const float SPRITE_POS_OFFSET = 0.1f;
 
-    private Vector3 defaultSpritPos;
+    private Vector3 defaultSpinePos;
 
     private bool isStuck = false;
 
@@ -22,7 +22,7 @@ public class GlitchWallClingingState : WallClingingState
     {
         base.Init(controller);
 
-        defaultSpritPos = controller.SkeletonMecanim.gameObject.transform.localPosition;
+        defaultSpinePos = controller.SkeletonMecanim.gameObject.transform.localPosition;
     }
 
     public override void Enter()
@@ -56,14 +56,11 @@ public class GlitchWallClingingState : WallClingingState
         else
             controller.SkeletonMecanim.skeleton.ScaleX = -1;
 
-        // It didn't like comparing an int to WallTrigger.LEFT
-        if (Math.Sign(horizontalInput) == -controller.SkeletonMecanim.skeleton.ScaleX && horizontalInput != 0)
+        if (Math.Sign(horizontalInput) == -(int)controller.WallTrigger)
         {
+            rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
             TogglePlayerStuck();
         }
-
-        if (Math.Sign(horizontalInput) == -(int)controller.WallTrigger)
-            rigidbody.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         else
             rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
 
@@ -84,7 +81,7 @@ public class GlitchWallClingingState : WallClingingState
     {
         controller.Animator.SetBool("WallCling", false);
         controller.Animator.SetBool("Idle", false);
-        controller.SkeletonMecanim.gameObject.transform.localPosition = defaultSpritPos;
+        controller.SkeletonMecanim.gameObject.transform.localPosition = defaultSpinePos;
         rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
@@ -97,6 +94,7 @@ public class GlitchWallClingingState : WallClingingState
     {
         if (!controller.HasDashed)
         {
+            UnstuckPlayer();
             controller.ChangeState(DashingState.INSTANCE);
         }
     }
@@ -118,5 +116,12 @@ public class GlitchWallClingingState : WallClingingState
         Vector3 animPos = controller.SkeletonMecanim.gameObject.transform.localPosition;
         animPos.x += isStuck ? -offset : offset;
         controller.SkeletonMecanim.gameObject.transform.localPosition = animPos;
+    }
+
+    private void UnstuckPlayer()
+    {
+        isStuck = false;
+        controller.Animator.SetBool("WallCling", true);
+        controller.SkeletonMecanim.gameObject.transform.localPosition = defaultSpinePos;
     }
 }

@@ -38,40 +38,26 @@ public class GlitchCrouchingState : CrouchingState
     {
         base.Init(controller);
 
-        controller.TargetVelocity = rigidbody.velocity;
+        glitchCrouchColliderSize = baseColliderSize;
         glitchCrouchColliderSize.y *= CROUCH_HEIGHT_RATIO;
-    }
 
-    public override void Update()
-    {
-        if (Input.GetAxis("Horizontal") != 0)
-        {
-            base.Update();
-        }
         glitchCrouchColliderSize = baseColliderSize;
         glitchCrouchColliderSize.y *= CROUCH_HEIGHT_RATIO;
 
         glitchCrouchColliderOffset = baseColliderOffset;
         float heightDifference = baseColliderSize.y - glitchCrouchColliderSize.y;
         glitchCrouchColliderOffset.y = -heightDifference / 2f;
-        else
-        {
-            if (!Input.GetButton("Crouch") && controller.CanUncrouch)
-            {
-                controller.ChangeState(IdleState.INSTANCE);
-            }
-
-            if (rigidbody.velocity.y * controller.FlipGravityScale < 0.0f)
-            {
-                controller.ChangeState(AirborneState.INSTANCE);
-            }
-
-        }
-        
     }
 
     public override void Update()
     {
+        base.Update();
+
+        if (tryToUnglitch && controller.CanUnglitch)
+        {
+            controller.ChangeState(CrouchingState.INSTANCE);
+        }
+
         if (Math.Abs(rigidbody.velocity.x) >= IDLE_SPEED_THRESHOLD)
         {
             controller.Animator.SetBool("Walk", true);
@@ -82,13 +68,6 @@ public class GlitchCrouchingState : CrouchingState
             controller.Animator.SetBool("Idle", true);
             controller.Animator.SetBool("Walk", false);
         }
-
-        if (tryToUnglitch && controller.CanUnglitch)
-        {
-            controller.ChangeState(CrouchingState.INSTANCE);
-        }
-
-        base.Update();
     }
 
     public override void ToggleGlitch()

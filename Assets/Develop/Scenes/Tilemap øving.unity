@@ -130,7 +130,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &179581948
 Transform:
   m_ObjectHideFlags: 0
@@ -1915,13 +1915,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 788885666}
-  m_LocalRotation: {x: 0, y: 0, z: 0.5, w: 0.8660254}
+  m_LocalRotation: {x: 0, y: 0, z: 0.38268343, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1695137229}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 60}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45}
 --- !u!66 &788885668
 CompositeCollider2D:
   m_ObjectHideFlags: 0
@@ -2219,6 +2219,7 @@ MonoBehaviour:
   canUncrouch: 0
   glitchActive: 0
   gravityFlipEnabled: 0
+  canUnglitch: 1
   flipGravityScale: 1
   wallTrigger: 0
   animator: {fileID: 1232565714}
@@ -7607,6 +7608,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 179581947, guid: 38d5e9340d8c924449ea3868285e0bc3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1136003525, guid: 38d5e9340d8c924449ea3868285e0bc3, type: 3}
       propertyPath: m_Name
       value: Spine Player
@@ -7760,11 +7765,6 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 7755910626592785986, guid: 730d7dba04a83994e8d0ec0fb15b9efa,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -14
-      objectReference: {fileID: 0}
     - target: {fileID: 6152369862408234871, guid: 7c9d94d0db188c94a90b7f57ff5951c8,
         type: 3}
       propertyPath: m_LocalPosition.z
@@ -7809,6 +7809,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7755910626592785986, guid: 730d7dba04a83994e8d0ec0fb15b9efa,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c9d94d0db188c94a90b7f57ff5951c8, type: 3}
