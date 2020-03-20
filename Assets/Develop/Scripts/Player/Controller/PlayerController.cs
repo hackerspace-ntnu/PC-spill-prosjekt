@@ -19,9 +19,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] [ReadOnly] private string previousStateName;
     [SerializeField] [ReadOnly] private bool hasAirJumped = false;
     [SerializeField] [ReadOnly] private bool hasDashed = false;
+    [SerializeField] [ReadOnly] private bool canUncrouch = true;        // is also set true in enter() because Unity hates me
     [SerializeField] [ReadOnly] private bool glitchActive = false;
-    [SerializeField] [ReadOnly] private bool canUncrouch = true;
-    [SerializeField] [ReadOnly] private bool canUnglitch = true;
+    [SerializeField] [ReadOnly] private bool gravityFlipEnabled = true; // is also set true in enter() because Unity hates me
+    [SerializeField] [ReadOnly] private bool canUnglitch = true;        // is not set true in enter() because Unity doesn't hate Aleksander
     [SerializeField] [ReadOnly] private int flipGravityScale = 1;
     [SerializeField] [ReadOnly] private WallTrigger wallTrigger = WallTrigger.NONE;
     [SerializeField] private Animator animator;
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
     public bool Grounded { get; set; } = false;
     public bool CanUncrouch { get => canUncrouch; set => canUncrouch = value; }
     public bool GlitchActive { get => glitchActive; set => glitchActive = value; }
+    public bool GravityFlipEnabled { get => gravityFlipEnabled; set => gravityFlipEnabled = value; }
     public int FlipGravityScale { get => flipGravityScale; set => flipGravityScale = value; }
     public WallTrigger WallTrigger { get => wallTrigger; set => wallTrigger = value; }
     public float JumpTime { get; set; }
@@ -89,6 +91,10 @@ public class PlayerController : MonoBehaviour
         ChangeState(IdleState.INSTANCE);
 
         FacingDirection = Direction.RIGHT;
+
+        // Because Unity fucking hates me, and I'm too tired to find out why
+        canUncrouch = true;
+        gravityFlipEnabled = true;
     }
 
     void Update()

@@ -23,9 +23,7 @@ public class AirborneState : PlayerState
 
         if (controller.Grounded)
             controller.ChangeState(IdleState.INSTANCE);
-        else if (controller.WallTrigger != WallTrigger.NONE
-                 // Only wall cling if player is sliding downwards; this allows for sliding over edges without slowing down
-                 && JumpingState.INSTANCE.IsHeadingDownwards())
+        else if (controller.WallTrigger != WallTrigger.NONE)
         {
             if (controller.GlitchActive)
                 controller.ChangeState(GlitchWallClingingState.INSTANCE);
@@ -36,13 +34,15 @@ public class AirborneState : PlayerState
 
     public override void FixedUpdate()
     {
-        if (controller.FlipGravityScale == 1 && rigidbody.velocity.y <= -maxVelocityY
-            || controller.FlipGravityScale == -1 && rigidbody.velocity.y >= maxVelocityY)
+        // Only need to check magnitude as player is always falling in this state
+        if (Math.Abs(rigidbody.velocity.y) >= maxVelocityY)
         {
-            maxVelocityFix = 0.02f;
+            rigidbody.gravityScale = controller.FlipGravityScale;
         }
-        else
-            maxVelocityFix = 0f;
+        else if (Math.Abs(rigidbody.velocity.y) < maxVelocityY)
+        {
+            rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
+        }
 
         float newVelocityX;
         // decreases horizontal acceleration in air while input in opposite direction of velocity
@@ -55,24 +55,26 @@ public class AirborneState : PlayerState
             newVelocityX = controller.TargetVelocity.x - rigidbody.velocity.x;
         }
 
-        float newVelocityY = -rigidbody.velocity.y * maxVelocityFix;
-
-        rigidbody.AddForce(new Vector2(newVelocityX, newVelocityY), ForceMode2D.Impulse);
-        //controller.TargetVelocity = new Vector2(newVelocityX, 0);
+        rigidbody.AddForce(new Vector2(newVelocityX, 0), ForceMode2D.Impulse);
     }
 
     public override void Exit()
     {
         controller.Animator.SetBool("Airborne", false);
         controller.DashTime = 0f;
+        rigidbody.gravityScale = baseGravityScale * controller.FlipGravityScale;
     }
 
     public override void Jump()
     {
         if (!controller.HasAirJumped && controller.GlitchActive)
+        {
             controller.ChangeState(JumpingState.INSTANCE);
+        }
         else
+        {
             controller.JumpButtonPressTime = Time.time;
+        }
     }
 
     public override void Dash()

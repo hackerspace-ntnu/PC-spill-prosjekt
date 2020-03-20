@@ -28,15 +28,18 @@ public class TriggerDetector : MonoBehaviour
         switch (triggerType)
         {
             case TriggerType.GROUND:
-                controller.Grounded = true;
+                if (collision.tag == "Standard")
+                    controller.Grounded = true;
                 break;
 
             case TriggerType.WALL_LEFT:
-                controller.WallTrigger = WallTrigger.LEFT;
+                if (collision.tag == "Standard")
+                    controller.WallTrigger = WallTrigger.LEFT;
                 break;
 
             case TriggerType.WALL_RIGHT:
-                controller.WallTrigger = WallTrigger.RIGHT;
+                if (collision.tag == "Standard")
+                    controller.WallTrigger = WallTrigger.RIGHT;
                 break;
 
             case TriggerType.CEILING:
@@ -49,18 +52,31 @@ public class TriggerDetector : MonoBehaviour
                 break;
         }
     }
+    
+    void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Standard")
+        {
+            if (this.gameObject.name == "Wall Trigger Left")
+                controller.WallTrigger = WallTrigger.LEFT;
+            else if (this.gameObject.name == "Wall Trigger Right")
+                controller.WallTrigger = WallTrigger.RIGHT;
+        }
+    }
 
     void OnTriggerExit2D(Collider2D collision)
     {
         switch (triggerType)
         {
             case TriggerType.GROUND:
-                controller.Grounded = false;
+                if (collision.tag == "Standard")
+                    controller.Grounded = false;
                 break;
 
             case TriggerType.WALL_LEFT:
             case TriggerType.WALL_RIGHT:
-                controller.WallTrigger = WallTrigger.NONE;
+                if (collision.tag == "Standard")
+                    controller.WallTrigger = WallTrigger.NONE;
                 break;
 
             case TriggerType.CEILING:
@@ -69,8 +85,8 @@ public class TriggerDetector : MonoBehaviour
                 {
                     controller.CanUncrouch = true;
                 }
-
                 break;
+
             case TriggerType.GLITCH_CEILING:
                 glitchCeilingCount--;
                 if (glitchCeilingCount <= 0)

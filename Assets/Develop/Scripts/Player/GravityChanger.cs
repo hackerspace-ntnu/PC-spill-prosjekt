@@ -21,12 +21,16 @@ public class GravityChanger : MonoBehaviour
 
     void Update()
     {
-        if (controller.Grounded) //Should
+        if (controller.Grounded && controller.GravityFlipEnabled) //Should
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.F)) //Should indeed
             {
                 FlipGravity();
             }
+        }
+        else if (!controller.GravityFlipEnabled && controller.FlipGravityScale == -1)
+        {
+            FlipGravity();
         }
 
         //Rotation for player

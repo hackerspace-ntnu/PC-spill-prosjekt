@@ -11,7 +11,6 @@ public class GlitchCrouchingState : CrouchingState
 
     private const float SPRITE_POS_OFFSET = 0.22f;
     private const float CROUCH_HEIGHT_RATIO = 0.6f;
-
     protected override string AnimatorParameterName => "GlitchCrouch";
 
     protected Vector2 glitchCrouchColliderSize;
@@ -52,6 +51,13 @@ public class GlitchCrouchingState : CrouchingState
 
     public override void Update()
     {
+        base.Update();
+
+        if (tryToUnglitch && controller.CanUnglitch)
+        {
+            controller.ChangeState(CrouchingState.INSTANCE);
+        }
+
         if (Math.Abs(rigidbody.velocity.x) >= IDLE_SPEED_THRESHOLD)
         {
             controller.Animator.SetBool("Walk", true);
@@ -62,13 +68,6 @@ public class GlitchCrouchingState : CrouchingState
             controller.Animator.SetBool("Idle", true);
             controller.Animator.SetBool("Walk", false);
         }
-
-        if (tryToUnglitch && controller.CanUnglitch)
-        {
-            controller.ChangeState(CrouchingState.INSTANCE);
-        }
-
-        base.Update();
     }
 
     public override void ToggleGlitch()

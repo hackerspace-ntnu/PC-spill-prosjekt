@@ -18,7 +18,7 @@ public class DashingState : PlayerState
         controller.HasDashed = true;
         controller.DashTime = Time.time;
 
-        controller.TargetVelocity = new Vector2((int)controller.FacingDirection * dashSpeed * controller.FlipGravityScale, 0);
+        controller.TargetVelocity = new Vector2(controller.SkeletonMecanim.skeleton.ScaleX * dashSpeed * controller.FlipGravityScale, 0);
         rigidbody.gravityScale = 0;
         controller.Animator.SetBool("Dash", true);
     }
@@ -27,7 +27,7 @@ public class DashingState : PlayerState
     {
         CheckGrappling();
 
-        if (controller.WallTrigger != WallTrigger.NONE)
+        if (controller.WallTrigger != WallTrigger.NONE && Time.time - controller.DashTime > 0.08f)
         {
             if (controller.GlitchActive)
                 controller.ChangeState(GlitchWallClingingState.INSTANCE);
